@@ -1,5 +1,6 @@
-# Editor specifics.
+# Editor's specifics.
 *.sublime-workspace
 
 # Node.js specifics.
 node_modules/
+coverage/
