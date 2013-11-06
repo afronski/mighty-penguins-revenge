@@ -1,0 +1,5 @@
+# Editor specifics.
+*.sublime-workspace
+
+# Node.js specifics.
+node_modules/
