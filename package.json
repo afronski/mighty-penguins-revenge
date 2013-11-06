@@ -1,7 +1,7 @@
 {
   "name": "mighty-penguins-revenge",
-  "description": "Node.js application with Mocha, Should, Sinon.js and Istanbul attached.",
-  "version": "0.1.0",
+  "description": "A multiplayer action game for educational purposes to the Node.js workshop.",
+  "version": "0.0.1",
 
   "author": {
     "name": "Wojciech Gawroński",
@@ -10,7 +10,7 @@
 
   "main": "index.js",
   "engines": {
-    "node": ">= 0.8.0"
+    "node": ">= 0.10.0"
   },
 
   "repository": "https://github.com/afronski/mighty-penguins-revenge",
