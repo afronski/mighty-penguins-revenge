@@ -1,104 +1,203 @@
-(function() {
-  "use strict";
+(function () {
+    "use strict";
 
-  module.exports = function(grunt) {
-    grunt.initConfig({
-      clean: {
-        coverage: [ "coverage" ]
-      },
+    module.exports = function (grunt) {
+        grunt.initConfig({
+            "clean": {
+                coverage: [ "coverage" ]
+            },
 
-      mkdir: {
-        all: {
-          options: {
-            create: [ "coverage" ]
-          }
-        }
-      },
+            "mkdir": {
+                all: {
+                    options: {
+                        create: [ "coverage" ]
+                    }
+                }
+            },
 
-      jshint: {
-        options: grunt.file.readJSON(".jshintrc"),
+            "jshint": {
+                options: grunt.file.readJSON(".jshintrc"),
 
-        gruntfile: {
-          files: {
-            src: "Gruntfile.js"
-          }
-        },
+                gruntfile: {
+                    files: {
+                        src: "Gruntfile.js"
+                    },
 
-        src: {
-          files: {
-            src: "src/**/*.js"
-          }
-        },
+                    options: {
+                        node: true
+                    }
+                },
 
-        test: {
-          files: {
-            src: "test/**/*.js"
-          },
+                serverSource: {
+                    files: {
+                        src: [
+                            "server/*.js",
+                            "server/**/*.js"
+                        ]
+                    },
 
-          options: {
-            globals: {
-              describe: true,
-              it: true
+                    options: {
+                        node: true
+                    }
+                },
+
+                clientSource: {
+                    files: {
+                        src: [
+                            "client/*.js",
+                            "client/**/*.js"
+                        ]
+                    },
+
+                    options: {
+                        browser: true
+                    }
+                },
+
+                serverTest: {
+                    files: {
+                        src: [
+                            "test/server/*.js",
+                            "test/server/**/*.js"
+                        ]
+                    },
+
+                    options: {
+                        node: true,
+
+                        globals: {
+                            describe: true,
+                            it: true
+                        }
+                    }
+                },
+
+                clientTest: {
+                    files: {
+                        src: [
+                            "test/client/suites/*.js",
+                            "test/client/suites/**/*.js"
+                        ]
+                    },
+
+                    options: {
+                        browser: true,
+
+                        globals: {
+                            QUnit: true,
+                            test: true,
+                            ok: true,
+                        }
+                    }
+                }
+            },
+
+            "watch": {
+                gruntfile: {
+                    files: "<%= jshint.gruntfile.files.src %>",
+                    tasks: [
+                        "jshint:gruntfile"
+                    ]
+                },
+
+                serverSource: {
+                    files: "<%= jshint.serverSource.files.src %>",
+                    tasks: [
+                        "jshint:serverSource",
+                        "mochaTest"
+                    ]
+                },
+
+                clientSource: {
+                    files: "<%= jshint.clientSource.files.src %>",
+                    tasks: [
+                        "jshint:clientSource",
+                        "connect",
+                        "qunit"
+                    ]
+                },
+
+                serverTest: {
+                    files: "<%= jshint.serverTest.files.src %>",
+                    tasks: [
+                        "jshint:serverTest",
+                        "mochaTest"
+                    ]
+                },
+
+                clientTest: {
+                    files: "<%= jshint.clientTest.files.src %>",
+                    tasks: [
+                        "jshint:clientTest",
+                        "connect",
+                        "qunit"
+                    ]
+                }
+            },
+
+            "mochaTest": {
+                serverTest: {
+                    options: {
+                        reporter: "spec"
+                    },
+
+                    src: "<%= jshint.serverTest.files.src %>"
+                }
+            },
+
+            "exec": {
+                serverCodeCoverage: {
+                    command: "istanbul cover node_modules/.bin/_mocha -- -u exports -R spec test/server/",
+                    stdout: true
+                }
+            },
+
+            "qunit": {
+                options: {
+                    "--web-security": "no",
+
+                    coverage: {
+                        src: "<%= jshint.clientTest.files.src %>",
+
+                        instrumentedFiles: "coverage",
+                        htmlReport: "coverage/reports"
+                    },
+                },
+
+                all: {
+                    options: {
+                        urls: [
+                            "http://localhost:8000/test/client/fake-test.html"
+                        ]
+                    }
+                }
+            },
+
+            "connect": {
+                server: {
+                    options: {
+                        port: 8000,
+                        base: "."
+                    }
+                }
             }
-          }
-        }
-      },
+        });
 
-      watch: {
-        gruntfile: {
-          files: "<%= jshint.gruntfile.files.src %>",
-          tasks: [
-            "jshint:gruntfile"
-          ]
-        },
+        grunt.loadNpmTasks("grunt-contrib-clean");
+        grunt.loadNpmTasks("grunt-contrib-connect");
+        grunt.loadNpmTasks("grunt-contrib-jshint");
+        grunt.loadNpmTasks("grunt-contrib-watch");
 
-        src: {
-          files: "<%= jshint.src.files.src %>",
-          tasks: [
-            "jshint:src",
-            "mochaTest"
-          ]
-        },
+        grunt.loadNpmTasks("grunt-exec");
+        grunt.loadNpmTasks("grunt-mkdir");
+        grunt.loadNpmTasks("grunt-mocha-test");
+        grunt.loadNpmTasks("grunt-qunit-istanbul");
 
-        test: {
-          files: "<%= jshint.test.files.src %>",
-          tasks: [
-            "jshint:test",
-            "mochaTest"
-          ]
-        }
-      },
+        grunt.registerTask("common", [ "clean", "mkdir", "jshint" ]);
+        grunt.registerTask("client", [ "connect", "qunit" ]);
+        grunt.registerTask("server", [ "mochaTest", "exec:serverCodeCoverage" ]);
 
-      mochaTest: {
-        test: {
-          options: {
-            reporter: "spec"
-          },
-
-          src: [
-            "test/**/*.js"
-          ]
-        }
-      },
-
-      exec: {
-        coverage: {
-          command: "istanbul cover node_modules/.bin/_mocha -- -u exports -R spec",
-          stdout: true
-        }
-      }
-
-    });
-
-    grunt.loadNpmTasks("grunt-contrib-clean");
-    grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-contrib-watch");
-
-    grunt.loadNpmTasks("grunt-exec");
-    grunt.loadNpmTasks("grunt-mkdir");
-    grunt.loadNpmTasks("grunt-mocha-test");
-
-    grunt.registerTask("default", [ "clean", "mkdir", "jshint", "mochaTest", "exec:coverage" ]);
-  };
+        grunt.registerTask("default", [ "common", "server", "client" ]);
+    };
 
 } ());
