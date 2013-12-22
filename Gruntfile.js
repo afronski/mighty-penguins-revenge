@@ -83,7 +83,7 @@
 
       exec: {
         coverage: {
-          command: "istanbul cover _mocha -- -u exports -R spec",
+          command: "istanbul cover node_modules/.bin/_mocha -- -u exports -R spec",
           stdout: true
         }
       }
