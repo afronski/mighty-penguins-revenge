@@ -10,8 +10,10 @@
   "unused": true,
   "boss": true,
   "eqnull": true,
-  "node": true,
+  "white": true,
+
   "quotmark": "double",
+  "indent": 4,
 
   "-W040": true,
   "-W030": true,
