@@ -1,3 +1,3 @@
 # mighty-penguins-revenge
 
-A multiplayer action game for educational purposes to the Node.js workshop.
+A multi-player action game, written for the purpose of education and the Node.js workshop at January 2014.
