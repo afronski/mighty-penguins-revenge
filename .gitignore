@@ -4,3 +4,6 @@
 # Node.js specifics.
 node_modules/
 coverage/
+
+# Rubbish.
+*.log
