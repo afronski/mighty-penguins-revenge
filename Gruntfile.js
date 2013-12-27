@@ -44,8 +44,8 @@
                 clientSource: {
                     files: {
                         src: [
-                            "client/*.js",
-                            "client/**/*.js"
+                            "client/src/*.js",
+                            "client/src/**/*.js"
                         ]
                     },
 
@@ -167,7 +167,7 @@
                 all: {
                     options: {
                         urls: [
-                            "http://localhost:8000/test/client/fake-test.html"
+                            "http://localhost:8000/test/client/Entities.test.html"
                         ]
                     }
                 }
