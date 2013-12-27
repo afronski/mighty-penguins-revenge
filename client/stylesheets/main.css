@@ -1,0 +1,43 @@
+html {
+  height: 100%;
+}
+
+body {
+  width: 500px;
+
+  padding: 0px;
+  margin: 0px auto;
+
+  font: 13px Verdana;
+  text-align: left;
+
+  color: #EEE;
+  background: #333;
+}
+
+html, canvas, img {
+  image-rendering: optimizeSpeed;
+  image-rendering: optimize-contrast;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  -ms-interpolation-mode: nearest-neighbor;
+  image-rendering: crisp-edges;
+}
+
+canvas {
+  display: block;
+
+  border: 0px solid;
+  background: white;
+
+  margin-top: 50px;
+}
+
+.body-sizing {
+  width: 900px
+}
+
+.canvas-sizing {
+  width: 900px;
+  height: 460px;
+}
