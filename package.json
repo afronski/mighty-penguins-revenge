@@ -22,7 +22,7 @@
 
     "dependencies": {
         "colors": "~0.6.2",
-        "express": "TODO: Fill with proper version and run 'npm install' command."
+        "express": "~3.4.7"
     },
 
     "devDependencies": {
