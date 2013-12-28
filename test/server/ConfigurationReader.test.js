@@ -9,9 +9,9 @@ var path = require("path"),
 describe("Configuration reader", function () {
 
     it("should read configuration from JSON file", function () {
-        var configuration = new ConfigurationReader(path.join(__dirname, "assets"));
+        var configuration = new ConfigurationReader(path.join(__dirname, "server"));
 
-        configuration.get("port").should.be.equal(1234);
+        configuration.get("port").should.be.equal(8999);
     });
 
     it("should explode when reading not existing configuration file", function () {
@@ -21,7 +21,7 @@ describe("Configuration reader", function () {
     });
 
     it("should explode when getting not existing settings property", function () {
-        var configuration = new ConfigurationReader(path.join(__dirname, "assets"));
+        var configuration = new ConfigurationReader(path.join(__dirname, "server"));
 
         (function () {
             configuration.get("missing");

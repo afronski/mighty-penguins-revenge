@@ -1,6 +1,9 @@
 (function () {
     "use strict";
 
+    var IstanbulCommand = "istanbul cover node_modules/.bin/_mocha -- -u exports -R spec test/server/ &&" +
+                          "istanbul report --format html --dir reports/server";
+
     module.exports = function (grunt) {
         grunt.initConfig({
             "clean": {
@@ -66,6 +69,10 @@
                         node: true,
 
                         globals: {
+                            beforeEach: true,
+                            afterEach: true,
+                            before: true,
+                            after: true,
                             describe: true,
                             it: true
                         }
@@ -141,7 +148,7 @@
 
             "exec": {
                 serverCodeCoverage: {
-                    command: "istanbul cover node_modules/.bin/_mocha -- -u exports -R spec test/server/",
+                    command: IstanbulCommand,
                     stdout: true
                 }
             },
@@ -155,7 +162,7 @@
 
                         baseUrl: ".",
                         instrumentedFiles: "coverage",
-                        htmlReport: "reports"
+                        htmlReport: "reports/client"
                     },
                 },
 
