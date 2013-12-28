@@ -15,21 +15,28 @@
     <div id="qunit-fixture"></div>
 
     <script src="/test/client/resources/qunit-1.12.0.js"></script>
+    <script>QUnit.config.autostart = false;</script>
 
+    <script src="/client/src/Constants.js"></script>
+    <script src="/client/src/Entity.js"></script>
+    <script src="/client/src/Enemy.js"></script>
     <script src="/client/src/Player.js"></script>
+    <script src="/client/src/Bullet.js"></script>
     <script src="/client/src/World.js"></script>
     <script src="/client/src/Game.js"></script>
 
     <script>
-        QUnit.config.autostart = false;
-
         window.jaws.onload = function () {
             Game.setUp("/client/images/");
             World.load("TestMap1.png", QUnit.start);
         };
     </script>
 
+    <script src="/test/client/suites/Entity.test.js"></script>
+    <script src="/test/client/suites/Enemy.test.js"></script>
     <script src="/test/client/suites/Player.test.js"></script>
+    <script src="/test/client/suites/Bullet.test.js"></script>
+    <script src="/test/client/suites/Enemy.test.js"></script>
     <script src="/test/client/suites/World.test.js"></script>
     <script src="/test/client/suites/Game.test.js"></script>
   </body>

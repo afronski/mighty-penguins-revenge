@@ -1,8 +1,5 @@
-(function (jaws, Player, isTrue) {
+(function (jaws, Player, Enemy, Constants, isTrue) {
     "use strict";
-
-    var MaxGravity = 10,
-        WorldGravity = 0.5;
 
     // Constructor.
     function World(mapName) {
@@ -10,7 +7,7 @@
 
         this.map = mapName;
 
-        this.terrain = new jaws.Sprite({ x: 0, y: 0, image: this.map, scale_image: 5 });
+        this.terrain = new jaws.Sprite({ x: 0, y: 0, image: this.map, scale_image: Constants.Scale });
         context = this.terrain.asCanvasContext();
 
         this.rawTerrain = context.getImageData(0, 0, this.terrain.width, this.terrain.height).data;
@@ -34,11 +31,12 @@
     function drawing() {
         this.terrain.draw();
         this.player.draw();
+        this.enemy.draw();
     }
 
     function applyGravity(object) {
-        if (object.vy < MaxGravity) {
-            object.vy += WorldGravity;
+        if (object.vy < Constants.MaxGravity) {
+            object.vy += Constants.WorldGravity;
         }
     }
 
@@ -75,6 +73,7 @@
     function move(object) {
         var target = Math.abs(object.vy),
             step = Math.floor(object.vy / target),
+            bottom,
             i;
 
         for (i = 0; i < target; ++i) {
@@ -96,10 +95,11 @@
 
         for (i = 0; i < target; ++i) {
             object.x += step;
+            bottom = object.y - object.height;
 
-            if (terrainInRect.call(this, object.x, object.y - object.height, 1, object.height)) {
-                if (!terrainInRect.call(this, object.x, object.y - object.height - 5, 1, object.height)) {
-                    object.y -= 5;
+            if (terrainInRect.call(this, object.x, bottom, 1, object.height)) {
+                if (!terrainInRect.call(this, object.x, bottom - Constants.CollisionMargin, 1, object.height)) {
+                    object.y -= Constants.CollisionMargin;
                 }
 
                 object.x -= step;
@@ -124,26 +124,37 @@
 
     // Public methods.
     World.prototype.setup = function () {
-        this.player = new Player({ x: 10 * 5, y: 670 * 5 });
+        this.player = new Player({ x: 10 * Constants.Scale, y: 670 * Constants.Scale });
         this.viewport = new jaws.Viewport({ max_x: this.terrain.width, max_y: this.terrain.height });
+
+        this.enemy = new Enemy({ x: 15 * Constants.Scale, y: 670 * Constants.Scale });
+        var owner = this;
+
+        setInterval(function () {
+            owner.enemy.jump();
+        }, 2000);
 
         jaws.context.mozImageSmoothingEnabled = false;
     };
 
     World.prototype.update = function () {
         this.player.prepare();
+        this.enemy.prepare();
 
         // Handle input.
         handleKeyboard.call(this);
 
         // Update all entities.
         this.player.update();
+        this.enemy.update();
 
         // Applying physics.
         applyGravity(this.player);
+        applyGravity(this.enemy);
 
         // Move all entities.
         move.call(this, this.player);
+        move.call(this, this.enemy);
 
         // Recenter view around player.
         this.viewport.centerAround(this.player);
@@ -158,4 +169,4 @@
     // Exporting API to the public access.
     window.World = World;
 
-} (window.jaws, window.Player, window.isTrue));
+} (window.jaws, window.Player, window.Enemy, window.Constants, window.isTrue));
