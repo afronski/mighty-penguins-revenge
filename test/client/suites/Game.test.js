@@ -1,4 +1,4 @@
-(function (Game) {
+(function () {
     "use strict";
 
-} (window.Game));
+} ());

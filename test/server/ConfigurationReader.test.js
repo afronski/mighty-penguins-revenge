@@ -15,7 +15,7 @@ describe("Configuration reader", function () {
     });
 
     it("should explode when reading not existing configuration file", function () {
-        (function() {
+        (function () {
             new ConfigurationReader(path.join(__dirname, "missing-directory"));
         }).should.throwError();
     });
@@ -23,7 +23,7 @@ describe("Configuration reader", function () {
     it("should explode when getting not existing settings property", function () {
         var configuration = new ConfigurationReader(path.join(__dirname, "assets"));
 
-        (function() {
+        (function () {
             configuration.get("missing");
         }).should.throwError();
     });

@@ -1,6 +1,4 @@
-(function (jaws) {
+(function () {
     "use strict";
 
-    jaws.preventDefaultKeys([ "up", "down", "left", "right", "space" ]);
-
-} (window.jaws));
+} ());
