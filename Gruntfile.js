@@ -162,7 +162,7 @@
                 all: {
                     options: {
                         urls: [
-                            "http://localhost:9999/test/client/Entities.test.html"
+                            "http://localhost:9999/test/client/TestSuite.html"
                         ]
                     }
                 }
