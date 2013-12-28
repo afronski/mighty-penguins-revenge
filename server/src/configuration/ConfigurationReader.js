@@ -3,7 +3,8 @@
 var ConfigurationFileName = "configuration.json",
 
     path = require("path"),
-    fs = require("fs");
+    fs = require("fs"),
+    util = require("util");
 
 function ConfigurationReader(rootPath) {
     var configurationFilePath = path.join(rootPath, ConfigurationFileName),

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="/libraries/jaws.min.js"></script>
+    <meta charset="UTF-8" />
+
+    <script src="/libraries/jaws.js"></script>
 
     <script src="/src/World.js"></script>
     <script src="/src/Player.js"></script>
@@ -102,8 +104,7 @@
       }
 
       jaws.onload = function() {
-        jaws.unpack()
-        jaws.assets.setRoot("images/").add([ "Player.png", "block.bmp"])
+        Game.setUp();
         jaws.start(Example)  // Our convenience function jaws.start() will load assets, call setup and loop update/draw in 60 FPS
       }
     </script>

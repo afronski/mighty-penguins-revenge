@@ -1,4 +1,4 @@
-(function (World) {
+(function () {
     "use strict";
 
-} (window.World));
+} ());

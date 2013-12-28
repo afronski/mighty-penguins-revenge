@@ -157,17 +157,17 @@
                     "--web-security": "no",
 
                     coverage: {
-                        src: "<%= jshint.clientTest.files.src %>",
+                        src: "<%= jshint.clientSource.files.src %>",
 
-                        instrumentedFiles: "coverage",
-                        htmlReport: "coverage/reports"
+                        baseUrl: ".",
+                        instrumentedFiles: "coverage"
                     },
                 },
 
                 all: {
                     options: {
                         urls: [
-                            "http://localhost:8000/test/client/Entities.test.html"
+                            "http://localhost:9999/test/client/Entities.test.html"
                         ]
                     }
                 }
@@ -176,7 +176,7 @@
             "connect": {
                 server: {
                     options: {
-                        port: 8000,
+                        port: 9999,
                         base: "."
                     }
                 }

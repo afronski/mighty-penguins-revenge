@@ -7,6 +7,7 @@
         }
 
         options.anchor = "center_bottom";
+
         jaws.Sprite.call(this, options);
 
         this.animations = new jaws.Animation({
@@ -30,30 +31,30 @@
         this.runAnimation = this.animations.slice(2, 6);
         this.jumpAnimation = this.animations.slice(6, 7);
 
-        this.col_rect = function() {
+        this.col_rect = function () {
             return this.rect().clone().shrink(7, 0);
         };
 
-        this.rest = function() {
+        this.rest = function () {
             this.setImage(this.restAnimation.frames[0]);
         };
 
-        this.jump = function() {
+        this.jump = function () {
             this.vy = -7;
             this.can_jump = false;
         };
 
-        this.right = function() {
+        this.right = function () {
             this.vx = 2;
             this.flipped = false;
         };
 
-        this.left = function() {
+        this.left = function () {
             this.vx = -2;
             this.flipped = true;
         };
 
-        this.update = function() {
+        this.update = function () {
             if (this.vx !== 0) {
                 this.setImage(this.runAnimation.next());
             }
