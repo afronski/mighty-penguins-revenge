@@ -16,8 +16,7 @@ var path = require("path"),
 function initialize(directory) {
     configurationReader = new ConfigurationReader(path.join(directory, "server"));
 
-    // TODO: Fill it properly *here* in order to serve all
-    //       assets from proper directories.
+    application.use(express.static(path.join(directory, "client")));
 }
 
 function listen() {
