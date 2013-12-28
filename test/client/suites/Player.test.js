@@ -7,6 +7,20 @@
         QUnit.ok(player instanceof jaws.Sprite, "It should be a Sprite from jaws library!");
     });
 
+    QUnit.test("After passing position as a parameter it should be set up", function () {
+        var player = new Player({ x: -10, y: -15 });
+
+        QUnit.equal(-10, player.x);
+        QUnit.equal(-15, player.y);
+    });
+
+    QUnit.test("At the beginning it should be scaled and anchored at the bottom-center", function () {
+        var player = new Player();
+
+        QUnit.equal(5, player.scale_image);
+        QUnit.equal("center_bottom", player.anchor);
+    });
+
     QUnit.test("Player should be in rest state at the beginning", function () {
         var player = new Player();
 
@@ -35,6 +49,7 @@
     QUnit.test("After invoking rest, current image should return to the initial state", function () {
         var player = new Player();
 
+        player.jumping = false;
         player.can_jump = true;
 
         player.right();
@@ -58,24 +73,25 @@
     QUnit.test("Jumping should change frame to jump only if velocity on Y axis is less than zero", function () {
         var player = new Player();
 
+        player.jumping = false;
+        player.can_jump = true;
+
         player.jump();
         player.update();
         QUnit.equal(player.jumpAnimation.frames[0], player.image,
                     "Current image should be equal to the first frame of jumping animation.");
-
-        player.vy = 0.0;
-        player.update();
-        QUnit.equal(player.restAnimation.frames[0], player.image,
-                    "When we falling down, current image should be equal to the first frame of rest animation.");
     });
 
     QUnit.test("Jumping is possible only when you are not jumping already", function () {
         var player = new Player();
 
+        player.jumping = true;
+        player.can_jump = false;
+
         player.jump();
 
-        QUnit.equal(false, player.can_jump, "After jumping we cannot jump again until we land.");
+        QUnit.equal(true, player.can_jump);
+        QUnit.equal(true, player.jumping, "After jumping we cannot jump again until we land.");
     });
-
 
 } (window.QUnit, window.jaws, window.Player));
