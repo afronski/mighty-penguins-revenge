@@ -1,4 +1,4 @@
-(function (jaws, Player, Enemy, Constants, isTrue) {
+(function (jaws, Player, Enemy, Constants, utils) {
     "use strict";
 
     // Constructor.
@@ -11,6 +11,9 @@
         context = this.terrain.asCanvasContext();
 
         this.rawTerrain = context.getImageData(0, 0, this.terrain.width, this.terrain.height).data;
+
+        this.enemies = [];
+        this.bullets = [];
     }
 
     // Private methods.
@@ -31,7 +34,9 @@
     function drawing() {
         this.terrain.draw();
         this.player.draw();
-        this.enemy.draw();
+
+        this.enemies.forEach(utils.each("draw"));
+        this.bullets.forEach(utils.each("draw"));
     }
 
     function applyGravity(object) {
@@ -112,7 +117,7 @@
         var assetsLoader = jaws.assets.add(mapName);
 
         function finished() {
-            if (jaws.assets.loaded.every(isTrue)) {
+            if (jaws.assets.loaded.every(utils.isTrue)) {
                 continuation();
             }
         }
@@ -127,34 +132,32 @@
         this.player = new Player({ x: 10 * Constants.Scale, y: 670 * Constants.Scale });
         this.viewport = new jaws.Viewport({ max_x: this.terrain.width, max_y: this.terrain.height });
 
-        this.enemy = new Enemy({ x: 15 * Constants.Scale, y: 670 * Constants.Scale });
-        var owner = this;
-
-        setInterval(function () {
-            owner.enemy.jump();
-        }, 2000);
+        this.enemies.push(new Enemy({ x: 15 * Constants.Scale, y: 670 * Constants.Scale }));
+        setInterval(this.enemies[0].jump.bind(this.enemies[0]), 2000);
 
         jaws.context.mozImageSmoothingEnabled = false;
     };
 
     World.prototype.update = function () {
         this.player.prepare();
-        this.enemy.prepare();
+        this.enemies.forEach(utils.each("prepare"));
+        this.bullets.forEach(utils.each("prepare"));
 
         // Handle input.
         handleKeyboard.call(this);
 
         // Update all entities.
         this.player.update();
-        this.enemy.update();
+        this.enemies.forEach(utils.each("update"));
+        this.bullets.forEach(utils.each("update"));
 
-        // Applying physics.
+        // Applying physics and collisions.
         applyGravity(this.player);
-        applyGravity(this.enemy);
+        this.enemies.forEach(utils.eachDo(applyGravity));
 
         // Move all entities.
         move.call(this, this.player);
-        move.call(this, this.enemy);
+        this.enemies.forEach(utils.eachDo(move.bind(this)));
 
         // Recenter view around player.
         this.viewport.centerAround(this.player);
@@ -169,4 +172,4 @@
     // Exporting API to the public access.
     window.World = World;
 
-} (window.jaws, window.Player, window.Enemy, window.Constants, window.isTrue));
+} (window.jaws, window.Player, window.Enemy, window.Constants, window.utils));

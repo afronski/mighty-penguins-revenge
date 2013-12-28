@@ -22,8 +22,27 @@
         };
     }
 
-    window.isTrue = function (object) {
+    function isTrue(object) {
         return object === true;
+    }
+
+    function each(method) {
+        return function (element) {
+            element[method]();
+        };
+    }
+
+    function eachDo(operation) {
+        return function (element) {
+            operation(element);
+        };
+    }
+
+    window.utils = {
+        isTrue: isTrue,
+
+        each: each,
+        eachDo: eachDo
     };
 
 } ());
