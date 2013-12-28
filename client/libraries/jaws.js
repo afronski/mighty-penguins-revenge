@@ -1,4 +1,3 @@
-/* Built at 2013-10-06 21:36:04 +0200 */
 /**
  * @namespace JawsJS core functions.
  *
@@ -11,9 +10,9 @@
  * Works with:  Chrome 6.0+, Firefox 3.6+, 4+, IE 9+
  * License: LGPL - http://www.gnu.org/licenses/lgpl.html
  *
- * Jaws uses the "module pattern". 
+ * Jaws uses the "module pattern".
  * Adds 1 global, <b>jaws</b>, so plays nice with all other JS libs.
- *  
+ *
  * Formating guide:
  *   jaws.oneFunction()
  *   jaws.one_variable = 1
@@ -110,7 +109,7 @@ var jaws = (function(jaws) {
   jaws.log.on = true;
 
   /**
-   * If console.log should be used during log writing 
+   * If console.log should be used during log writing
    * @type {boolean}
    */
   jaws.log.use_console = false;
@@ -179,7 +178,7 @@ var jaws = (function(jaws) {
   jaws.log.clear = function() {
     if (log_tag) {
       log_tag.innerHTML = "";
-    } 
+    }
     if (console.clear) {
       console.clear();
     }
@@ -205,10 +204,10 @@ var jaws = (function(jaws) {
     // Ordinary <canvas>, get context
     if (jaws.canvas) {
       jaws.context = jaws.canvas.getContext('2d');
-    } 
+    }
     else if (jaws.dom) {
       jaws.dom.style.position = "relative";
-    } 
+    }
     else {
       jaws.canvas = document.createElement("canvas");
       jaws.canvas.width = options.width;
@@ -309,7 +308,7 @@ var jaws = (function(jaws) {
     if (options.loading_screen === undefined) options.loading_screen = true;
     if (!options.width)                       options.width = 500;
     if (!options.height)                      options.height = 300;
-    
+
     /* Takes care of finding/creating canvas-element and debug-div */
     jaws.init(options);
 
@@ -363,7 +362,7 @@ var jaws = (function(jaws) {
    * @param   {object}    options                   The object-literal properties to pass to the new game loop
    * @param   {object}    game_state_setup_options  The object-literal properties to pass to starting game state
    * @example
-   * 
+   *
    * function MenuState() {
    *   this.setup = function() { ... }
    *   this.draw = function() { ... }
@@ -430,7 +429,7 @@ var jaws = (function(jaws) {
   /**
    * Returns object as an array
    * @param   {object}  obj   An array or object
-   * @returns {array}         Either an array or the object as an array 
+   * @returns {array}         Either an array or the object as an array
    * @example
    *
    *   jaws.forceArray(1)       // --> [1]
@@ -462,7 +461,7 @@ var jaws = (function(jaws) {
     var list = arguments;
     if(list.length == 1 && jaws.isArray(list[0])) list = list[0];
     for(var i=0; i < list.length; i++) {
-      if(jaws.isArray(list[i])) jaws.draw(list[i]);  
+      if(jaws.isArray(list[i])) jaws.draw(list[i]);
       else                      if(list[i].draw) list[i].draw();
     }
   }
@@ -475,7 +474,7 @@ var jaws = (function(jaws) {
     var list = arguments;
     if(list.length == 1 && jaws.isArray(list[0])) list = list[0];
     for(var i=0; i < list.length; i++) {
-      if(jaws.isArray(list[i])) jaws.update(list[i]);  
+      if(jaws.isArray(list[i])) jaws.update(list[i]);
       else                      if(list[i].update) list[i].update();
     }
   }
@@ -565,7 +564,7 @@ var jaws = (function(jaws) {
 
 
   /**
-   * Tests if an object is within drawing canvas (jaws.width and jaws.height) 
+   * Tests if an object is within drawing canvas (jaws.width and jaws.height)
    * @param   {object}  item  An object with both x and y properties
    * @returns {boolean}       If the item's x and y are less than 0 or more than jaws.width or jaws.height
    */
@@ -629,7 +628,7 @@ var jaws = (function(jaws) {
       }
     }
     for (var option in defaults) {
-      if( jaws.isFunction(defaults[option]) ) defaults[option] = defaults[option](); 
+      if( jaws.isFunction(defaults[option]) ) defaults[option] = defaults[option]();
       object[option] = (options[option] !== undefined) ? options[option] : jaws.clone(defaults[option]);
     }
   };
@@ -654,13 +653,13 @@ var jaws = (function(jaws) {
     var canvas = document.createElement("canvas")
     canvas.width = image.width
     canvas.height = image.height
-  
+
     var context = canvas.getContext("2d")
     if(jaws.context) {
       context.imageSmoothingEnabled = jaws.context.mozImageSmoothingEnabled;
       context.webkitImageSmoothingEnabled = jaws.context.mozImageSmoothingEnabled;
       context.mozImageSmoothingEnabled = jaws.context.mozImageSmoothingEnabled;
-    } 
+    }
 
     context.drawImage(image, 0, 0, canvas.width, canvas.height)
     return context
@@ -694,7 +693,7 @@ var jaws = (function(jaws) {
         var x2 = Math.floor(x / factor)
         var y_dst = (y_as_x + x) * 4
         var y_src = (y2_as_x + x2) * 4
-        
+
         to_data.data[y_dst] = data[y_src];
         to_data.data[y_dst+1] = data[y_src+1];
         to_data.data[y_dst+2] = data[y_src+2];
@@ -719,13 +718,13 @@ var jaws = (function(jaws) {
   var on_keyup_callbacks = []
   var mousebuttoncode_to_string = []
   var ie_mousebuttoncode_to_string = []
- 
+
 /** @private
  * Map all javascript keycodes to easy-to-remember letters/words
  */
 jaws.setupInput = function() {
   var k = []
-  
+
   k[8] = "backspace"
   k[9] = "tab"
   k[13] = "enter"
@@ -743,10 +742,10 @@ jaws.setupInput = function() {
   k[37] = "left"
   k[38] = "up"
   k[39] = "right"
-  k[40] = "down" 
+  k[40] = "down"
   k[45] = "insert"
   k[46] = "delete"
-  
+
   k[91] = "left_window_key leftwindowkey"
   k[92] = "right_window_key rightwindowkey"
   k[93] = "select_key selectkey"
@@ -755,7 +754,7 @@ jaws.setupInput = function() {
   k[109] = "subtract minus -"
   k[110] = "decimalpoint"
   k[111] = "divide /"
-  
+
   k[144] = "numlock"
   k[145] = "scrollock"
   k[186] = "semicolon ;"
@@ -769,9 +768,9 @@ jaws.setupInput = function() {
   k[220] = "backslash \\"
   k[221] = "closebracket ]"
   k[222] = "singlequote '"
-  
+
   var m = []
-  
+
   m[0] = "left_mouse_button"
   m[1] = "center_mouse_button"
   m[2] = "right_mouse_button"
@@ -779,8 +778,8 @@ jaws.setupInput = function() {
   var ie_m = [];
   ie_m[1] = "left_mouse_button";
   ie_m[2] = "right_mouse_button";
-  ie_m[4] = "center_mouse_button"; 
-  
+  ie_m[4] = "center_mouse_button";
+
   mousebuttoncode_to_string = m
   ie_mousebuttoncode_to_string = ie_m;
 
@@ -793,7 +792,7 @@ jaws.setupInput = function() {
   for(var i = 0; letters[i]; i++)     { k[65+i] = letters[i] }
   for(var i = 0; numpadkeys[i]; i++)  { k[96+i] = numpadkeys[i] }
   for(var i = 0; fkeys[i]; i++)       { k[112+i] = fkeys[i] }
-  
+
   keycode_to_string = k
 
   window.addEventListener("keydown", handleKeyDown)
@@ -826,7 +825,7 @@ function handleKeyUp(e) {
   var human_names = keycode_to_string[event.keyCode].split(" ")
   human_names.forEach( function(human_name) {
    pressed_keys[human_name] = false
-    if(on_keyup_callbacks[human_name]) { 
+    if(on_keyup_callbacks[human_name]) {
       on_keyup_callbacks[human_name](human_name)
       e.preventDefault()
     }
@@ -838,11 +837,11 @@ function handleKeyUp(e) {
  * handle event "onkeydown" by remembering what key was un-pressed
  */
 function handleKeyDown(e) {
-  event = (e) ? e : window.event  
+  event = (e) ? e : window.event
   var human_names = keycode_to_string[event.keyCode].split(" ")
   human_names.forEach( function(human_name) {
     pressed_keys[human_name] = true
-    if(on_keydown_callbacks[human_name]) { 
+    if(on_keydown_callbacks[human_name]) {
       on_keydown_callbacks[human_name](human_name)
       e.preventDefault()
     }
@@ -853,13 +852,13 @@ function handleKeyDown(e) {
  * handle event "onmousedown" by remembering what button was pressed
  */
 function handleMouseDown(e) {
-  event = (e) ? e : window.event  
+  event = (e) ? e : window.event
   var human_name = mousebuttoncode_to_string[event.button] // 0 1 2
   if (navigator.appName == "Microsoft Internet Explorer"){
 	  human_name = ie_mousebuttoncode_to_string[event.button];
   }
   pressed_keys[human_name] = true
-  if(on_keydown_callbacks[human_name]) { 
+  if(on_keydown_callbacks[human_name]) {
     on_keydown_callbacks[human_name](human_name)
     e.preventDefault()
   }
@@ -871,13 +870,13 @@ function handleMouseDown(e) {
  */
 function handleMouseUp(e) {
   event = (e) ? e : window.event
-  var human_name = mousebuttoncode_to_string[event.button]  
+  var human_name = mousebuttoncode_to_string[event.button]
 
   if (navigator.appName == "Microsoft Internet Explorer"){
 	  human_name = ie_mousebuttoncode_to_string[event.button];
   }
   pressed_keys[human_name] = false
-  if(on_keyup_callbacks[human_name]) { 
+  if(on_keyup_callbacks[human_name]) {
     on_keyup_callbacks[human_name](human_name)
     e.preventDefault()
   }
@@ -887,7 +886,7 @@ function handleMouseUp(e) {
  * handle event "touchstart" by remembering what button was pressed
  */
 function handleTouchStart(e) {
-	event = (e) ? e : window.event  
+	event = (e) ? e : window.event
 	pressed_keys["left_mouse_button"] = true
 	jaws.mouse_x = e.touches[0].pageX - jaws.canvas.offsetLeft;
 	jaws.mouse_y = e.touches[0].pageY - jaws.canvas.offsetTop;
@@ -898,7 +897,7 @@ function handleTouchStart(e) {
  * handle event "touchend" by remembering what button was pressed
  */
 function handleTouchEnd(e) {
-  event = (e) ? e : window.event  
+  event = (e) ? e : window.event
   pressed_keys["left_mouse_button"] = false
 	jaws.mouse_x = undefined;
 	jaws.mouse_y = undefined;
@@ -906,7 +905,7 @@ function handleTouchEnd(e) {
 }
 
 var prevent_default_keys = []
-/** 
+/**
  * Prevents default browseraction for given keys.
  * @example
  * jaws.preventDefaultKeys( ["down"] )  // Stop down-arrow-key from scrolling page down
@@ -940,9 +939,9 @@ jaws.pressed = function(keys, logical_and) {
  */
 jaws.pressedWithoutRepeat = function(keys, logical_and) {
   if( jaws.pressed(keys, logical_and) ) {
-    if(!previously_pressed_keys[keys]) { 
+    if(!previously_pressed_keys[keys]) {
       previously_pressed_keys[keys] = true
-      return true 
+      return true
     }
   }
   else {
@@ -951,12 +950,12 @@ jaws.pressedWithoutRepeat = function(keys, logical_and) {
   }
 }
 
-/** 
+/**
  * sets up a callback for a key (or array of keys) to call when it's pressed down
- * 
+ *
  * @example
  * // call goLeft() when left arrow key is  pressed
- * jaws.on_keypress("left", goLeft) 
+ * jaws.on_keypress("left", goLeft)
  *
  * // call fireWeapon() when SPACE or CTRL is pressed
  * jaws.on_keypress(["space","ctrl"], fireWeapon)
@@ -972,8 +971,8 @@ jaws.on_keydown = function(key, callback) {
   }
 }
 
-/** 
- * sets up a callback when a key (or array of keys) to call when it's released 
+/**
+ * sets up a callback when a key (or array of keys) to call when it's released
  */
 jaws.on_keyup = function(key, callback) {
   if(jaws.isArray(key)) {
@@ -987,7 +986,7 @@ jaws.on_keyup = function(key, callback) {
 }
 
 /** @private
- * Clean up all callbacks set by on_keydown / on_keyup 
+ * Clean up all callbacks set by on_keydown / on_keyup
  */
 jaws.clearKeyCallbacks = function() {
   on_keyup_callbacks = []
@@ -999,10 +998,10 @@ return jaws;
 var jaws = (function(jaws) {
   /**
    * @fileOverview jaws.assets properties and functions
-   * 
+   *
    * Loads and processes image, sound, video, and json assets
    * (Used internally by JawsJS to create <b>jaws.assets</b>)
-   * 
+   *
    * @class Jaws.Assets
    * @constructor
    * @property {boolean}    bust_cache              Add a random argument-string to assets-urls when loading to bypass any cache
@@ -1010,7 +1009,7 @@ var jaws = (function(jaws) {
    * @property {boolean}    image_to_canvas         Convert all image assets to canvas internally
    * @property {string}     root                    Rootdir from where all assets are loaded
    * @property {array}      file_type               Listing of file postfixes and their associated types
-   * @property {array}      can_play                Listing of postfixes and (during runtime) populated booleans 
+   * @property {array}      can_play                Listing of postfixes and (during runtime) populated booleans
    */
   jaws.Assets = function Assets() {
     if (!(this instanceof arguments.callee))
@@ -1088,7 +1087,7 @@ var jaws = (function(jaws) {
       self.root = path
       return self
     }
- 
+
     /**
      * Get one or more resources from their URLs. Supports simple wildcard (you can end a string with "*").
      *
@@ -1097,7 +1096,7 @@ var jaws = (function(jaws) {
      *   jaws.assets.get("song.*")  // -> Will return song.ogg in firefox and song.mp3 in IE
      *
      * @public
-     * @param   {string|array} src The resource(s) to retrieve 
+     * @param   {string|array} src The resource(s) to retrieve
      * @returns {array|object} Array or single resource if found in cache. Undefined otherwise.
      */
     self.get = function(src) {
@@ -1111,13 +1110,13 @@ var jaws = (function(jaws) {
         if(src[src.length-1] === "*") {
           var needle = src.replace("*", "")
           for(var i=0; i < self.src_list.length; i++) {
-            if(self.src_list[i].indexOf(needle) == 0 && self.data[self.src_list[i]]) 
+            if(self.src_list[i].indexOf(needle) == 0 && self.data[self.src_list[i]])
               return self.data[self.src_list[i]];
           }
         }
-        
+
         // TODO: self.loaded[src] is false for supported files for some odd reason.
-        if (self.data[src]) { return self.data[src]; } 
+        if (self.data[src]) { return self.data[src]; }
         else                { jaws.log.warn("No such asset: " + src, true); }
       }
       else {
@@ -1128,9 +1127,9 @@ var jaws = (function(jaws) {
 
     /**
      * Returns if specified resource is currently loading or not
-     * @public 
+     * @public
      * @param {string} src Resource URL
-     * @return {boolean|undefined} If resource is currently loading. Otherwise, undefined. 
+     * @return {boolean|undefined} If resource is currently loading. Otherwise, undefined.
      */
     self.isLoading = function(src) {
       if (jaws.isString(src)) {
@@ -1140,7 +1139,7 @@ var jaws = (function(jaws) {
       }
     };
 
-    /** 
+    /**
      * Returns if specified resource is loaded or not
      * @param src Source URL
      * @return {boolean|undefined} If specified resource is loaded or not. Otherwise, undefined.
@@ -1195,7 +1194,7 @@ var jaws = (function(jaws) {
     self.add = function(src) {
       var list = arguments;
       if(list.length == 1 && jaws.isArray(list[0])) list = list[0];
-      
+
       for(var i=0; i < list.length; i++) {
         if(jaws.isArray(list[i])) {
           self.add(list[i]);
@@ -1215,7 +1214,7 @@ var jaws = (function(jaws) {
      * @param {Object} options Object-literal of callback functions
      * @config {function} [options.onprogress] The function to be called on progress (when one assets of many is loaded)
      * @config {function} [options.onerror] The function to be called if an error occurs
-     * @config {function} [options.onload] The function to be called when finished 
+     * @config {function} [options.onload] The function to be called when finished
      */
     self.loadAll = function(options) {
       self.load_count = 0;
@@ -1237,11 +1236,11 @@ var jaws = (function(jaws) {
       return self;
     };
 
-    /** 
+    /**
      * Loads a single resource from its given URL
      * Will attempt to match a resource to known MIME types.
      * If unknown, loads the file as a blob-object.
-     * 
+     *
      * @public
      * @param {string} src Resource URL
      * @param {Object} options Object-literal of callback functions
@@ -1287,7 +1286,7 @@ var jaws = (function(jaws) {
           jaws.log.error("Cannot load Image resource " + resolved_src +
                   " (Message: " + e.message + ", Name: " + e.name + ")");
         }
-      } 
+      }
       else if (self.can_play[self.getPostfix(asset.src)]) {
         if (type === "audio") {
           try {
@@ -1302,7 +1301,7 @@ var jaws = (function(jaws) {
             jaws.log.error("Cannot load Audio resource " + resolved_src +
                     " (Message: " + e.message + ", Name: " + e.name + ")");
           }
-        } 
+        }
       else if (type === "video") {
           try {
             asset.video = document.createElement('video');
@@ -1320,7 +1319,7 @@ var jaws = (function(jaws) {
           }
         }
       }
-      
+
       //Load everything else as raw blobs...
       else {
         // ... But don't load un-supported audio-files.
@@ -1343,11 +1342,11 @@ var jaws = (function(jaws) {
                   " (Message: " + e.message + ", Name: " + e.name + ")");
         }
       }
-      
+
       return self;
     };
 
-    /** 
+    /**
      * Initial loading callback for all assets for parsing specific filetypes or
      *  optionally converting images to canvas-objects.
      * @private
@@ -1358,7 +1357,7 @@ var jaws = (function(jaws) {
       var asset = this.asset;
       var src = asset.src;
       var filetype = getType(asset.src);
-      
+
       try {
         if (filetype === "json") {
           if (this.readyState !== 4) {
@@ -1399,8 +1398,8 @@ var jaws = (function(jaws) {
 
       processCallbacks(asset, true, event);
     }
-    
-    /** 
+
+    /**
      * Called when jaws asset-handler decides that an asset shouldn't be loaded
      * For example, an unsupported audio-format won't be loaded.
      *
@@ -1416,7 +1415,7 @@ var jaws = (function(jaws) {
     /**
      * Increases the error count and calls processCallbacks with false flag set
      * @see processCallbacks()
-     * @private 
+     * @private
      * @param {EventObject} event The EventObject populated by the calling event
      */
     function assetError(event) {
@@ -1425,7 +1424,7 @@ var jaws = (function(jaws) {
       processCallbacks(asset, false, event);
     }
 
-    /** 
+    /**
      * Processes (if set) the callbacks per resource
      * @private
      * @param {object} asset The asset to be processed
@@ -1495,14 +1494,14 @@ var jaws = (function(jaws) {
     };
   };
 
-  /** 
+  /**
    * Make Fuchia (0xFF00FF) transparent (BMPs ONLY)
    * @private
    * @param {HTMLImageElement} image The Bitmap Image to convert
-   * @returns {CanvasElement} canvas The translated CanvasElement 
+   * @returns {CanvasElement} canvas The translated CanvasElement
    */
   function fuchiaToTransparent(image) {
-    if (!jaws.isDrawable(image))  
+    if (!jaws.isDrawable(image))
       return;
 
     var canvas = jaws.isImage(image) ? jaws.imageToCanvas(image) : image;
@@ -1565,15 +1564,15 @@ jaws.GameLoop = function GameLoop(game_object, options, game_state_setup_options
   this.tick_duration = 0
   this.fps = 0
   this.ticks = 0
-  
+
   var update_id
   var paused = false
   var stopped = false
   var that = this
   var mean_value = new MeanValue(20) // let's have a smooth, non-jittery FPS-value
 
-  /** 
-   * returns how game_loop has been active in milliseconds 
+  /**
+   * returns how game_loop has been active in milliseconds
    * does currently not factor in pause-time
    */
   this.runtime = function() {
@@ -1583,14 +1582,14 @@ jaws.GameLoop = function GameLoop(game_object, options, game_state_setup_options
   /** Start the game loop by calling setup() once and then loop update()/draw() forever with given FPS */
   this.start = function() {
     jaws.log.info("Game loop start", true)
-  
+
     this.first_tick = (new Date()).getTime();
     this.current_tick = (new Date()).getTime();
-    this.last_tick = (new Date()).getTime(); 
+    this.last_tick = (new Date()).getTime();
 
     if(options.setup !== false && game_object.setup) { game_object.setup(game_state_setup_options) }
     step_delay = 1000 / options.fps;
-   
+
     if(options.fps == 60) {
       requestAnimFrame(this.loop)
     }
@@ -1598,7 +1597,7 @@ jaws.GameLoop = function GameLoop(game_object, options, game_state_setup_options
       update_id = setInterval(this.loop, step_delay);
     }
   }
-  
+
   /** The core of the game loop. Calculate a mean FPS and call update()/draw() if game loop is not paused */
   this.loop = function() {
     that.current_tick = (new Date()).getTime();
@@ -1613,16 +1612,16 @@ jaws.GameLoop = function GameLoop(game_object, options, game_state_setup_options
     if(options.fps == 60 && !stopped) requestAnimFrame(that.loop);
     that.last_tick = that.current_tick;
   }
-  
+
   /** Pause the game loop. loop() will still get called but not update() / draw() */
   this.pause = function()   { paused = true }
-  
+
   /** unpause the game loop */
   this.unpause = function() { paused = false }
 
   /** Stop the game loop */
-  this.stop = function() { 
-    if(update_id) clearInterval(update_id); 
+  this.stop = function() {
+    if(update_id) clearInterval(update_id);
     stopped = true;
   }
 }
@@ -1632,7 +1631,7 @@ function MeanValue(size) {
   this.size = size
   this.values = new Array(this.size)
   this.value
-  
+
   this.add = function(value) {
     if(this.values.length > this.size) {  // is values filled?
       this.values.splice(0,1)
@@ -1643,7 +1642,7 @@ function MeanValue(size) {
       this.value = this.value / this.size
     }
     this.values.push(value)
-    
+
     return this
   }
 
@@ -1685,7 +1684,7 @@ var correction = 0;
 */
 jaws.Rect = function Rect(x, y, width, height) {
   if( !(this instanceof arguments.callee) ) return new arguments.callee(x, y, width, height);
-  
+
   this.x = x
   this.y = y
   this.width = width
@@ -1789,7 +1788,7 @@ var jaws = (function(jaws) {
 /**
 * @class A basic but powerfull sprite for all your onscreen-game objects. "Field Summary" contains options for the Sprite()-constructor.
 * @constructor
-*  
+*
 * @property {int} x     Horizontal position  (0 = furthest left)
 * @property {int} y     Vertical position    (0 = top)
 * @property {image} image   Image/canvas or string pointing to an asset ("player.png")
@@ -1802,21 +1801,21 @@ var jaws = (function(jaws) {
 *
 * @example
 * // create new sprite at top left of the screen, will use jaws.assets.get("foo.png")
-* new Sprite({image: "foo.png", x: 0, y: 0}) 
-* 
+* new Sprite({image: "foo.png", x: 0, y: 0})
+*
 * // sets anchor to "center" on creation
 * new Sprite({image: "topdownspaceship.png", anchor: "center"})
 *
 */
 jaws.Sprite = function Sprite(options) {
   if( !(this instanceof arguments.callee) ) return new arguments.callee( options );
-  this.set(options)  
+  this.set(options)
   this.context = options.context ? options.context : jaws.context;  // Prefer given canvas-context, fallback to jaws.context
 }
 
 jaws.Sprite.prototype.default_options = {
-  x: 0, 
-  y: 0, 
+  x: 0,
+  y: 0,
   alpha: 1,
   angle: 0,
   flipped: false,
@@ -1838,19 +1837,19 @@ jaws.Sprite.prototype.default_options = {
   data: null
 }
 
-/** 
+/**
  * @private
  * Call setters from JSON object. Used to parse options.
  */
 jaws.Sprite.prototype.set = function(options) {
   if(jaws.isString(this.image)) this.image_path = this.image;
   jaws.parseOptions(this, options, this.default_options);
-  
+
   if(this.scale)        this.scale_x = this.scale_y = this.scale;
   if(this.image)        this.setImage(this.image);
   if(this.scale_image)  this.scaleImage(this.scale_image);
   if(this.anchor)       this.setAnchor(this.anchor);
-  
+
   if(!this.image && this.color && this.width && this.height) {
     var canvas = document.createElement('canvas');
     var context = canvas.getContext('2d');
@@ -1866,7 +1865,7 @@ jaws.Sprite.prototype.set = function(options) {
   return this
 }
 
-/** 
+/**
  * @private
  *
  * Creates a new sprite from current sprites attributes()
@@ -1885,13 +1884,13 @@ jaws.Sprite.prototype.clone = function(object) {
  * Sets image from image/canvas or asset-string ("foo.png")
  * If asset isn't previously loaded setImage() will try to load it.
  */
-jaws.Sprite.prototype.setImage =      function(value) { 
+jaws.Sprite.prototype.setImage =      function(value) {
   var that = this
 
   // An image, great, set this.image and return
   if(jaws.isDrawable(value)) {
     this.image = value
-    return this.cacheOffsets() 
+    return this.cacheOffsets()
   }
   // Not an image, therefore an asset string, i.e. "ship.bmp"
   else {
@@ -1901,19 +1900,19 @@ jaws.Sprite.prototype.setImage =      function(value) {
     // Not loaded? Load it with callback to set image.
     else {
       jaws.log.warn("Image '" + value + "' not preloaded with jaws.assets.add(). Image and a working sprite.rect() will be delayed.")
-      jaws.assets.load(value, {onload: function() { that.image = jaws.assets.get(value); that.cacheOffsets();} } ) 
+      jaws.assets.load(value, {onload: function() { that.image = jaws.assets.get(value); that.cacheOffsets();} } )
     }
   }
   return this
 }
 
-/** 
+/**
 * Steps 1 pixel towards the given X/Y. Horizontal and vertical steps are done separately between each callback.
 * Exits when the continueStep-callback returns true for both vertical and horizontal steps or if target X/Y has been reached.
 *
 * @returns  {object}  Object with 2 x/y-properties indicating what plane we moved in when stepToWhile was stopped.
 */
-jaws.Sprite.prototype.stepToWhile = function(target_x, target_y, continueStep) { 
+jaws.Sprite.prototype.stepToWhile = function(target_x, target_y, continueStep) {
   var step = 1;
   var step_x = (target_x < this.x) ? -step : step;
   var step_y = (target_y < this.y) ? -step : step;
@@ -1929,7 +1928,7 @@ jaws.Sprite.prototype.stepToWhile = function(target_x, target_y, continueStep) {
       if(this.x != target_x)    { this.x += step_x }
       if( !continueStep(this) ) { this.x -= step_x; collision_x = true }
     }
- 
+
     if(collision_y === false) {
       if(this.y != target_y)    { this.y += step_y }
       if( !continueStep(this) ) { this.y -= step_y; collision_y = true }
@@ -1939,13 +1938,13 @@ jaws.Sprite.prototype.stepToWhile = function(target_x, target_y, continueStep) {
         return {x: collision_x, y: collision_y};
   }
 }
-/** 
+/**
 * Moves with given vx/vy velocoties by stepping 1 pixel at the time. Horizontal and vertical steps are done separately between each callback.
 * Exits when the continueStep-callback returns true for both vertical and horizontal steps or if target X/Y has been reached.
 *
 * @returns  {object}  Object with 2 x/y-properties indicating what plane we moved in when stepWhile was stopped.
 */
-jaws.Sprite.prototype.stepWhile = function(vx, vy, continueStep) { 
+jaws.Sprite.prototype.stepWhile = function(vx, vy, continueStep) {
   return this.stepToWhile(this.x + vx, this.y + vy, continueStep)
 }
 
@@ -1963,24 +1962,24 @@ jaws.Sprite.prototype.moveTo =        function(x, y)  {
     y = x[1]
     x = x[0]
   }
-  this.x = x; 
-  this.y = y; 
+  this.x = x;
+  this.y = y;
   return this;
 }
 /** Modify x/y */
-jaws.Sprite.prototype.move =          function(x, y)   { 
+jaws.Sprite.prototype.move =          function(x, y)   {
   if(jaws.isArray(x) && y === undefined) {
     y = x[1]
     x = x[0]
   }
 
-  if(x) this.x += x;  
-  if(y) this.y += y; 
-  return this 
+  if(x) this.x += x;
+  if(y) this.y += y;
+  return this
 }
-/** 
+/**
 * scale sprite by given factor. 1=don't scale. <1 = scale down.  1>: scale up.
-* Modifies width/height. 
+* Modifies width/height.
 **/
 jaws.Sprite.prototype.scaleAll =      function(value) { this.scale_x *= value; this.scale_y *= value; return this.cacheOffsets() }
 /** set scale factor. ie. 2 means a doubling if sprite in both directions. */
@@ -2009,7 +2008,7 @@ jaws.Sprite.prototype.setWidth  =     function(value) { this.scale_x = value/thi
 /** Set new height. Scales sprite. */
 jaws.Sprite.prototype.setHeight =     function(value) { this.scale_y = value/this.image.height; return this.cacheOffsets() }
 /** Resize sprite by adding width */
-jaws.Sprite.prototype.resize =        function(width, height) { 
+jaws.Sprite.prototype.resize =        function(width, height) {
   if(jaws.isArray(width) && height === undefined) {
     height = width[1]
     width = width[0]
@@ -2019,8 +2018,8 @@ jaws.Sprite.prototype.resize =        function(width, height) {
   this.scale_y = (this.height + height) / this.image.height
   return this.cacheOffsets()
 }
-/** 
- * Resize sprite to exact width/height 
+/**
+ * Resize sprite to exact width/height
  */
 jaws.Sprite.prototype.resizeTo =      function(width, height) {
   if(jaws.isArray(width) && height === undefined) {
@@ -2074,7 +2073,7 @@ jaws.Sprite.prototype.setAnchor = function(value) {
 /** @private */
 jaws.Sprite.prototype.cacheOffsets = function() {
   if(!this.image) { return }
-  
+
   this.width = this.image.width * this.scale_x
   this.height = this.image.height * this.scale_y
   this.left_offset   = this.width * this.anchor_x
@@ -2091,7 +2090,7 @@ jaws.Sprite.prototype.rect = function() {
   if(!this.cached_rect && this.width)   this.cached_rect = new jaws.Rect(this.x, this.y, this.width, this.height);
   if(this.cached_rect)                  this.cached_rect.moveTo(this.x - this.left_offset, this.y - this.top_offset);
   return this.cached_rect
-} 
+}
 
 /** Draw sprite on active canvas */
 jaws.Sprite.prototype.draw = function() {
@@ -2118,7 +2117,7 @@ jaws.Sprite.prototype.scaleImage = function(factor) {
   return this
 }
 
-/** 
+/**
  * Returns sprite as a canvas context.
  * For certain browsers, a canvas context is faster to work with then a pure image.
  */
@@ -2134,7 +2133,7 @@ jaws.Sprite.prototype.asCanvasContext = function() {
   return context
 }
 
-/** 
+/**
  * Returns sprite as a canvas
  */
 jaws.Sprite.prototype.asCanvas = function() {
@@ -2152,7 +2151,7 @@ jaws.Sprite.prototype.asCanvas = function() {
 jaws.Sprite.prototype.toString = function() { return "[Sprite " + this.x.toFixed(2) + ", " + this.y.toFixed(2) + ", " + this.width + ", " + this.height + "]" }
 
 /** returns Sprites state/properties as a pure object */
-jaws.Sprite.prototype.attributes = function() { 
+jaws.Sprite.prototype.attributes = function() {
   var object = {}                   // Starting with this.options could create circular references through "context"
   object["_constructor"] = this._constructor || "jaws.Sprite"
   object["x"] = parseFloat(this.x.toFixed(2))
@@ -2183,7 +2182,7 @@ jaws.Sprite.prototype.attributes = function() {
  */
 jaws.Sprite.parse = function(objects) {
   var sprites = []
-  
+
   if(jaws.isArray(objects)) {
     // If this is an array of JSON representations, parse it
     if(objects.every(function(item) { return item._constructor })) {
@@ -2194,7 +2193,7 @@ jaws.Sprite.parse = function(objects) {
     }
   }
   else if(jaws.isString(objects)) { parseArray( JSON.parse(objects) ); jaws.log.info(objects) }
-  
+
   function parseArray(array) {
     array.forEach( function(data) {
       var constructor = data._constructor ? eval(data._constructor) : data.constructor
@@ -2249,7 +2248,7 @@ jaws.Sprite.prototype.scaleHeightTo = function(value) { this.scale_y = value; re
 var jaws = (function(jaws) {
 
 
-/** 
+/**
  * @class Cut out invidual frames (images) from a larger spritesheet-image. "Field Summary" contains options for the SpriteSheet()-constructor.
  *
  * @property {image|image} Image/canvas or asset-string to cut up smaller images from
@@ -2286,7 +2285,7 @@ jaws.SpriteSheet = function SpriteSheet(options) {
   this.frames = []
 
   // Cut out tiles from Top -> Bottom
-  if(this.orientation == "down") {  
+  if(this.orientation == "down") {
     for(var x=this.offset; x < this.image.width; x += this.frame_size[0]) {
       for(var y=0; y < this.image.height; y += this.frame_size[1]) {
         this.frames.push( cutImage(this.image, x, y, this.frame_size[0], this.frame_size[1]) )
@@ -2312,16 +2311,16 @@ jaws.SpriteSheet.prototype.default_options = {
 }
 
 /** @private
- * Cut out a rectangular piece of a an image, returns as canvas-element 
+ * Cut out a rectangular piece of a an image, returns as canvas-element
  */
 function cutImage(image, x, y, width, height) {
   var cut = document.createElement("canvas")
   cut.width = width
   cut.height = height
-  
+
   var ctx = cut.getContext("2d")
   ctx.drawImage(image, x, y, width, height, 0, 0, cut.width, cut.height)
-  
+
   return cut
 };
 
@@ -2434,10 +2433,10 @@ jaws.Animation.prototype.update = function() {
       this.index += this.frame_direction * 2
     }
     else if(this.loop) {
-      if(this.frame_direction < 0) { 
-        this.index = this.frames.length -1; 
-      } else { 
-        this.index = 0; 
+      if(this.frame_direction < 0) {
+        this.index = this.frames.length -1;
+      } else {
+        this.index = 0;
       }
     }
     else {
@@ -2507,7 +2506,7 @@ var jaws = (function(jaws) {
  * @property {int} width  Width of viewport, defaults to canvas width
  * @property {int} height Height of viewport, defaults to canvas height
  * @property {int} max_x  Maximum x-position for viewport, defaults to canvas width
- * @property {int} max_y  Maximum y-position for viewport, defaults to canvas height 
+ * @property {int} max_y  Maximum y-position for viewport, defaults to canvas height
  * @property {int} x      X-position for the upper left corner of the viewport
  * @property {int} y      Y-position for the upper left corner of the viewport
  *
@@ -2533,7 +2532,7 @@ jaws.Viewport = function ViewPort(options) {
   if( !(this instanceof arguments.callee) ) return new arguments.callee( options );
 
   jaws.parseOptions(this, options, this.default_options)
- 
+
   /* This is needed cause default_options is set loadtime, we need to get width etc runtime */
   if(!this.context) this.context = jaws.context;
   if(!this.width)   this.width = jaws.width;
@@ -2549,7 +2548,7 @@ jaws.Viewport = function ViewPort(options) {
     y && (this.y += y)
     this.verifyPosition()
   };
-  
+
   /** Move viewport to given x/y */
   this.moveTo = function(x, y) {
     if(!(x==undefined)) { this.x = x }
@@ -2557,8 +2556,8 @@ jaws.Viewport = function ViewPort(options) {
     this.verifyPosition()
   };
 
-  /** 
-   * Returns true if item is outside viewport 
+  /**
+   * Returns true if item is outside viewport
    * @example
    *
    * if( viewport.isOutside(player)) player.die();
@@ -2583,10 +2582,10 @@ jaws.Viewport = function ViewPort(options) {
     var rect = item.rect()
     return( rect.right >= that.x && rect.x <= (that.x + that.width) && rect.bottom >= that.y && item.y <= (that.y + that.height) )
   };
-  
+
   /** Returns true of item is left of viewport */
   this.isLeftOf = function(item) { return(item.x < that.x)  }
- 
+
   /** Returns true of item is right of viewport */
   this.isRightOf = function(item) { return(item.x > (that.x + that.width) )  }
 
@@ -2597,8 +2596,8 @@ jaws.Viewport = function ViewPort(options) {
   this.isBelow = function(item) { return(item.y > (that.y + that.height) )  }
 
 
-  /** 
-   * center the viewport around item. item must respond to x and y for this to work. 
+  /**
+   * center the viewport around item. item must respond to x and y for this to work.
    * Usefull for sidescrollers when you wan't to keep the player in the center of the screen no matter how he moves.
    */
   this.centerAround = function(item) {
@@ -2622,13 +2621,13 @@ jaws.Viewport = function ViewPort(options) {
     if(item.y < this.y+buffer)               { item.y = this.y+buffer }
     if(item.y > this.y+jaws.height-buffer)   { item.y = this.y+jaws.height-buffer }
   }
-  
+
   /**
    * force 'item' inside the limits of the viewport
    * using 'buffer' as indicator how close to the 'item' is allowed to go
    *
    * @example
-   * viewport.forceInside(player, 10) 
+   * viewport.forceInside(player, 10)
    */
   this.forceInside = function(item, buffer) {
     if(item.x < buffer)               { item.x = buffer }
@@ -2638,16 +2637,16 @@ jaws.Viewport = function ViewPort(options) {
   }
 
 
-  /** 
+  /**
   * executes given draw-callback with a translated canvas which will draw items relative to the viewport
-  * 
+  *
   * @example
   *
   * viewport.apply( function() {
   *   player.draw();
   *   foo.draw();
   * });
-  * 
+  *
   */
   this.apply = function(func) {
     this.context.save()
@@ -2656,8 +2655,8 @@ jaws.Viewport = function ViewPort(options) {
     this.context.restore()
   };
 
-  /** 
-   * if obj is an array-like object, iterate through it and call draw() on each item if it's partly inside the viewport 
+  /**
+   * if obj is an array-like object, iterate through it and call draw() on each item if it's partly inside the viewport
    */
   this.draw = function( obj ) {
     this.apply( function() {
@@ -2667,8 +2666,8 @@ jaws.Viewport = function ViewPort(options) {
     });
   }
 
-  /** 
-   * draws all items of 'tile_map' that's lies inside the viewport 
+  /**
+   * draws all items of 'tile_map' that's lies inside the viewport
    * this is simular to viewport.draw( tile_map.all() ) but optmized for Huge game worlds (tile maps)
    */
   this.drawTileMap = function( tile_map ) {
@@ -2679,8 +2678,8 @@ jaws.Viewport = function ViewPort(options) {
   }
 
   /** draws 'item' if it's partly inside the viewport */
-  this.drawIfPartlyInside = function(item) { 
-    if(that.isPartlyInside(item)) item.draw(); 
+  this.drawIfPartlyInside = function(item) {
+    if(that.isPartlyInside(item)) item.draw();
   }
 
   /** @private */
@@ -2693,7 +2692,7 @@ jaws.Viewport = function ViewPort(options) {
     if(this.y < 0)      { this.y = 0 }
     if(this.y > max)    { this.y = max }
   };
- 
+
   this.moveTo(options.x||0, options.y||0)
 }
 
@@ -2714,7 +2713,7 @@ return jaws;
 
 /**
  * @fileOverview Collision Detection
- * 
+ *
  * Collision detection helpers.
  *
  * @example
@@ -2723,9 +2722,9 @@ return jaws;
  *   collideOneWithMany(player, bullets)    // -> [bullet1, bullet1]
  *   collideManyWithMany(bullets, enemies)  // -> [ [bullet1, enemy1], [bullet2, enemy2] ]
  *   collide(player, boss)                  // -> false
- *   collide(player, 
+ *   collide(player,
  *           bullets,
- *           function(player, bullet) {})   // Callback: arguments[0] -> player 
+ *           function(player, bullet) {})   // Callback: arguments[0] -> player
  *                                          //           arguments[1] -> bullets[i]
  *
  */
@@ -2906,15 +2905,15 @@ var jaws = (function(jaws) {
   }
 
   /**
-   * Compares two objects or lists, returning if they collide, and 
+   * Compares two objects or lists, returning if they collide, and
    *  calling 'callback' per collision (if set) between objects or lists.
    * @param {array|object} x An object with either 'rect' or 'forEach' property
    * @param {array|object} x2 An object with either 'rect' or 'forEach' property
    * @param {function} callback
    * @returns {boolean}
    * @examples
-   *   jaws.collide(player, enemy, function(player, enemy) { ... } )  
-   *   jaws.collide(player, enemies, function(player, enemy) { ... } ) 
+   *   jaws.collide(player, enemy, function(player, enemy) { ... } )
+   *   jaws.collide(player, enemies, function(player, enemy) { ... } )
    *   jaws.collide(bullets, enemies, function(bullet, enemy) { ... } )
    */
   jaws.collide = function(x, x2, callback) {
@@ -2941,9 +2940,9 @@ var jaws = (function(jaws) {
 * @class jaws.PixelMap
 * @constructor
 *
-* Worms-style terrain collision detection. Created from a normal image. 
+* Worms-style terrain collision detection. Created from a normal image.
 * Read out specific pixels. Modify as you would do with a canvas.
-*  
+*
 * @property {string} image        the image of the terrain
 * @property {int} scale_image     Scale the image by this factor
 *
@@ -2951,7 +2950,7 @@ var jaws = (function(jaws) {
 * tile_map = new jaws.Parallax({image: "map.png", scale_image: 4})  // scale_image: 4 for retro blocky feeling!
 * tile_map.draw()                                     // draw on canvas
 * tile_map.nameColor([0,0,0,255], "ground")           // give the color black the name "ground"
-* tile_map.namedColorAtRect("ground", player.rect())  // True if players boundingbox is touching any black pixels on tile_map 
+* tile_map.namedColorAtRect("ground", player.rect())  // True if players boundingbox is touching any black pixels on tile_map
 *
 */
 jaws.PixelMap = function PixelMap(options) {
@@ -2973,7 +2972,7 @@ jaws.PixelMap = function PixelMap(options) {
     this.height = this.context.canvas.height * this.scale;
   }
   else { jaws.log.warn("PixelMap needs an image to work with") }
-  
+
   this.named_colors = [];
   this.update();
 }
@@ -2985,7 +2984,7 @@ jaws.PixelMap = function PixelMap(options) {
 jaws.PixelMap.prototype.setContext = function(image) {
   var image = jaws.isDrawable(image) ? image : jaws.assets.get(image)
   this.context = jaws.imageToCanvasContext(image)
-} 
+}
 
 /**
 * Updates internal pixel-array from the canvas. If we modify the 'terrain' (paint on pixel_map.context) we'll need to call this method.
@@ -2995,7 +2994,7 @@ jaws.PixelMap.prototype.update = function(x, y, width, height) {
   if(y === undefined || y < 0) y = 0;
   if(width === undefined || width > this.width)     width = this.width;
   if(height === undefined || height > this.height)  height = this.height;
- 
+
   // No arguments? Read whole canvas, replace this.data
   if(arguments.length == 0) {
     this.data = this.context.getImageData(x, y, width, height).data
@@ -3013,7 +3012,7 @@ jaws.PixelMap.prototype.update = function(x, y, width, height) {
     for(var y2 = 0; y2 < height; y2++) {
       for(var x2 = 0; x2 < horizontal_line; x2++) {
         this.data[offset + x2] = tmp[tmp_count++];
-      }  
+      }
       offset += one_line_down;
     }
   }
@@ -3021,7 +3020,7 @@ jaws.PixelMap.prototype.update = function(x, y, width, height) {
 
 /**
 * Draws the pixel map on the maincanvas
-*/ 
+*/
 jaws.PixelMap.prototype.draw = function() {
   jaws.context.drawImage(this.context.canvas, this.x, this.y, this.width, this.height)
 }
@@ -3047,7 +3046,7 @@ jaws.PixelMap.prototype.namedColorAtRect = function(rect, color) {
 }
 
 /**
-* Read current color at given coordinates X/Y 
+* Read current color at given coordinates X/Y
 *
 * @return {array}   4 integers [R, G, B, A] representing the pixel at x/y
 */
@@ -3091,7 +3090,7 @@ jaws.PixelMap.prototype.nameColor = function(color, name) {
 return jaws;
 })(jaws || {});
 var jaws = (function(jaws) {
-  /** 
+  /**
    * @class Manage a parallax scroller with different layers. "Field Summary" contains options for the Parallax()-constructor.
    * @constructor
    *
@@ -3134,10 +3133,10 @@ var jaws = (function(jaws) {
 
       if(this.repeat_x) {
         initx = -((this.camera_x / layer.damping) % layer.width);
-      } 
+      }
       else {
         initx = -(this.camera_x / layer.damping)
-      }		
+      }
 
       if (this.repeat_y) {
         layer.y = -((this.camera_y / layer.damping) % layer.height);
@@ -3152,7 +3151,7 @@ var jaws = (function(jaws) {
           if (layer.x + layer.width >= 0 && layer.y + layer.height >= 0) { //Make sure it's on screen
             layer.draw(); //Draw only if actually on screen, for performance reasons
           }
-          layer.x = layer.x + layer.width;      
+          layer.x = layer.x + layer.width;
 
           if (!this.repeat_x) {
             break;
@@ -3206,7 +3205,7 @@ var jaws = (function(jaws) {
  * @property {number}     alpha         Transparency: 0 (fully transparent) to 1 (no transparency)
  * @property {number}     angle         Angle in degrees (0-360)
  * @property {string}     anchor        String stating how to anchor the sprite to canvas; @see Sprite#anchor
- * @property {string}     text          The actual text to be displayed 
+ * @property {string}     text          The actual text to be displayed
  * @property {string}     fontFace      A valid font-family
  * @property {number}     fontSize      The size of the text in pixels
  * @property {string}     textAlign     "start", "end", "left", "right", or "center"
@@ -3220,7 +3219,7 @@ var jaws = (function(jaws) {
  * @property {number}     shadowOffsetX The start of the shadow from initial x
  * @property {number}     shadowOffsetY The start of the shadow from initial y
  * @example
- *  var text = new Text({text: "Hello world!", x: 10, y: 10}) 
+ *  var text = new Text({text: "Hello world!", x: 10, y: 10})
  */
 
 var jaws = (function(jaws) {
@@ -3239,7 +3238,7 @@ var jaws = (function(jaws) {
     if (options.context) {
       this.context = options.context;
     }
-   
+
     if (!options.context) { // Defaults to jaws.context
       if (jaws.context)
         this.context = jaws.context;
@@ -3429,7 +3428,7 @@ var jaws = (function(jaws) {
   };
 
   /**
-   * Set new height. 
+   * Set new height.
    * @param {number} value The new height
    * @returns {this}
    */
@@ -3612,7 +3611,7 @@ var jaws = (function(jaws) {
     return this;
   };
 
-  /** 
+  /**
    * Returns sprite as a canvas context.
    * (For certain browsers, a canvas context is faster to work with then a pure image.)
    * @public
@@ -3691,7 +3690,7 @@ var jaws = (function(jaws) {
     return context;
   };
 
-  /** 
+  /**
    * Returns text as a canvas
    * @this {jaws.Text}
    */
@@ -3769,7 +3768,7 @@ var jaws = (function(jaws) {
   };
 
   /**
-   * Returns Text's properties as a String 
+   * Returns Text's properties as a String
    * @returns {string}
    */
   jaws.Text.prototype.toString = function() {
@@ -3824,7 +3823,7 @@ if (typeof module !== "undefined" && ('exports' in module)) {
  * @property {array}      nodes     The nodes of the root node
  * @property {array}      objects   The objects of the root node
  * @example
- * setup: 
+ * setup:
  *      var quadtree = new jaws.QuadTree();
  * update:
  *      quadtree.collide(sprite or list, sprite or list, callback function);
@@ -3878,7 +3877,7 @@ var jaws = (function(jaws) {
 
   /**
    * Returns the index of a node's branches if passed-in object fits within it
-   * @private 
+   * @private
    * @param {object} pRect  An object with the properties x, y, width, and height
    * @returns {index} The index of nodes[] that matches the dimensions of passed-in object
    */
@@ -3978,12 +3977,12 @@ var jaws = (function(jaws) {
   /**
    * Checks for collisions between objects by creating a quadtree, inserting one or more objects,
    *  and then comparing the results of a retrieval against another single or set of objects.
-   *  
+   *
    *  With the callback argument, it will call a function and pass the items found colliding
    *   as the first and second argument.
-   *   
+   *
    *  Without the callback argument, it will return a boolean value if any collisions were found.
-   * 
+   *
    * @param {object|array} list1 A single or set of objects with properties x, y, width, and height
    * @param {object|array} list2 A single or set of objects with properties x, y, width, and height
    * @param {function} [callback]  The function to call per collision
@@ -4029,3 +4028,1144 @@ if (typeof module !== "undefined" && ('exports' in module)) {
   module.exports = jaws.QuadTree;
 }
 ;window.addEventListener("load", function() { if(jaws.onload) jaws.onload(); }, false);
+/**
+ * @fileOverview A jaws.Audio object that detects and loads supported filetypes
+ *
+ * The jaws.Audio object uses jaws.assets to determine if a particular
+ *  reported MIME audio filetype can be played within the current enviroment.
+ *
+ *  Note: If loading fails at any point or no supported types were found,
+ *        the 'audio' property is set to null.
+ *
+ * @see jaws.assets.file_type
+ * @see jaws.assets.can_play
+ *
+ * @class jaws.Audio
+ * @property {array|string|Audio|null}   audio   A string or array of file locations initally;
+ *                                               replaced with an Audio object if loading was successful
+ *
+ * @example
+ * var audio = new jaws.Audio({audio: ["file.mp3", "file.ogg"], volume: 1.0});
+ *
+ * audio.play() //Assuming either MP3 or OGG is supported
+ *
+ * //Because play(), stop(), and other audio functions will log an error
+ * // if 'audio' is not an Audio object, its load status can be checked too.
+ *
+ * if(audio.isLoaded()) {
+ *   audio.play();
+ * }
+ *
+ */
+var jaws = (function(jaws) {
+
+  /**
+   * jaws.Audio object
+   * @constructor
+   * @param {object} options Object-literal of constructor properties
+   * @param {bool}         [options.loop]        Whether to initially loop the playing or not
+   * @param {bool}         [options.mute]        Whether to initially mute the audio or not
+   * @param {bool}         [options.pause]       Whether to initially pause the audio or not
+   * @param {bool}         [options.autoplay]    Whether to start playing after loading
+   * @param {int}          [options.volume]      Initial audio volume, between 0.1 and 1.0
+   * @param {function}     [options.onend]       Initial callback on "end" event for audio
+   * @param {function}     [options.onplay]      Initial callback on "play" event for audio
+   * @param {function}     [options.onpause]     Initial callback on "pause" event for audio
+   * @see jaws.audio.set()
+   */
+  jaws.Audio = function Audio(options) {
+    if (!(this instanceof arguments.callee)) return new arguments.callee(options);
+
+    if (typeof Audio !== "undefined") {
+      this.set(options);
+    } else {
+      jaws.log.error("jaws.Audio (constructor): 'Audio' object does not exist.");
+      this.audio = null;
+    }
+  };
+
+  /**
+   * The default properties and their values
+   * @type {object}
+   */
+  jaws.Audio.prototype.default_options = {
+    audio: null,
+    autoplay: false,
+    loop: false,
+    volume: 0,
+    onend: null,
+    onplay: null,
+    onpause: null,
+    _constructor: null
+  };
+
+  /**
+   * Compares default_options to the constructor options and loads an audio resource if able
+   * @param {object} options Object-literal of constructor properties
+   * @this {jaws.Audio}
+   * @returns {object} The 'this' scope of the calling instance of an jaws.Audio object
+   */
+  jaws.Audio.prototype.set = function(options) {
+
+    jaws.parseOptions(this, options, this.default_options);
+
+    if (this.audio) {
+      if (jaws.isString(this.audio)) {
+        var type = jaws.assets.getPostfix(this.audio);
+        if (jaws.assets.file_type[type] && jaws.assets.can_play[type]) {
+          this.setAudio(this.audio);
+        } else {
+          jaws.log.warn("jaws.Audio.set: Unknown or unplayable MIME filetype.");
+          this.audio = null;
+        }
+      } else if (jaws.isArray(this.audio)) {
+        for (var i = 0; i < this.audio.length; i++) {
+          if (jaws.isString(this.audio[i])) {
+            var type = jaws.assets.getPostfix(this.audio[i]);
+            if (jaws.assets.file_type[type] && jaws.assets.can_play[type]) {
+              this.setAudio(this.audio[i]);
+              break;
+            }
+          }
+        }
+
+        if (!(this.audio instanceof Audio)) {
+          jaws.log.warn("jaws.Audio.set: No known or playable MIME filetypes were found.");
+          this.audio = null;
+        }
+
+      } else {
+        jaws.log.error("jaws.Audio.set: Passed in 'audio' property is neither a String nor Array");
+        this.audio = null;
+      }
+    }
+    return this;
+  };
+
+  /**
+   * Loads a reference from the jaws.assets cache or requests that an Audio resource URL be loaded
+   * @param {type} value
+   * @this {jaws.Audio}
+   * @returns {object} The 'this' scope of the calling instance of an jaws.Audio object
+   */
+  jaws.Audio.prototype.setAudio = function(value) {
+    var self = this;
+    if (jaws.assets.isLoaded(value)) {
+      var audio = jaws.assets.get(value);
+      if (audio instanceof Audio) {
+        this.audio = audio;
+
+        if (this.volume >= 0 && this.volume <= 1.0 && jaws.isNumber(this.volume)) this.audio.volume = this.volume;
+
+        if (this.loop) this.audio.loop = this.loop;
+
+        if (this.onend && jaws.isFunction(this.onend)) {
+          this.audio.addEventListener('end', this.onend);
+        }
+
+        if (this.onplay && jaws.isFunction(this.onplay)) {
+          this.audio.addEventListener('play', this.onplay);
+        }
+
+        if (this.onpause && jaws.isFunction(this.onplay)) {
+          this.audio.addEventListener('pause', this.onpause);
+        }
+
+        if (this.autoplay) this.audio.autoplay = this.autoplay;
+
+      } else {
+        this.audio = null;
+      }
+    } else {
+      jaws.log.warn("jaws.Audio.setAudio: Audio '" + value + "' not preloaded with jaws.assets.add().");
+      jaws.assets.load(value, function() {
+        var audio = jaws.assets.get(value);
+        if (audio instanceof Audio) {
+          self.audio = audio;
+
+          if (self.volume >= 0 && self.volume <= 1.0 && jaws.isNumber(self.volume)) self.audio.volume = self.volume;
+
+          if (self.loop) self.audio.loop = self.loop;
+
+          if (self.hasOwnProperty("onend") && jaws.isFunction(self.onend)) {
+            self.audio.addEventListener('end', self.onend);
+          }
+
+          if (self.hasOwnProperty("onplay") && jaws.isFunction(self.onplay)) {
+            self.audio.addEventListener('play', self.onplay);
+          }
+
+          if (self.hasOwnProperty("onpause") && jaws.isFunction(self.onplay)) {
+            self.audio.addEventListener('pause', self.onpause);
+          }
+
+          if (self.autoplay) self.audio.autoplay = self.autoplay;
+
+        } else {
+          self.audio = null;
+        }
+      }, function() {
+        jaws.log.error("jaws.Audio.setAudio: Could not load Audio resource URL " + value);
+        self.audio = null;
+      });
+    }
+    return this;
+  };
+
+  /**
+   * Plays audio
+   * @this {jaws.Audio}
+   */
+  jaws.Audio.prototype.play = function() {
+    if (this.audio instanceof Audio) {
+      this.audio.play();
+    } else {
+      jaws.log.error("jaws.Audio.play: Either 'audio' was loaded incorrectly or does not exist");
+    }
+  };
+
+  /**
+   * Stops audio
+   * @this {jaws.Audio}
+   */
+  jaws.Audio.prototype.stop = function() {
+    if (this.audio instanceof Audio) {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+    } else {
+      jaws.log.error("jaws.Audio.stop: Either 'audio' was loaded incorrectly or does not exist");
+    }
+  };
+
+  /**
+   * Pauses audio
+   * @this {jaws.Audio}
+   */
+  jaws.Audio.prototype.pause = function() {
+    if (this.audio instanceof Audio) {
+      this.audio.pause();
+    } else {
+      jaws.log.error("jaws.Audio.pause: Either 'audio' was loaded incorrectly or does not exist");
+    }
+  };
+
+  /**
+   * Mutes the audio
+   * @this {jaws.Audio}
+   */
+  jaws.Audio.prototype.mute = function() {
+    if (this.audio instanceof Audio) {
+      this.audio.mute = true;
+    } else {
+      jaws.log.error("jaws.Audio.mute: Either 'audio' was loaded incorrectly or does not exist");
+    }
+  };
+
+  /**
+   * Unmute the audio
+   * @this {jaws.Audio}
+   */
+  jaws.Audio.prototype.unmute = function() {
+    if (this.audio instanceof Audio) {
+      this.audio.mute = false;
+    } else {
+      jaws.log.error("jaws.Audio.unmute: Either 'audio' was loaded incorrectly or does not exist");
+    }
+  };
+
+  /**
+   * Seeks to a position in audio
+   * @param {type} value
+   * @this {jaws.Audio}
+   */
+  jaws.Audio.prototype.seekTo = function(value) {
+    if (this.audio instanceof Audio) {
+      if (jaws.isNumber(value)) {
+        if (value <= this.audio.duration) {
+          this.audio.currentTime = value;
+        } else {
+          this.audio.currentTime = this.audio.duration;
+        }
+      }
+    } else {
+      jaws.log.warn("jaws.Audio.seekTo: Either 'audio' was loaded incorrectly or does not exist");
+    }
+  };
+
+  /**
+   * Sets the volume of the audio
+   * @param {type} value The new volume within the range 0.0 to 1.0
+   * @this {jaws.Audio}
+   */
+  jaws.Audio.prototype.setVolume = function(value) {
+    if (this.audio instanceof Audio) {
+      if (jaws.isNumber(value) && value <= 1.0 && value >= 0) {
+        this.audio.volume = value;
+      }
+    } else {
+      jaws.log.warn("jaws.Audio: jaws.setVolume: Either 'audio' was loaded incorrectly or does not exist");
+    }
+  };
+
+  /**
+   * Returns if 'audio' is actually an Audio object
+   */
+  jaws.Audio.prototype.isLoaded = function() {
+    return (this.audio instanceof Audio);
+  };
+
+  /**
+   * Returns a String containing value properties
+   * @this {jaws.Audio}
+   * @returns {String}
+   */
+  jaws.Audio.prototype.toString = function() {
+    var properties = "[Audio ";
+    if (this.audio instanceof Audio) {
+      properties += this.audio.src + ", ";
+      properties += this.audio.currentTime + ", ";
+      properties += this.audio.duration + ", ";
+      properties += this.audio.volume + " ]";
+    } else {
+      properties += null + " ]";
+    }
+    return properties;
+  };
+
+  /**
+   * Returns an object created with values from 'this' properties
+   * @this {jaws.Audio}
+   * @returns {object}
+   */
+  jaws.Audio.prototype.attributes = function() {
+    var object = this.options;
+    object["_constructor"] = this._constructor || "jaws.Audio";
+
+    if (this.audio instanceof Audio) {
+      object["audio"] = this.audio.src;
+      object["loop"] = this.loop;
+      object["muted"] = this.audio.muted;
+      object["volume"] = this.audio.volume;
+    } else {
+      object["audio"] = null;
+    }
+
+    if (this.hasOwnProperty("autoplay")) object["autoplay"] = this.autoplay;
+
+    return object;
+  };
+
+  /**
+   * Return the properties of the current object as a JSON-encoded string
+   * @this {jaws.Audio}
+   * @returns {string} The properties of the jaws.Audio object as a JSON-encoded string
+   */
+  jaws.Audio.prototype.toJSON = function() {
+    return JSON.stringify(this.attributes());
+  };
+
+  return jaws;
+})(jaws || {});
+
+// Support CommonJS require()
+if (typeof module !== "undefined" && ('exports' in module)) {
+  module.exports = jaws.Audio;
+}
+var jaws = (function(jaws) {
+  /**
+   * @class Manages all your Sprites in lists. Makes easy mass-draw() / update() possible among others. Implements Array API. "Field Summary" contains options for the SpriteList()-constructor.
+   *
+   * Sprites (your bullets, aliens, enemies, players etc) will need to be
+   * updated, draw, deleted. Often in various orders and based on different conditions.
+   * This is where SpriteList() comes in:
+   *
+   * @example
+   * // create 100 enemies
+   * var enemies = new SpriteList()
+   * for(i=0; i < 100; i++) {
+   *   enemies.push(new Sprite({image: "enemy.png", x: i, y: 200}))
+   * }
+   * enemies.draw()                    // calls draw() on all enemies
+   * enemies.update()                  // calls update() on all enemies
+   * enemies.removeIf(isOutsideCanvas) // removes each item in enemies that returns true when isOutsideCanvas(item) is called
+   * enemies.drawIf(isInsideViewport)  // only call draw() on items that returns true when isInsideViewport is called with item as argument
+   *
+   * @param {Object} [options] Currently used to pass in a literal list of sprites. See {@link SpriteList#load} for details
+   */
+  jaws.SpriteList = function SpriteList(options) {
+    // Make both sprite_list = new SpriteList() and sprite_list = SpriteList() work
+    if (!(this instanceof arguments.callee)) return new arguments.callee(options);
+
+    this.sprites = []
+    this.length = 0
+
+    if (options) this.load(options);
+  }
+  /**
+   * Adds one or more sprites to sprite_list
+   */
+  jaws.SpriteList.prototype.add = function() {
+    var list = arguments;
+    if (list.length == 1 && jaws.isArray(list[0])) list = list[0];
+
+    if (list.length > 1) {
+      for (var i = 0; i < list.length; i++) {
+        this.sprites.push(list[i])
+      }
+    } else {
+      this.sprites.push(arguments)
+    }
+
+    this.updateLength()
+    return this;
+  }
+
+  /**
+   * Return the sprite at the specified index.
+   * Replaces the array [] notation.
+   * So:
+   * my_sprite_list.at(1) is equivalent to my_array[1]
+   *
+   * @param {Number} index
+   * @returns {Object} Sprite at index
+   */
+  jaws.SpriteList.prototype.at = function(index) {
+    return this.sprites[index]
+  }
+
+  // Implement the Array API functions
+  /**
+   * Concatenate this sprite list and another array. Does not modify original.
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/concat
+   * @return {Object} A new SpriteList comprised of this one joined with other lists.
+   */
+  jaws.SpriteList.prototype.concat = function() {
+    return this.sprites.concat.apply(this.sprites, arguments)
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/indexOf
+   * @param {Object} searchElement
+   * @param {Number} fromIndex
+   * @returns {Number}
+   */
+  jaws.SpriteList.prototype.indexOf = function(searchElement, fromIndex) {
+    return this.sprites.indexOf(searchElement, fromIndex)
+  }
+
+  /**
+   * Joins the contents of the sprite list into a string.
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/join
+   *
+   * Implemented mostly for an easy verbose way to display the sprites
+   * inside the sprite list.
+   * @param {String} [separator] String to separate each array element. If ommitted, defaults to comma.
+   */
+  jaws.SpriteList.prototype.join = function(separator) {
+    return this.sprites.join(separator)
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/lastIndexOf
+   */
+  jaws.SpriteList.prototype.lastIndexOf = function() {
+    return this.sprites.lastIndexOf.apply(this.sprites, arguments)
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/pop
+   * @returns {Object} Last sprite in the list
+   */
+  jaws.SpriteList.prototype.pop = function() {
+    var element = this.sprites.pop()
+    this.updateLength()
+    return element
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/push
+   * @returns {Number} New length of the sprite list
+   */
+  jaws.SpriteList.prototype.push = function() {
+    this.sprites.push.apply(this.sprites, arguments)
+    this.updateLength()
+    return this.length
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/reverse
+   */
+  jaws.SpriteList.prototype.reverse = function() {
+    this.sprites.reverse()
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/shift
+   * @returns {Object} First sprite in the list
+   */
+  jaws.SpriteList.prototype.shift = function() {
+    var element = this.sprites.shift()
+    this.updateLength()
+    return element
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/slice
+   * @param {Number} start
+   * @param {Number} end
+   * @returns {Object} A new array containing sprites (a section of the sprites array defined by start and end)
+   *
+   * @todo Fix it to return SpriteList instead of array
+   */
+  jaws.SpriteList.prototype.slice = function(start, end) {
+    return this.sprites.slice(start, end)
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/sort
+   */
+  jaws.SpriteList.prototype.sort = function() {
+    this.sprites.sort.apply(this.sprites, arguments)
+  }
+
+  /**
+   * Add or remove sprites from the list.
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/splice
+   * @return {Array} Array containing removed sprites
+   */
+  jaws.SpriteList.prototype.splice = function() {
+    var removedElements = this.sprites.splice.apply(this.sprites, arguments)
+    this.updateLength()
+    return removedElements
+  }
+
+  /**
+   * Add one or more sprites to the front of the list
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/unshift
+   * @returns {Number} New length of the sprite list
+   */
+  jaws.SpriteList.prototype.unshift = function() {
+    this.sprites.unshift.apply(this.sprites, arguments)
+    this.updateLength()
+    return this.length
+  }
+
+  /**
+   * Update the length of the sprite list.
+   * Since we're delegating array operations to sprites array, this is not done automatically
+   */
+  jaws.SpriteList.prototype.updateLength = function() {
+    this.length = this.sprites.length
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/ValueOf
+   * @return {String} Literal string representation (currently, just the value of toString() )
+   */
+  jaws.SpriteList.prototype.valueOf = function() {
+    return this.toString()
+  }
+
+  // Implement "extras" / standardized Array functions
+  // See http://dev.opera.com/articles/view/javascript-array-extras-in-detail/ for discussion, browser compatibility
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/filter
+   * @return {Array}
+   */
+  jaws.SpriteList.prototype.filter = function() {
+    return this.sprites.filter.apply(this.sprites, arguments)
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/forEach
+   */
+  jaws.SpriteList.prototype.forEach = function() {
+    this.sprites.forEach.apply(this.sprites, arguments)
+    this.updateLength() // in case the forEach operation changes the sprites array
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/every
+   * @returns {Boolean}
+   */
+  jaws.SpriteList.prototype.every = function() {
+    return this.sprites.every.apply(this.sprites, arguments)
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/map
+   * @returns {Array}
+   */
+  jaws.SpriteList.prototype.map = function() {
+    return this.sprites.map.apply(this.sprites, arguments)
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/Reduce
+   * @returns {Object|Number|String}
+   */
+  jaws.SpriteList.prototype.reduce = function() {
+    return this.sprites.reduce.apply(this.sprites, arguments)
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/ReduceRight
+   * @returns {Object|Number|String}
+   */
+  jaws.SpriteList.prototype.reduceRight = function() {
+    return this.sprites.reduceRight.apply(this.sprites, arguments)
+  }
+
+  /**
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/some
+   * @returns {Boolean}
+   */
+  jaws.SpriteList.prototype.some = function() {
+    return this.sprites.some.apply(this.sprites, arguments)
+  }
+
+  /**
+   * Returns true if this object is a sprite lsit.
+   * Used to tell SpriteLists and Arrays apart
+   * @returns {Boolean}
+   */
+  jaws.SpriteList.prototype.isSpriteList = function() {
+    return true;
+  }
+
+  /**
+   * Load sprites into sprite list.
+   *
+   * Argument could either be
+   * - an array of Sprite objects
+   * - an array of JSON objects
+   * - a JSON.stringified string representing an array of JSON objects
+   *
+   */
+  jaws.SpriteList.prototype.load = function(objects) {
+    var that = this; // Since forEach changes this into DOMWindow.. hm, lame.
+    if (jaws.isArray(objects)) {
+      // If this is an array of JSON representations, parse it
+      if (objects.every(function(item) {
+        return item._constructor
+      })) {
+        parseArray(objects)
+      } else {
+        // This is an array of Sprites, load it directly
+        this.sprites = objects
+      }
+    } else if (jaws.isString(objects)) {
+      parseArray(JSON.parse(objects));
+      jaws.log.info(objects)
+    }
+    this.updateLength()
+
+    function parseArray(array) {
+      array.forEach(function(data) {
+        var constructor = data._constructor ? eval(data._constructor) : data.constructor
+        if (jaws.isFunction(constructor)) {
+          jaws.log.info("Creating " + data._constructor + "(" + data.toString() + ")", true)
+          var object = new constructor(data)
+          object._constructor = data._constructor || data.constructor.name
+          that.push(object);
+        }
+      });
+    }
+  }
+
+  /**
+   * Removes the first occurrence of obj from list
+   */
+  jaws.SpriteList.prototype.remove = function(obj) {
+    var index = this.indexOf(obj)
+    if (index > -1) {
+      this.splice(index, 1)
+    }
+    this.updateLength()
+  }
+
+  /**
+   * Invoke draw() on each element of the sprite list
+   */
+  jaws.SpriteList.prototype.draw = function() {
+    this.forEach(function(ea) {
+      ea.draw()
+    })
+  }
+
+  /** Draw sprites in spritelist where condition(sprite) returns true */
+  jaws.SpriteList.prototype.drawIf = function(condition) {
+    this.forEach(function(ea) {
+      if (condition(ea)) {
+        ea.draw()
+      }
+    })
+  }
+
+  /** Call update() on all sprites in spritelist */
+  jaws.SpriteList.prototype.update = function() {
+    this.forEach(function(ea) {
+      ea.update()
+    })
+  }
+
+  /** Call update() on sprites in spritelist where condition(sprite) returns true */
+  jaws.SpriteList.prototype.updateIf = function(condition) {
+    this.forEach(function(ea) {
+      if (condition(ea)) {
+        ea.update()
+      }
+    })
+  }
+
+  /**
+   * Delete sprites in spritelist where condition(sprite) returns true.
+   * Alias for removeIf()
+   * @deprecated
+   */
+  jaws.SpriteList.prototype.deleteIf = function(condition) {
+    this.removeIf(condition)
+  }
+
+  /** Remove sprites in spritelist where condition(sprite) returns true  */
+  jaws.SpriteList.prototype.removeIf = function(condition) {
+    this.sprites = this.filter(function(ea) {
+      return !condition(ea)
+    })
+    this.updateLength()
+  }
+
+  jaws.SpriteList.prototype.toString = function() {
+    return "[SpriteList " + this.length + " sprites]"
+  }
+
+  return jaws;
+})(jaws || {});
+var jaws = (function(jaws) {
+
+  /**
+   * A-Star pathfinding
+   *
+   *  Takes starting and ending x,y co-ordinates (from a mouse-click for example),
+   *  which are then translated onto the TileMap grid.
+   *
+   *  Does not allow for Diagonal movements
+   *
+   *  Uses a very simple Heuristic [see crowFlies()] for calculating node scores.
+   *
+   *  Very lightly optimised for speed over memory usage.
+   *
+   *  Returns a list of [col, row] pairs that define a valid path. Due to the simple Heuristic
+   *  the path is not guaranteed to be the best path.
+   */
+  jaws.TileMap.prototype.findPath = function(start_position, end_position, inverted) {
+
+    if (typeof inverted == 'undefined') {
+      inverted = false
+    }
+
+    var start_col = parseInt(start_position[0] / this.cell_size[0])
+    var start_row = parseInt(start_position[1] / this.cell_size[1])
+
+    var end_col = parseInt(end_position[0] / this.cell_size[0])
+    var end_row = parseInt(end_position[1] / this.cell_size[1])
+
+    if (start_col === end_col && start_row === end_row) {
+      return [{
+        x: start_position[0],
+        y: start_position[1]
+      }]
+    }
+
+    var col = start_col
+    var row = start_row
+    var step = 0
+    var score = 0
+    //travel corner-to-corner, through every square, plus one, just to make sure
+    var max_distance = (this.size[0] * this.size[1] * 2) + 1
+
+    var open_nodes = new Array(this.size[0])
+    for (var i = 0; i < this.size[0]; i++) {
+      open_nodes[i] = new Array(this.size[1])
+      for (var j = 0; j < this.size[1]; j++) {
+        open_nodes[i][j] = false
+      }
+    }
+    open_nodes[col][row] = {
+      parent: [],
+      G: 0,
+      score: max_distance
+    }
+
+    var closed_nodes = new Array(this.size[0])
+    for (var i = 0; i < this.size[0]; i++) {
+      closed_nodes[i] = new Array(this.size[1])
+      for (var j = 0; j < this.size[1]; j++) {
+        closed_nodes[i][j] = false
+      }
+    }
+
+    var crowFlies = function(from_node, to_node) {
+        return Math.abs(to_node[0] - from_node[0]) + Math.abs(to_node[1] - from_node[1]);
+      }
+
+    var findInClosed = function(col, row) {
+        if (closed_nodes[col][row]) {
+          return true
+        } else {
+          return false
+        }
+      }
+
+    while (!(col === end_col && row === end_row)) {
+      /**
+       *  add the nodes above, below, to the left and right of the current node
+       *  if it doesn't have a sprite in it, and it hasn't already been added
+       *  to the closed list, recalculate its score from the current node and
+       *  update it if it's already in the open list.
+       */
+      var left_right_up_down = []
+      if (col > 0) {
+        left_right_up_down.push([col - 1, row])
+      }
+      if (col < this.size[0] - 1) {
+        left_right_up_down.push([col + 1, row])
+      }
+      if (row > 0) {
+        left_right_up_down.push([col, row - 1])
+      }
+      if (row < this.size[1] - 1) {
+        left_right_up_down.push([col, row + 1])
+      }
+
+      for (var i = 0; i < left_right_up_down.length; i++) {
+        var c = left_right_up_down[i][0]
+        var r = left_right_up_down[i][1]
+        if (((this.cell(c, r).length === 0 && !inverted) || (this.cell(c, r).length > 0 && inverted)) && !findInClosed(c, r)) {
+          score = step + 1 + crowFlies([c, r], [end_col, end_row])
+          if (!open_nodes[c][r] || (open_nodes[c][r] && open_nodes[c][r].score > score)) {
+            open_nodes[c][r] = {
+              parent: [col, row],
+              G: step + 1,
+              score: score
+            }
+          }
+        }
+      }
+
+      /**
+       *  find the lowest scoring open node
+       */
+      var best_node = {
+        node: [],
+        parent: [],
+        score: max_distance,
+        G: 0
+      }
+      for (var i = 0; i < this.size[0]; i++) {
+        for (var j = 0; j < this.size[1]; j++) {
+          if (open_nodes[i][j] && open_nodes[i][j].score < best_node.score) {
+            best_node.node = [i, j]
+            best_node.parent = open_nodes[i][j].parent
+            best_node.score = open_nodes[i][j].score
+            best_node.G = open_nodes[i][j].G
+          }
+        }
+      }
+      if (best_node.node.length === 0) { //open_nodes is empty, no route found to end node
+        return []
+      }
+
+      //This doesn't stop the node being added again, but it doesn't seem to matter
+      open_nodes[best_node.node[0]][best_node.node[1]] = false
+
+      col = best_node.node[0]
+      row = best_node.node[1]
+      step = best_node.G
+
+      closed_nodes[col][row] = {
+        parent: best_node.parent
+      }
+    }
+
+    /**
+     *  a path has been found, construct it by working backwards from the
+     *  end node, using the closed list
+     */
+    var path = []
+    var current_node = closed_nodes[col][row]
+    path.unshift({
+      x: col * this.cell_size[0],
+      y: row * this.cell_size[1]
+    })
+    while (!(col === start_col && row === start_row)) {
+      col = current_node.parent[0]
+      row = current_node.parent[1]
+      path.unshift({
+        x: col * this.cell_size[0],
+        y: row * this.cell_size[1]
+      })
+      current_node = closed_nodes[col][row]
+    }
+    return path
+
+  }
+
+  jaws.TileMap.prototype.lineOfSight = function(start_position, end_position, inverted) {
+    if (typeof inverted == 'undefined') {
+      inverted = false
+    }
+
+    var x0 = start_position[0]
+    var x1 = end_position[0]
+    var y0 = start_position[1]
+    var y1 = end_position[1]
+
+    var dx = Math.abs(x1 - x0)
+    var dy = Math.abs(y1 - y0)
+
+    var sx, sy
+    if (x0 < x1) {
+      sx = 1
+    } else {
+      sx = -1
+    }
+    if (y0 < y1) {
+      sy = 1
+    } else {
+      sy = -1
+    }
+
+    var err = dx - dy
+    var e2
+
+    while (!(x0 === x1 && y0 === y1)) {
+      if (inverted) {
+        if (this.at(x0, y0).length === 0) {
+          return false
+        }
+      } else {
+        if (this.at(x0, y0).length > 0) {
+          return false
+        }
+      }
+      e2 = 2 * err
+      if (e2 > -dy) {
+        err = err - dy
+        x0 = x0 + sx
+      }
+      if (e2 < dx) {
+        err = err + dx
+        y0 = y0 + sy
+      }
+    }
+
+    return true
+  }
+
+  return jaws;
+})(jaws || {});
+var jaws = (function(jaws) {
+
+  /**
+   * @class Create and access tilebased 2D maps with very fast access of invidual tiles. "Field Summary" contains options for the TileMap()-constructor.
+   *
+   * @property {array} cell_size        Size of each cell in tilemap, defaults to [32,32]
+   * @property {array} size             Size of tilemap, defaults to [100,100]
+   * @property {function} sortFunction  Function used by sortCells() to sort cells, defaults to no sorting
+   *
+   * @example
+   * var tile_map = new TileMap({size: [10, 10], cell_size: [16,16]})
+   * var sprite = new jaws.Sprite({x: 40, y: 40})
+   * var sprite2 = new jaws.Sprite({x: 41, y: 41})
+   * tile_map.push(sprite)
+   *
+   * tile_map.at(10,10)  // []
+   * tile_map.at(40,40)  // [sprite]
+   * tile_map.cell(0,0)  // []
+   * tile_map.cell(1,1)  // [sprite]
+   *
+   */
+  jaws.TileMap = function TileMap(options) {
+    if (!(this instanceof arguments.callee)) return new arguments.callee(options);
+
+    jaws.parseOptions(this, options, this.default_options);
+    this.cells = new Array(this.size[0]);
+
+    for (var col = 0; col < this.size[0]; col++) {
+      this.cells[col] = new Array(this.size[1]);
+      for (var row = 0; row < this.size[1]; row++) {
+        this.cells[col][row] = [] // populate each cell with an empty array
+      }
+    }
+  }
+
+  jaws.TileMap.prototype.default_options = {
+    cell_size: [32, 32],
+    size: [100, 100],
+    sortFunction: null
+  }
+
+  /** Clear all cells in tile map */
+  jaws.TileMap.prototype.clear = function() {
+    for (var col = 0; col < this.size[0]; col++) {
+      for (var row = 0; row < this.size[1]; row++) {
+        this.cells[col][row] = [];
+      }
+    }
+  }
+
+  /** Sort arrays in each cell in tile map according to sorter-function (see Array.sort) */
+  jaws.TileMap.prototype.sortCells = function(sortFunction) {
+    for (var col = 0; col < this.size[0]; col++) {
+      for (var row = 0; row < this.size[1]; row++) {
+        this.cells[col][row].sort(sortFunction)
+      }
+    }
+  }
+
+  /**
+   * Push obj (or array of objs) into our cell-grid.
+   *
+   * Tries to read obj.x and obj.y to calculate what cell to occopy
+   */
+  jaws.TileMap.prototype.push = function(obj) {
+    var that = this;
+    if (obj.forEach) {
+      obj.forEach(function(item) {
+        that.push(item)
+      });
+      return obj;
+    }
+    if (obj.rect) {
+      return this.pushAsRect(obj, obj.rect());
+    } else {
+      var col = parseInt(obj.x / this.cell_size[0]);
+      var row = parseInt(obj.y / this.cell_size[1]);
+      return this.pushToCell(col, row, obj);
+    }
+  }
+  /**
+   * Push objects into tilemap.
+   * Disregard height and width and only use x/y when calculating cell-position
+   */
+  jaws.TileMap.prototype.pushAsPoint = function(obj) {
+    if (Array.isArray(obj)) {
+      for (var i = 0; i < obj.length; i++) {
+        this.pushAsPoint(obj[i])
+      }
+      return obj;
+    } else {
+      var col = parseInt(obj.x / this.cell_size[0]);
+      var row = parseInt(obj.y / this.cell_size[1]);
+      return this.pushToCell(col, row, obj);
+    }
+  }
+
+  /** push obj into cells touched by rect */
+  jaws.TileMap.prototype.pushAsRect = function(obj, rect) {
+    var from_col = parseInt(rect.x / this.cell_size[0]);
+    var to_col = parseInt((rect.right - 1) / this.cell_size[0]); // -1
+    //jaws.log("rect.right: " + rect.right + " from/to col: " + from_col + " " + to_col, true)
+    for (var col = from_col; col <= to_col; col++) {
+      var from_row = parseInt(rect.y / this.cell_size[1]);
+      var to_row = parseInt((rect.bottom - 1) / this.cell_size[1]); // -1
+
+      //jaws.log("rect.bottom " + rect.bottom + " from/to row: " + from_row + " " + to_row, true)
+      for (var row = from_row; row <= to_row; row++) {
+        // console.log("pushAtRect() col/row: " + col + "/" + row + " - " + this.cells[col][row])
+        this.pushToCell(col, row, obj);
+      }
+    }
+    return obj
+  }
+
+  /**
+   * Push obj to a specific cell specified by col and row
+   * If cell is already occupied we create an array and push to that
+   */
+  jaws.TileMap.prototype.pushToCell = function(col, row, obj) {
+    this.cells[col][row].push(obj);
+    if (this.sortFunction) this.cells[col][row].sort(this.sortFunction);
+    return this
+  }
+
+  //
+  // READERS
+  //
+  /** Get objects in cell that exists at coordinates x / y  */
+  jaws.TileMap.prototype.at = function(x, y) {
+    var col = parseInt(x / this.cell_size[0]);
+    var row = parseInt(y / this.cell_size[1]);
+    // console.log("at() col/row: " + col + "/" + row)
+    return this.cells[col][row];
+  }
+
+  /** Returns occupants of all cells touched by 'rect' */
+  jaws.TileMap.prototype.atRect = function(rect) {
+    var objects = [];
+    var items;
+
+    try {
+      var from_col = parseInt(rect.x / this.cell_size[0]);
+      if (from_col < 0) {
+        from_col = 0;
+      }
+      var to_col = parseInt(rect.right / this.cell_size[0]);
+      if (to_col >= this.size[0]) {
+        to_col = this.size[0] - 1;
+      }
+      var from_row = parseInt(rect.y / this.cell_size[1]);
+      if (from_row < 0) {
+        from_row = 0;
+      }
+      var to_row = parseInt(rect.bottom / this.cell_size[1]);
+      if (to_row >= this.size[1]) {
+        to_row = this.size[1] - 1;
+      }
+
+      for (var col = from_col; col <= to_col; col++) {
+        for (var row = from_row; row <= to_row; row++) {
+          this.cells[col][row].forEach(function(item, total) {
+            if (objects.indexOf(item) == -1) {
+              objects.push(item)
+            }
+          })
+        }
+      }
+    } catch (e) {
+      // ... problems
+    }
+    return objects
+  }
+
+  /** Returns all objects in tile map */
+  jaws.TileMap.prototype.all = function() {
+    var all = [];
+    for (var col = 0; col < this.size[0]; col++) {
+      for (var row = 0; row < this.size[1]; row++) {
+        this.cells[col][row].forEach(function(element, total) {
+          all.push(element)
+        });
+      }
+    }
+    return all
+  }
+
+  /** Get objects in cell at col / row */
+  jaws.TileMap.prototype.cell = function(col, row) {
+    return this.cells[col][row]
+  }
+
+  /** Debugstring for TileMap() */
+  jaws.TileMap.prototype.toString = function() {
+    return "[TileMap " + this.size[0] + " cols, " + this.size[1] + " rows]"
+  }
+
+  return jaws;
+})(jaws || {});
+
+// Support CommonJS require()
+if (typeof module !== "undefined" && ('exports' in module)) {
+  module.exports = jaws.TileMap
+}
