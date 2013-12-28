@@ -22,8 +22,8 @@
         };
     }
 
-    window.isTrue = function (value) {
-        return value === true;
+    window.isTrue = function (object) {
+        return object === true;
     };
 
 } ());

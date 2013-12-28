@@ -22,7 +22,11 @@
 
     <script>
         QUnit.config.autostart = false;
-        window.jaws.onload = Game.setUp.bind(Game, QUnit.start, "/client/images/");
+
+        window.jaws.onload = function () {
+            Game.setUp("/client/images/");
+            World.load("TestMap1.png", QUnit.start);
+        };
     </script>
 
     <script src="/test/client/suites/Player.test.js"></script>

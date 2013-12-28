@@ -1,4 +1,4 @@
-(function (jaws, isTrue) {
+(function (jaws) {
     "use strict";
 
     var DefaultAssetsPrefix = "/images/",
@@ -6,20 +6,13 @@
         UsedKeys = [ "up", "down", "left", "right", "space" ],
 
         Assets = [
-            "Player.png",
             "Enemy.png",
-            "block.bmp"
+            "Player.png"
         ];
 
-    function setUp(continuation, assetsPath) {
-        function finished() {
-            if (jaws.assets.loaded.every(isTrue)) {
-                continuation();
-            }
-        }
-
+    function setUp(assetsPath) {
         jaws.unpack();
-        jaws.assets.setRoot(assetsPath || DefaultAssetsPrefix).add(Assets).loadAll({ onload: finished });
+        jaws.assets.setRoot(assetsPath || DefaultAssetsPrefix).add(Assets);
 
         jaws.preventDefaultKeys(UsedKeys);
     }
@@ -28,4 +21,4 @@
         setUp: setUp
     };
 
-} (window.jaws, window.isTrue));
+} (window.jaws));
