@@ -81,13 +81,7 @@
                     },
 
                     options: {
-                        browser: true,
-
-                        globals: {
-                            QUnit: true,
-                            test: true,
-                            ok: true,
-                        }
+                        browser: true
                     }
                 }
             },
@@ -160,7 +154,8 @@
                         src: "<%= jshint.clientSource.files.src %>",
 
                         baseUrl: ".",
-                        instrumentedFiles: "coverage"
+                        instrumentedFiles: "coverage",
+                        htmlReport: "reports"
                     },
                 },
 
