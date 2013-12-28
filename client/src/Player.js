@@ -32,7 +32,7 @@
         this.jumpAnimation = this.animations.slice(6, 7);
 
         this.col_rect = function () {
-            return this.rect().clone().shrink(7, 0);
+            return this.rect().clone();
         };
 
         this.rest = function () {

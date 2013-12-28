@@ -5,5 +5,6 @@
 node_modules/
 coverage/
 
-# Rubbish.
+# Rubbish and reports.
 *.log
+reports/
