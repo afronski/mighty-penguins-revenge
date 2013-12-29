@@ -17,7 +17,9 @@
         MaxGravity: 10,
         WorldGravity: 0.5,
 
-        CollisionMargin: 5
+        CollisionMargin: 5,
+
+        TextSize: 41
     };
 
 } ());

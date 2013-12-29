@@ -1,7 +1,7 @@
 (function (jaws) {
     "use strict";
 
-    var DefaultAssetsPrefix = "/images/",
+    var DefaultAssetsPrefix = "/assets/",
 
         UsedKeys = [ "up", "down", "left", "right", "space" ],
         Assets = [
@@ -11,6 +11,15 @@
 
         RootPath;
 
+    // Private methods.
+    function loadImage(url, loaded) {
+        var image = new Image();
+
+        image.addEventListener("load", loaded);
+        image.src = url;
+    }
+
+    // Public API - Implementation.
     function getRootPath() {
         return RootPath;
     }
@@ -24,9 +33,24 @@
         jaws.preventDefaultKeys(UsedKeys);
     }
 
+    function load(url, continuation) {
+        var mapName = url.split("/").pop();
+
+        function finished() {
+            jaws.assets.data[mapName] = jaws.imageToCanvas(this);
+
+            if (typeof(continuation) === "function") {
+                continuation();
+            }
+        }
+
+        loadImage(url, finished);
+    }
+
     window.Game = {
+        load: load,
         setUp: setUp,
-        getRootPath: getRootPath
+        getRootPath: getRootPath,
     };
 
 } (window.jaws));

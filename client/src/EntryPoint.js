@@ -1,13 +1,9 @@
-(function (jaws, Game, World) {
+(function (jaws, Game, IntroScreen) {
     "use strict";
 
     jaws.onload = function () {
-        var MapName = "TestMap1.png";
-
         Game.setUp();
-
-        World.load(MapName);
-        jaws.start(World.bind(World, MapName));
+        jaws.start(IntroScreen);
     };
 
-} (window.jaws, window.Game, window.World));
+} (window.jaws, window.Game, window.IntroScreen));

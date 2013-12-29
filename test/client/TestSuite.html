@@ -18,17 +18,30 @@
     <script>QUnit.config.autostart = false;</script>
 
     <script src="/client/src/Constants.js"></script>
+
     <script src="/client/src/Entity.js"></script>
     <script src="/client/src/Enemy.js"></script>
     <script src="/client/src/Player.js"></script>
     <script src="/client/src/Bullet.js"></script>
-    <script src="/client/src/World.js"></script>
+
     <script src="/client/src/Game.js"></script>
+
+    <script src="/client/src/ScoresScreen.js"></script>
+    <script src="/client/src/World.js"></script>
+    <script src="/client/src/RoomsSelectionScreen.js"></script>
+    <script src="/client/src/IntroScreen.js"></script>
 
     <script>
         window.jaws.onload = function () {
-            Game.setUp("/client/images/");
-            World.load("TestMap1.png", QUnit.start);
+            Game.setUp("/client/assets/");
+
+            Game.load("/client/assets/TestMap1.png", function() {
+                jaws.start(function() {
+                  QUnit.start();
+
+                  return new World("TestMap1.png");
+                });
+            });
         };
     </script>
 

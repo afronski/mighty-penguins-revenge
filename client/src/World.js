@@ -1,15 +1,17 @@
-(function (jaws, Player, Enemy, Constants, utils) {
+(function (jaws, Player, Enemy, ScoresScreen, Constants, utils) {
     "use strict";
 
     // Constructor.
     function World(mapName) {
-        var context;
+        var context,
+            image;
+
+        image = jaws.assets.get(mapName);
 
         this.map = mapName;
+        this.terrain = new jaws.Sprite({ x: 0, y: 0, image: image, scale_image: Constants.Scale });
 
-        this.terrain = new jaws.Sprite({ x: 0, y: 0, image: this.map, scale_image: Constants.Scale });
         context = this.terrain.asCanvasContext();
-
         this.rawTerrain = context.getImageData(0, 0, this.terrain.width, this.terrain.height).data;
 
         this.enemies = [];
@@ -28,6 +30,11 @@
 
         if (jaws.pressed("up")) {
             this.player.jump();
+        }
+
+        if (jaws.pressedWithoutRepeat("space")) {
+            // TODO: Fire, instead of switch game state.
+            jaws.switchGameState(ScoresScreen);
         }
     }
 
@@ -112,21 +119,6 @@
         }
     }
 
-    // Static methods.
-    World.load = function (mapName, continuation) {
-        var assetsLoader = jaws.assets.add(mapName);
-
-        function finished() {
-            if (jaws.assets.loaded.every(utils.isTrue)) {
-                continuation();
-            }
-        }
-
-        if (typeof(continuation) === "function") {
-            assetsLoader.loadAll({ onload: finished });
-        }
-    };
-
     // Public methods.
     World.prototype.setup = function () {
         this.player = new Player({ x: 10 * Constants.Scale, y: 670 * Constants.Scale });
@@ -172,4 +164,4 @@
     // Exporting API to the public access.
     window.World = World;
 
-} (window.jaws, window.Player, window.Enemy, window.Constants, window.utils));
+} (window.jaws, window.Player, window.Enemy, window.ScoresScreen, window.Constants, window.utils));
