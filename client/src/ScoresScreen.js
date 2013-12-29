@@ -18,7 +18,9 @@
             y: 100,
 
             text: "SCORES:",
-            fontSize: Constants.TextSize
+
+            fontSize: Constants.FontSize,
+            fontFace: Constants.FontFace
         });
     };
 

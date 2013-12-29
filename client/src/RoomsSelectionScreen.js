@@ -31,7 +31,9 @@
             y: 100,
 
             text: "SELECT ROOM:",
-            fontSize: Constants.TextSize
+
+            fontSize: Constants.FontSize,
+            fontFace: Constants.FontFace
         });
     };
 
