@@ -19,7 +19,8 @@
 
         CollisionMargin: 5,
 
-        TextSize: 41
+        FontSize: 70,
+        FontFace: "VT323"
     };
 
 } ());

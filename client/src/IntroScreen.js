@@ -18,7 +18,9 @@
             y: 100,
 
             text: "MIGHTY PENGUINS REVENGE!",
-            fontSize: Constants.TextSize
+
+            fontSize: Constants.FontSize,
+            fontFace: Constants.FontFace
         });
     };
 
