@@ -18,13 +18,13 @@ describe("Main server based on 'express' framework", function () {
 
     after(helpers.disable);
 
-    it("should invoke serve static content by using middleware", function () {
+    it("should serve static content by using middleware", function () {
         this.server.initialize(__dirname);
 
         sinon.assert.calledOnce(helpers.getMock("express").implementation.use);
     });
 
-    it("should invoke serve static content from proper directory", function () {
+    it("should serve static content from proper directory", function () {
         this.server.initialize(__dirname);
 
         sinon.assert.calledWith(helpers.getMock("express").static, path.join(__dirname, "client"));
