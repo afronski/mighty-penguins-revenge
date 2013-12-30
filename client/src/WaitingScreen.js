@@ -51,10 +51,9 @@
 
             if (this.createdByMe) {
                 Game.load(FullGeneratedMapUrl, jaws.switchGameState.bind(jaws, constructor));
-            } else {
-                // TODO: Waiting for signal from server.
-                Game.load(FullGeneratedMapUrl, jaws.switchGameState.bind(jaws, constructor));
             }
+
+            // TODO: Waiting for signal from server.
         }
     }
 
