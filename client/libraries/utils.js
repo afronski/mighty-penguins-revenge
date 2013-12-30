@@ -38,11 +38,35 @@
         };
     }
 
+    function makeTextBlink(foregroundColor, backgroundColor, duration) {
+        foregroundColor = foregroundColor || "black";
+        backgroundColor = backgroundColor || "white";
+
+        duration = duration || 25;
+
+        if (this.frames > duration) {
+            this.visibility = !this.visibility;
+            this.frames = 0;
+        }
+
+        this.originalOptions.color = this.visibility ? foregroundColor : backgroundColor;
+        this.set(this.originalOptions);
+
+        ++this.frames;
+    }
+
+    function calculateCenteringOffset(text, width) {
+        return (width - Math.round(text.length * 0.75)) / 2;
+    }
+
     window.utils = {
         isTrue: isTrue,
 
         each: each,
-        eachDo: eachDo
+        eachDo: eachDo,
+
+        calculateCenteringOffset: calculateCenteringOffset,
+        makeTextBlink: makeTextBlink
     };
 
 } ());

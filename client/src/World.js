@@ -14,11 +14,27 @@
         context = this.terrain.asCanvasContext();
         this.rawTerrain = context.getImageData(0, 0, this.terrain.width, this.terrain.height).data;
 
+        this.hudOptions = {
+            x: 10,
+            y: 25,
+
+            fontSize: Constants.SmallFontSize,
+            fontFace: Constants.FontFace,
+
+            color: Constants.BackgroundColor
+        };
+
+        this.hud = new jaws.Text(this.hudOptions);
+
         this.enemies = [];
         this.bullets = [];
     }
 
     // Private methods.
+    function createHUD(health, score) {
+        return "HEALTH: " + parseInt(health, 10) + " SCORE: " + parseInt(score, 10);
+    }
+
     function handleKeyboard() {
         if (jaws.pressed("left")) {
             this.player.left();
@@ -138,6 +154,11 @@
         // Handle input.
         handleKeyboard.call(this);
 
+        // Update HUD.
+        // TODO: Update only on change.
+        this.hudOptions.text = createHUD(this.player.getHealth(), this.player.getScore());
+        this.hud.set(this.hudOptions);
+
         // Update all entities.
         this.player.update();
         this.enemies.forEach(utils.each("update"));
@@ -159,6 +180,7 @@
         jaws.clear();
 
         this.viewport.apply(drawing.bind(this));
+        this.hud.draw();
     };
 
     // Exporting API to the public access.

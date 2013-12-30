@@ -47,6 +47,8 @@
                 clientSource: {
                     files: {
                         src: [
+                            "client/libraries/utils.js",
+
                             "client/src/*.js",
                             "client/src/**/*.js"
                         ]
