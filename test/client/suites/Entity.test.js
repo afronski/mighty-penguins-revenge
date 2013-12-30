@@ -21,6 +21,11 @@
         QUnit.equal(-15, entity.y);
     });
 
+    QUnit.test("At the beginning score and health should be setup", function () {
+        QUnit.equal(0, this.entity.getScore());
+        QUnit.equal(100, this.entity.getHealth());
+    });
+
     QUnit.test("At the beginning it should be scaled and anchored at the bottom-center", function () {
         QUnit.equal(Constants.Scale, this.entity.scale_image);
         QUnit.equal("center_bottom", this.entity.anchor);

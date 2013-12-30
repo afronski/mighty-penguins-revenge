@@ -20,7 +20,12 @@
         CollisionMargin: 5,
 
         FontSize: 70,
-        FontFace: "VT323"
+        SmallFontSize: 35,
+
+        FontFace: "VT323",
+
+        ForegroundColor: "black",
+        BackgroundColor: "white"
     };
 
 } ());

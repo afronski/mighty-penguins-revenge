@@ -1,7 +1,10 @@
 (function (jaws, Constants) {
     "use strict";
 
-    var DefaultPosition = {
+    var MinimumScore = 0,
+        MaximumHealth = 100,
+
+        DefaultPosition = {
         x: 100,
         y: 100
     };
@@ -18,6 +21,9 @@
 
         this.vx = 0;
         this.vy = 0;
+
+        this.health = MaximumHealth;
+        this.score = MinimumScore;
 
         this.col_rect = function () {
             return this.rect().clone();
@@ -40,6 +46,14 @@
             } else {
                 this.can_jump = true;
             }
+        };
+
+        this.getHealth = function () {
+            return this.health;
+        };
+
+        this.getScore = function () {
+            return this.score;
         };
 
         this.right = function () {
