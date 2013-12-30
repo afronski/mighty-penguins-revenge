@@ -22,6 +22,16 @@
         };
     }
 
+    function getValue(text) {
+        var value = window.prompt(text);
+
+        if (!value || value.length > 15) {
+            return getValue(text);
+        } else {
+            return value;
+        }
+    }
+
     function isTrue(object) {
         return object === true;
     }
@@ -60,6 +70,7 @@
     }
 
     window.utils = {
+        getValue: getValue,
         isTrue: isTrue,
 
         each: each,
