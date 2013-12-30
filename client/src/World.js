@@ -14,6 +14,8 @@
         context = this.terrain.asCanvasContext();
         this.rawTerrain = context.getImageData(0, 0, this.terrain.width, this.terrain.height).data;
 
+        this.quadTree = new jaws.QuadTree();
+
         this.hudOptions = {
             x: 10,
             y: 25,
@@ -49,17 +51,21 @@
         }
 
         if (jaws.pressedWithoutRepeat("space")) {
-            // TODO: Fire, instead of switch game state.
+            this.bullets.push(this.player.fire());
+        }
+
+        if (jaws.pressedWithoutRepeat("esc")) {
             jaws.switchGameState(ScoresScreen);
         }
     }
 
     function drawing() {
         this.terrain.draw();
-        this.player.draw();
 
-        this.enemies.forEach(utils.each("draw"));
         this.bullets.forEach(utils.each("draw"));
+        this.enemies.forEach(utils.each("draw"));
+
+        this.player.draw();
     }
 
     function applyGravity(object) {
@@ -69,34 +75,63 @@
     }
 
     function terrainAt(x, y) {
-        try {
-            x = parseInt(x, 10);
-            y = parseInt(y, 10);
-
-            return this.rawTerrain[((y - 1) * this.terrain.width * 4) + (x * 4) + 3];
-        } catch (exception) {
-            return false;
+        if (x < 0) {
+            return true;
         }
+
+        if (y < 1) {
+            return true;
+        }
+
+        return this.rawTerrain[((y - 1) * this.terrain.width * 4) + (x * 4) + 3];
     }
 
     function terrainInRect(x, y, width, height) {
         var scanningX,
             scanningY;
 
-        try {
-            for (scanningX = x + width; x < scanningX; ++x) {
-                for (scanningY = y + height; y < scanningY; ++y) {
-                    if (terrainAt.call(this, x, y)) {
-                        return true;
-                    }
+        for (scanningX = x + width; x < scanningX; ++x) {
+            for (scanningY = y + height; y < scanningY; ++y) {
+                if (terrainAt.call(this, x, y)) {
+                    return true;
                 }
             }
+        }
 
-            return false;
-        } catch (exception) {
-            return false;
+        return false;
+    }
+
+    function deleteDead(accumulator, element) {
+        if (element.isAlive()) {
+            accumulator.push(element);
+        }
+
+        return accumulator;
+    }
+
+    function respawnPlayer() {
+        var availableWidth = this.terrain.width - Constants.EntitySize.Width,
+            availableHeight = this.terrain.height - Constants.EntitySize.Height,
+
+            x = utils.randomFromRange(Constants.EntitySize.Width, availableWidth),
+            y = utils.randomFromRange(Constants.EntitySize.Height, availableHeight),
+
+            isLowerCornerAvailable = !terrainAt.call(this, x, y),
+            isUpperCornerAvailable = !terrainAt.call(this, x, y - Constants.EntitySize.Height);
+
+        if (isLowerCornerAvailable && isUpperCornerAvailable) {
+            return { x: x, y: y };
+        } else {
+            return respawnPlayer.call(this);
         }
     }
+
+    World.prototype.decreaseHealth = function (entity, bullet) {
+        if (bullet.owner !== entity) {
+            entity.decreaseHealth(bullet);
+            bullet.kill();
+        }
+    };
 
     // Public methods.
     World.prototype.move = function (object) {
@@ -136,13 +171,44 @@
         }
     };
 
-    World.prototype.setup = function () {
-        this.player = new Player({ x: 10 * Constants.Scale, y: 670 * Constants.Scale });
+    World.prototype.moveBullet = function (object) {
+        var target = Math.abs(object.vy),
+            step = Math.floor(object.vy / target),
+            bottom,
+            i;
+
+        for (i = 0; i < target; ++i) {
+            object.y += step;
+
+            if (terrainAt.call(this, object.x, object.y) || terrainAt.call(this, object.x, object.rect().y)) {
+                object.y -= step;
+                object.vy = 0;
+
+                object.kill();
+            }
+        }
+
+        target = Math.abs(object.vx);
+        step = Math.floor(object.vx / target);
+
+        for (i = 0; i < target; ++i) {
+            object.x += step;
+            bottom = object.y - object.height;
+
+            if (terrainInRect.call(this, object.x, bottom, 1, object.height)) {
+                object.x -= step;
+
+                object.kill();
+            }
+        }
+    };
+
+    World.prototype.setup = function (respawnPoint) {
+        this.player = new Player(respawnPoint || respawnPlayer.call(this));
         this.viewport = new jaws.Viewport({ max_x: this.terrain.width, max_y: this.terrain.height });
 
-        this.enemies.push(new Enemy({ x: 15 * Constants.Scale, y: 670 * Constants.Scale }));
-
         // TODO: Remove it.
+        this.enemies.push(new Enemy({ x: 15 * Constants.Scale, y: 670 * Constants.Scale }));
         setInterval(this.enemies[0].jump.bind(this.enemies[0]), 2000);
 
         jaws.context.mozImageSmoothingEnabled = false;
@@ -164,15 +230,21 @@
         // Update all entities.
         this.player.update();
         this.enemies.forEach(utils.each("update"));
-        this.bullets.forEach(utils.each("update"));
+
+        this.enemies = this.enemies.reduce(deleteDead, []);
+        this.bullets = this.bullets.reduce(deleteDead, []);
 
         // Applying physics and collisions.
         applyGravity(this.player);
         this.enemies.forEach(utils.eachDo(applyGravity));
 
+        this.quadTree.collide(this.player, this.bullets, this.decreaseHealth.bind(this));
+        this.quadTree.collide(this.enemies, this.bullets, this.decreaseHealth.bind(this));
+
         // Move all entities.
         this.move(this.player);
         this.enemies.forEach(utils.eachDo(this.move.bind(this)));
+        this.bullets.forEach(utils.eachDo(this.moveBullet.bind(this)));
 
         // Recenter view around player.
         this.viewport.centerAround(this.player);

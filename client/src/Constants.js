@@ -9,6 +9,8 @@
             Height: 11
         },
 
+        FirePosition: 22,
+
         FrameDurationForEntity: 125,
 
         JumpingVelocity: -10,

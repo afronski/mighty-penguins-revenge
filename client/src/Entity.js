@@ -1,7 +1,9 @@
-(function (jaws, Constants) {
+(function (jaws, Bullet, Constants) {
     "use strict";
 
     var MinimumScore = 0,
+
+        MinimumHealth = 0,
         MaximumHealth = 100,
 
         DefaultPosition = {
@@ -24,6 +26,9 @@
 
         this.health = MaximumHealth;
         this.score = MinimumScore;
+
+        this.flipped = false;
+        this.dead = false;
 
         this.col_rect = function () {
             return this.rect().clone();
@@ -48,8 +53,34 @@
             }
         };
 
+        this.fire = function () {
+            return new Bullet(this, this.flipped ? -1 : 1);
+        };
+
+        this.incrementScore = function () {
+            ++this.score;
+        };
+
         this.getHealth = function () {
             return this.health;
+        };
+
+        this.decreaseHealth = function (bullet) {
+            this.health -= bullet.power;
+
+            if (!this.isAlive()) {
+                this.kill();
+                bullet.owner.incrementScore();
+            }
+        };
+
+        this.isAlive = function () {
+            return this.health > MinimumHealth;
+        };
+
+        this.kill = function () {
+            this.dead = true;
+            this.health = MinimumHealth;
         };
 
         this.getScore = function () {
@@ -105,4 +136,4 @@
 
     window.Entity = Entity;
 
-} (window.jaws, window.Constants));
+} (window.jaws, window.Bullet, window.Constants));

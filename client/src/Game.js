@@ -5,6 +5,7 @@
 
         UsedKeys = [ "up", "down", "left", "right", "space" ],
         Assets = [
+            "Bullet.png",
             "Enemy.png",
             "Player.png"
         ],

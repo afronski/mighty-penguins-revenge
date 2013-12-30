@@ -22,8 +22,16 @@
         };
     }
 
+    if (!String.prototype.trim) {
+        String.prototype.trim = function () {
+            return this.replace(/^\s+|\s+$/gm, "");
+        };
+    }
+
     function getValue(text) {
         var value = window.prompt(text);
+
+        value = value.trim();
 
         if (!value || value.length > 15) {
             return getValue(text);
@@ -69,6 +77,10 @@
         return (width - Math.round(text.length * 0.75)) / 2;
     }
 
+    function randomFromRange(minimum, maximum) {
+        return Math.floor(Math.random() * (maximum - minimum + 1) + minimum);
+    }
+
     window.utils = {
         getValue: getValue,
         isTrue: isTrue,
@@ -76,8 +88,10 @@
         each: each,
         eachDo: eachDo,
 
+        makeTextBlink: makeTextBlink,
         calculateCenteringOffset: calculateCenteringOffset,
-        makeTextBlink: makeTextBlink
+
+        randomFromRange: randomFromRange
     };
 
 } ());
