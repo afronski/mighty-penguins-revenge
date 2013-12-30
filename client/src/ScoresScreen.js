@@ -4,7 +4,7 @@
     var ScoreListItemHeight = 40,
         ScoreListItemOptions = {
             x: 110,
-            y: 120,
+            y: 160,
 
             fontSize: Constants.SmallFontSize,
             fontFace: Constants.FontFace
@@ -59,6 +59,7 @@
             fontFace: Constants.FontFace
         });
 
+        // TODO: Create when AJAX return.
         this.scoreItems = createScoreItems(this.scores);
 
         this.prompt = new jaws.Text(this.promptOptions);

@@ -98,7 +98,8 @@
         }
     }
 
-    function move(object) {
+    // Public methods.
+    World.prototype.move = function (object) {
         var target = Math.abs(object.vy),
             step = Math.floor(object.vy / target),
             bottom,
@@ -133,14 +134,15 @@
                 object.x -= step;
             }
         }
-    }
+    };
 
-    // Public methods.
     World.prototype.setup = function () {
         this.player = new Player({ x: 10 * Constants.Scale, y: 670 * Constants.Scale });
         this.viewport = new jaws.Viewport({ max_x: this.terrain.width, max_y: this.terrain.height });
 
         this.enemies.push(new Enemy({ x: 15 * Constants.Scale, y: 670 * Constants.Scale }));
+
+        // TODO: Remove it.
         setInterval(this.enemies[0].jump.bind(this.enemies[0]), 2000);
 
         jaws.context.mozImageSmoothingEnabled = false;
@@ -169,8 +171,8 @@
         this.enemies.forEach(utils.eachDo(applyGravity));
 
         // Move all entities.
-        move.call(this, this.player);
-        this.enemies.forEach(utils.eachDo(move.bind(this)));
+        this.move(this.player);
+        this.enemies.forEach(utils.eachDo(this.move.bind(this)));
 
         // Recenter view around player.
         this.viewport.centerAround(this.player);

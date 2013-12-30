@@ -26,7 +26,7 @@
         this.informationOptions = {
             y: 250,
 
-            text: "\"" + this.nick + "\" in room \"" + this.room + "\"",
+            text: createInformation(this.nick, this.room),
             textAlign: "center",
 
             fontSize: Constants.SmallFontSize,
@@ -39,19 +39,21 @@
     }
 
     // Private methods.
+    function createInformation(nick, room) {
+        return nick + " in room " + room;
+    }
+
     function handleKeyboard() {
+        var constructor;
+
         if (jaws.pressedWithoutRepeat("space")) {
+            constructor = World.bind(World, GeneratedMapName);
+
             if (this.createdByMe) {
-                Game.load(FullGeneratedMapUrl, function () {
-                    jaws.switchGameState(World.bind(World, GeneratedMapName));
-                });
+                Game.load(FullGeneratedMapUrl, jaws.switchGameState.bind(jaws, constructor));
             } else {
                 // TODO: Waiting for signal from server.
-                setTimeout(function () {
-                    Game.load(FullGeneratedMapUrl, function () {
-                        jaws.switchGameState(World.bind(World, GeneratedMapName));
-                    });
-                }, 5000);
+                Game.load(FullGeneratedMapUrl, jaws.switchGameState.bind(jaws, constructor));
             }
         }
     }
