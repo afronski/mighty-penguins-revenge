@@ -53,6 +53,8 @@
         }
 
         if (jaws.pressedWithoutRepeat("esc")) {
+            // TODO: Signal from server when the game ends.
+            // TODO: Signal from servers about movement, shooting and respawning enemies.
             jaws.switchGameState(ScoresScreen);
         }
     }
@@ -194,10 +196,6 @@
         this.player = new Player(respawnPoint || respawnPlayer.call(this));
         this.viewport = new jaws.Viewport({ max_x: this.terrain.width, max_y: this.terrain.height });
 
-        // TODO: Remove it.
-        this.enemies.push(new Enemy({ x: 15 * Constants.Scale, y: 670 * Constants.Scale }));
-        setInterval(this.enemies[0].jump.bind(this.enemies[0]), 2000);
-
         jaws.context.mozImageSmoothingEnabled = false;
     };
 
@@ -210,7 +208,6 @@
         handleKeyboard.call(this);
 
         // Update HUD.
-        // TODO: Update only on change.
         this.hudOptions.text = createHUD(this.player.getHealth(), this.player.getScore());
         this.hud.set(this.hudOptions);
 
@@ -218,8 +215,13 @@
         this.player.update();
         this.enemies.forEach(utils.each("update"));
 
+        // Respawning and killing mechanisms.
         this.enemies = this.enemies.reduce(deleteDead, []);
         this.bullets = this.bullets.reduce(deleteDead, []);
+
+        if (!this.player.isAlive()) {
+            this.player = new Player(respawnPlayer.call(this));
+        }
 
         // Applying physics and collisions.
         applyGravity(this.player);
