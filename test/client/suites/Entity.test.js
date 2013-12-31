@@ -1,4 +1,4 @@
-(function (QUnit, jaws, Entity, Constants) {
+(function (QUnit, jaws, Entity, Bullet, Constants) {
     "use strict";
 
     QUnit.module("Entity", {
@@ -116,4 +116,37 @@
                     "After jumping it should restore to the rest animation frames.");
     });
 
-} (window.QUnit, window.jaws, window.Entity, window.Constants));
+    QUnit.test("When Entity fires should return new bullet", function () {
+        QUnit.ok(this.entity.fire() instanceof Bullet, "When fires, should return new bullet.");
+
+        this.entity.flipped = true;
+        QUnit.ok(this.entity.fire() instanceof Bullet, "When fires, even with flipped it wil return new bullet.");
+    });
+
+    QUnit.test("Increasing score for Entity", function () {
+        QUnit.equal(0, this.entity.getScore());
+
+        this.entity.incrementScore();
+        QUnit.equal(1, this.entity.getScore());
+    });
+
+    QUnit.test("Decreasing health will eventually kill an entity", function () {
+        var increased = false;
+
+        QUnit.equal(100, this.entity.getHealth());
+
+        this.entity.decreaseHealth({
+            power: 100,
+            owner: {
+                incrementScore: function () {
+                    increased = true;
+                }
+            }
+        });
+
+        QUnit.equal(0, this.entity.getHealth(), "Health should be equal to zero.");
+        QUnit.equal(true, this.entity.dead, "Entity should be killed.");
+        QUnit.equal(true, increased, "After killing an entity, owner will receive a point.");
+    });
+
+} (window.QUnit, window.jaws, window.Entity, window.Bullet, window.Constants));
