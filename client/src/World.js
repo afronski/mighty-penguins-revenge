@@ -14,8 +14,6 @@
         context = this.terrain.asCanvasContext();
         this.rawTerrain = context.getImageData(0, 0, this.terrain.width, this.terrain.height).data;
 
-        this.quadTree = new jaws.QuadTree();
-
         this.hudOptions = {
             x: 10,
             y: 25,
@@ -172,21 +170,10 @@
     };
 
     World.prototype.moveBullet = function (object) {
-        var target = Math.abs(object.vy),
-            step = Math.floor(object.vy / target),
+        var target,
+            step,
             bottom,
             i;
-
-        for (i = 0; i < target; ++i) {
-            object.y += step;
-
-            if (terrainAt.call(this, object.x, object.y) || terrainAt.call(this, object.x, object.rect().y)) {
-                object.y -= step;
-                object.vy = 0;
-
-                object.kill();
-            }
-        }
 
         target = Math.abs(object.vx);
         step = Math.floor(object.vx / target);
@@ -238,8 +225,8 @@
         applyGravity(this.player);
         this.enemies.forEach(utils.eachDo(applyGravity));
 
-        this.quadTree.collide(this.player, this.bullets, this.decreaseHealth.bind(this));
-        this.quadTree.collide(this.enemies, this.bullets, this.decreaseHealth.bind(this));
+        jaws.collide(this.player, this.bullets, this.decreaseHealth.bind(this));
+        jaws.collide(this.enemies, this.bullets, this.decreaseHealth.bind(this));
 
         // Move all entities.
         this.move(this.player);
