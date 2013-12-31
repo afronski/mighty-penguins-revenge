@@ -1,6 +1,8 @@
 (function (QUnit, jaws, Game) {
     "use strict";
 
+    QUnit.module("Game");
+
     QUnit.test("Should load from proper path if no arguments passed to the setup", function () {
         Game.setUp();
 

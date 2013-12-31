@@ -999,7 +999,6 @@ var jaws = function(jaws) {
 var jaws = function(jaws) {
     var correction = 0;
     jaws.Rect = function Rect(x, y, width, height) {
-        if (!(this instanceof Rect)) return new Rect(x, y, width, height);
         this.x = x;
         this.y = y;
         this.width = width;
