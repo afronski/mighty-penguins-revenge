@@ -103,11 +103,9 @@ function add(room, continuation) {
 }
 
 function remove(roomName, continuation) {
-    // TODO: Implement removing from LevelDB.
-    //       Please use documentation from:
-    //          - https://github.com/rvagg/node-levelup#dbdelkey-options-callback
+    var database = getDatabaseInstance();
 
-    continuation();
+    database.del(roomName, JsonValueEncoding, continuation);
 }
 
 module.exports = exports = {

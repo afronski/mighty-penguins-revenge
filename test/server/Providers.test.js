@@ -24,6 +24,7 @@ describe("Rooms provider", function () {
 
     before(function () {
         this.room = { name: "Room 1", players: [] };
+
         Rooms.setPath(path.join(__dirname, "databases"));
     });
 
@@ -178,10 +179,12 @@ describe("Empty scores provider", function () {
 
 });
 
-describe.skip("Scores provider", function () {
+describe("Scores provider", function () {
 
     before(function () {
         this.score = { roomName: "Room 1", players: [] };
+
+        Scores.setPath(path.join(__dirname, "databases"));
     });
 
     beforeEach(Scores.clear);
