@@ -5,7 +5,7 @@ var RoomsDatabase = "scores.db",
 
     path = require("path"),
 
-    levelup = require("levelup"),
+    level = require("level"),
 
     databasePath,
     database;
@@ -17,7 +17,7 @@ function getDatabaseInstance() {
         }
 
         databasePath = path.join(PathPrefix, RoomsDatabase);
-        database = levelup(databasePath);
+        database = level(databasePath);
     }
 
     return database;
@@ -27,16 +27,20 @@ function setPath(newPath) {
     PathPrefix = newPath;
 }
 
-function clear(continuation) {
+function close(continuation) {
     var database = getDatabaseInstance();
 
-    database.close(function () {
-        levelup.destroy(databasePath, continuation);
-    });
+    database.close(continuation);
 }
 
-function close(continuation) {
-    database.close(continuation);
+function clear(continuation) {
+    close(function () {
+        level.destroy(databasePath, function () {
+            var database = getDatabaseInstance();
+
+            database.open(continuation);
+        });
+    });
 }
 
 function get(continuation) {
@@ -54,8 +58,8 @@ function remove(roomName, continuation) {
 module.exports = exports = {
     setPath: setPath,
 
-    clear: clear,
     close: close,
+    clear: clear,
 
     get: get,
 

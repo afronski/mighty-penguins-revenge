@@ -18,6 +18,8 @@
 
     // Private methods.
     function handleKeyboard() {
+        /* istanbul ignore if: Keyboard events - Untestable */
+        /* istanbul ignore else: Keyboard events - Guard */
         if (jaws.pressedWithoutRepeat("space")) {
             jaws.switchGameState(RoomsSelectionScreen);
         }

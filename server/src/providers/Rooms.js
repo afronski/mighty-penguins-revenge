@@ -1,61 +1,120 @@
 "use strict";
 
 var RoomsDatabase = "rooms.db",
+    JsonValueEncoding,
     PathPrefix,
 
     path = require("path"),
 
-    levelup = require("levelup"),
+    level = require("level"),
+
+    Room = require("../models/Room"),
 
     databasePath,
-    database;
+    databaseInstance;
+
+JsonValueEncoding = {
+    valueEncoding: {
+        encode: function (room) {
+            return JSON.stringify(room);
+        },
+
+        decode: function (string) {
+            var object = JSON.parse(string),
+                decoded = new Room(object.name);
+
+            decoded.players = JSON.parse(JSON.stringify(object.players));
+
+            return decoded;
+        },
+
+        buffer: false,
+        type: "room"
+    }
+};
 
 function getDatabaseInstance() {
-    if (!database) {
+    if (!databaseInstance) {
         if (!PathPrefix) {
             throw new Error("Please setup a path for Rooms database!");
         }
 
         databasePath = path.join(PathPrefix, RoomsDatabase);
-        database = levelup(databasePath);
+        databaseInstance = level(databasePath);
     }
 
-    return database;
+    return databaseInstance;
 }
 
 function setPath(newPath) {
     PathPrefix = newPath;
 }
 
-function clear(continuation) {
+function close(continuation) {
     var database = getDatabaseInstance();
 
-    database.close(function () {
-        levelup.destroy(databasePath, continuation);
-    });
-}
-
-function close(continuation) {
     database.close(continuation);
 }
 
+function clear(continuation) {
+    close(function () {
+        level.destroy(databasePath, function () {
+            var database = getDatabaseInstance();
+
+            database.open(continuation);
+        });
+    });
+}
+
 function get(continuation) {
-    continuation();
+    var database = getDatabaseInstance(),
+        results = [];
+
+    function collectEntry(entry) {
+        results.push(entry.value);
+    }
+
+    /* istanbul ignore next: untestable */
+    function handleError(error) {
+        if (error) {
+            continuation(error);
+            continuation = null;
+        }
+    }
+
+    function publishResult() {
+        /* istanbul ignore else: untestable */
+        if (continuation) {
+            continuation(null, results);
+            continuation = null;
+        }
+    }
+
+    database.createReadStream(JsonValueEncoding)
+        .on("data", collectEntry)
+        .on("end", publishResult)
+        .on("error", handleError);
 }
 
 function add(room, continuation) {
-    continuation();
+    var database = getDatabaseInstance();
+
+    database.put(room.name, room, JsonValueEncoding, continuation);
 }
 
 function remove(roomName, continuation) {
+    // TODO: Implement removing from LevelDB.
+    //       Please use documentation from:
+    //          - https://github.com/rvagg/node-levelup#dbdelkey-options-callback
+
     continuation();
 }
 
 module.exports = exports = {
     setPath: setPath,
 
-    clear: clear,
     close: close,
+    clear: clear,
 
     get: get,
 
