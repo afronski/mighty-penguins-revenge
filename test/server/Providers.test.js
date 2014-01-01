@@ -4,6 +4,9 @@ require("should");
 
 var path = require("path"),
 
+    Room = require("../../server/src/models/Room"),
+    ScoresList = require("../../server/src/models/ScoresList"),
+
     Rooms = require("../../server/src/providers/Rooms"),
     Scores = require("../../server/src/providers/Scores");
 
@@ -19,16 +22,17 @@ describe("Empty rooms provider", function () {
 
 describe("Rooms provider", function () {
 
-    beforeEach(function () {
+    before(function () {
         this.room = { name: "Room 1", players: [] };
         Rooms.setPath(path.join(__dirname, "databases"));
     });
 
-    afterEach(function (finish) {
-        Rooms.clear(finish);
-    });
+    beforeEach(Rooms.clear);
+    after(Rooms.close);
 
     it("should have ability to add new room to the storage", function (finish) {
+        var owner = this;
+
         Rooms.get(function (error, results) {
             if (error) {
                 finish(error);
@@ -37,7 +41,7 @@ describe("Rooms provider", function () {
 
             results.length.should.be.equal(0);
 
-            Rooms.add(this.room, function (error) {
+            Rooms.add(owner.room, function (error) {
                 if (error) {
                     finish(error);
                     return;
@@ -94,6 +98,8 @@ describe("Rooms provider", function () {
     });
 
     it("should have ability to remove room from the storage", function (finish) {
+        var owner = this;
+
         Rooms.remove("Room 1", function (error) {
             if (error) {
                 finish(error);
@@ -108,7 +114,7 @@ describe("Rooms provider", function () {
 
                 results.length.should.be.equal(0);
 
-                Rooms.add(this.room, function (error) {
+                Rooms.add(owner.room, function (error) {
                     if (error) {
                         finish(error);
                         return;
@@ -127,6 +133,8 @@ describe("Rooms provider", function () {
                             }
 
                             results.length.should.be.equal(0);
+
+                            finish();
                         });
                     });
                 });
@@ -147,10 +155,13 @@ describe("Rooms provider", function () {
                     return;
                 }
 
-                results.length.should.be.equal(0);
+                results.length.should.be.equal(1);
 
+                results[0].should.be.an.instanceof(Room);
                 results[0].name.should.be.equal("Room 1");
                 results[0].players.length.should.be.equal(0);
+
+                finish();
             });
         });
     });
@@ -169,15 +180,16 @@ describe("Empty scores provider", function () {
 
 describe.skip("Scores provider", function () {
 
-    beforeEach(function () {
+    before(function () {
         this.score = { roomName: "Room 1", players: [] };
     });
 
-    afterEach(function (finish) {
-        Scores.clear(finish);
-    });
+    beforeEach(Scores.clear);
+    after(Scores.close);
 
     it("should have ability to add new score to the storage", function (finish) {
+        var owner = this;
+
         Scores.get(function (error, results) {
             if (error) {
                 finish(error);
@@ -186,7 +198,7 @@ describe.skip("Scores provider", function () {
 
             results.length.should.be.equal(0);
 
-            Scores.add(this.score, function (error) {
+            Scores.add(owner.score, function (error) {
                 if (error) {
                     finish(error);
                     return;
@@ -243,6 +255,8 @@ describe.skip("Scores provider", function () {
     });
 
     it("should have ability to remove score from the storage", function (finish) {
+        var owner = this;
+
         Scores.remove("Room 1", function (error) {
             if (error) {
                 finish(error);
@@ -257,7 +271,7 @@ describe.skip("Scores provider", function () {
 
                 results.length.should.be.equal(0);
 
-                Scores.add(this.score, function (error) {
+                Scores.add(owner.score, function (error) {
                     if (error) {
                         finish(error);
                         return;
@@ -276,6 +290,8 @@ describe.skip("Scores provider", function () {
                             }
 
                             results.length.should.be.equal(0);
+
+                            finish();
                         });
                     });
                 });
@@ -296,10 +312,13 @@ describe.skip("Scores provider", function () {
                     return;
                 }
 
-                results.length.should.be.equal(0);
+                results.length.should.be.equal(1);
 
+                results[0].should.be.an.instanceof(ScoresList);
                 results[0].roomName.should.be.equal("Room 1");
                 results[0].players.length.should.be.equal(0);
+
+                finish();
             });
         });
     });
