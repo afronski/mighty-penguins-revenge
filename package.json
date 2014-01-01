@@ -2,7 +2,7 @@
     "name": "mighty-penguins-revenge",
 
     "description": "A multi-player action game, written for the purpose of education and the Node.js workshop.",
-    "version": "0.1.0",
+    "version": "0.2.0",
 
     "author": {
         "name": "Wojciech Gawroński",
@@ -22,7 +22,9 @@
 
     "dependencies": {
         "colors": "~0.6.2",
-        "express": "~3.4.7"
+        "express": "~3.4.7",
+        "leveldown": "~0.10.2",
+        "levelup": "~0.18.2"
     },
 
     "devDependencies": {
