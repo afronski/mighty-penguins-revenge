@@ -7,9 +7,9 @@
         MaximumHealth = 100,
 
         DefaultPosition = {
-        x: 100,
-        y: 100
-    };
+            x: 100,
+            y: 100
+        };
 
     function Entity(options) {
         if (!options) {
