@@ -10,12 +10,22 @@ var path = require("path"),
     ConfigurationReader = require("./configuration/ConfigurationReader"),
     Logger = require("./loggers/ConsoleLogger"),
 
+    musicProvider = require("./providers/Music"),
+
     application = express(),
     configurationReader;
 
 function initialize(directory) {
     configurationReader = new ConfigurationReader(path.join(directory, "server"));
 
+    /* istanbul ignore next: Untestable (Asynchronous call) */
+    // Initialization.
+    musicProvider.initialize(path.join(directory, "client/assets"), "Music*.*", function () {
+        // Wire-up routing after initialization.
+        application.get("/music", musicProvider.streamRandomTrack);
+    });
+
+    // Middleware registration.
     application.use(express.static(path.join(directory, "client")));
 }
 
