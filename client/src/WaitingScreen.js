@@ -46,8 +46,7 @@
     function handleKeyboard() {
         var constructor;
 
-        /* istanbul ignore if: Keyboard events - Untestable */
-        /* istanbul ignore else: Keyboard events - Guard */
+        /* istanbul ignore next */
         if (jaws.pressedWithoutRepeat("space")) {
             constructor = World.bind(World, GeneratedMapName);
 
