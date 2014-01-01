@@ -29,7 +29,7 @@ function streamRandomTrack(request, response) {
     file += randomFromRange(1, tracks().length / 2).toString();
     file += supportsMP3 ? ".mp3" : ".ogg";
 
-    // TODO: It should respond with content of file represented by variable 'file'.
+    cache.exposeStream(file).pipe(response);
 }
 
 module.exports = exports = {
