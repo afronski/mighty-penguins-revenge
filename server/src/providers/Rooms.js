@@ -1,7 +1,42 @@
 "use strict";
 
+var RoomsDatabase = "rooms.db",
+    PathPrefix,
+
+    path = require("path"),
+
+    levelup = require("levelup"),
+
+    databasePath,
+    database;
+
+function getDatabaseInstance() {
+    if (!database) {
+        if (!PathPrefix) {
+            throw new Error("Please setup a path for Rooms database!");
+        }
+
+        databasePath = path.join(PathPrefix, RoomsDatabase);
+        database = levelup(databasePath);
+    }
+
+    return database;
+}
+
+function setPath(newPath) {
+    PathPrefix = newPath;
+}
+
 function clear(continuation) {
-    continuation();
+    var database = getDatabaseInstance();
+
+    database.close(function () {
+        levelup.destroy(databasePath, continuation);
+    });
+}
+
+function close(continuation) {
+    database.close(continuation);
 }
 
 function get(continuation) {
@@ -17,7 +52,10 @@ function remove(roomName, continuation) {
 }
 
 module.exports = exports = {
+    setPath: setPath,
+
     clear: clear,
+    close: close,
 
     get: get,
 

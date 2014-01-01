@@ -2,13 +2,26 @@
 
 require("should");
 
-var Rooms = require("../../server/src/providers/Rooms"),
+var path = require("path"),
+
+    Rooms = require("../../server/src/providers/Rooms"),
     Scores = require("../../server/src/providers/Scores");
+
+describe("Empty rooms provider", function () {
+
+    it("should explode when no path is set up", function () {
+        (function () {
+            Rooms.clear();
+        }).should.throwError("Please setup a path for Rooms database!");
+    });
+
+});
 
 describe("Rooms provider", function () {
 
     beforeEach(function () {
         this.room = { name: "Room 1", players: [] };
+        Rooms.setPath(path.join(__dirname, "databases"));
     });
 
     afterEach(function (finish) {
@@ -144,7 +157,17 @@ describe("Rooms provider", function () {
 
 });
 
-describe.skip("ScoresProvider", function () {
+describe("Empty scores provider", function () {
+
+    it("should explode when no path is set up", function () {
+        (function () {
+            Scores.clear();
+        }).should.throwError("Please setup a path for Scores database!");
+    });
+
+});
+
+describe.skip("Scores provider", function () {
 
     beforeEach(function () {
         this.score = { roomName: "Room 1", players: [] };
