@@ -1,12 +1,20 @@
 "use strict";
 
-function clear() {}
+function clear(continuation) {
+    continuation();
+}
 
-function get() {}
+function get(continuation) {
+    continuation();
+}
 
-function add() {}
+function add(room, continuation) {
+    continuation();
+}
 
-function remove() {}
+function remove(roomName, continuation) {
+    continuation();
+}
 
 module.exports = exports = {
     clear: clear,
