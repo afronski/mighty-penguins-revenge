@@ -8,3 +8,7 @@ coverage/
 # Rubbish and reports.
 *.log
 reports/
+
+# Test generated assets.
+test/server/databases/rooms.db/
+test/server/databases/scores.db/
