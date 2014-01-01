@@ -12,7 +12,3 @@ reports/
 # Test generated assets.
 test/server/databases/rooms.db/
 test/server/databases/scores.db/
-
-# Heavy assets.
-client/assets/Music*.mp3
-client/assets/Music*.ogg
