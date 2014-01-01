@@ -1,6 +1,7 @@
 "use strict";
 
 var fs = require("fs"),
+
     path = require("path"),
     glob = require("glob"),
     CombinedStream = require("combined-stream");
@@ -31,10 +32,14 @@ MemoryCache.prototype.prefetch = function (continuation) {
         files.forEach(function (file, index) {
             var key = path.basename(file);
 
-            // TODO: Read each file with in asynchronous way and push it to the storage,
-            //       only if there is no error. Be sure that you're reading buffers not string!
-            //       Hint:
-            //         - http://nodejs.org/api/fs.html#fs_fs_readfile_filename_options_callback
+            fs.readFile(file, function (error, buffer) {
+                /* istanbul ignore else: Guard */
+                if (!error) {
+                    owner.storage[key] = buffer;
+                }
+
+                finish(index, files.length);
+            });
         });
     });
 };
