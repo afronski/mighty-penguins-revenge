@@ -35,6 +35,7 @@
         return "HEALTH: " + parseInt(health, 10) + " SCORE: " + parseInt(score, 10);
     }
 
+    /* istanbul ignore next */
     function handleKeyboard() {
         if (jaws.pressed("left")) {
             this.player.left();
@@ -69,16 +70,19 @@
     }
 
     function applyGravity(object) {
+        /* istanbul ignore else */
         if (object.vy < Constants.MaxGravity) {
             object.vy += Constants.WorldGravity;
         }
     }
 
     function terrainAt(x, y) {
+        /* istanbul ignore next */
         if (x < 0) {
             return true;
         }
 
+        /* istanbul ignore next */
         if (y < 1) {
             return true;
         }
@@ -92,6 +96,7 @@
 
         for (scanningX = x + width; x < scanningX; ++x) {
             for (scanningY = y + height; y < scanningY; ++y) {
+                /* istanbul ignore next */
                 if (terrainAt.call(this, x, y)) {
                     return true;
                 }
@@ -119,6 +124,7 @@
             isLowerCornerAvailable = !terrainAt.call(this, x, y),
             isUpperCornerAvailable = !terrainAt.call(this, x, y - Constants.EntitySize.Height);
 
+        /* istanbul ignore else */
         if (isLowerCornerAvailable && isUpperCornerAvailable) {
             return { x: x, y: y };
         } else {
@@ -143,6 +149,7 @@
         for (i = 0; i < target; ++i) {
             object.y += step;
 
+            /* istanbul ignore next */
             if (terrainAt.call(this, object.x, object.y) || terrainAt.call(this, object.x, object.rect().y)) {
                 object.y -= step;
 
@@ -161,6 +168,7 @@
             object.x += step;
             bottom = object.y - object.height;
 
+            /* istanbul ignore next */
             if (terrainInRect.call(this, object.x, bottom, 1, object.height)) {
                 if (!terrainInRect.call(this, object.x, bottom - Constants.CollisionMargin, 1, object.height)) {
                     object.y -= Constants.CollisionMargin;
@@ -184,6 +192,7 @@
             object.x += step;
             bottom = object.y - object.height;
 
+            /* istanbul ignore next */
             if (terrainInRect.call(this, object.x, bottom, 1, object.height)) {
                 object.x -= step;
 

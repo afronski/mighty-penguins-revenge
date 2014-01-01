@@ -95,23 +95,18 @@
         this.selector.set(this.selectorOptions);
     }
 
+    /* istanbul ignore next */
     function handleKeyboard() {
-        /* istanbul ignore if: Keyboard events - Untestable */
-        /* istanbul ignore else: Keyboard events - Guard */
         if (jaws.pressedWithoutRepeat("up")) {
             jaws.clearPressedKeys();
             this.moveSelectorUp();
         }
 
-        /* istanbul ignore if: Keyboard events - Untestable */
-        /* istanbul ignore else: Keyboard events - Guard */
         if (jaws.pressedWithoutRepeat("down")) {
             jaws.clearPressedKeys();
             this.moveSelectorDown();
         }
 
-        /* istanbul ignore if: Keyboard events - Untestable */
-        /* istanbul ignore else: Keyboard events - Guard */
         if (jaws.pressedWithoutRepeat("space")) {
             if (this.isSelected("SelectNick")) {
                 this.nick = utils.getValue("Enter your name:");
