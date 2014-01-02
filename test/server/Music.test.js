@@ -44,11 +44,11 @@ describe("Music provider", function () {
         });
     });
 
-    it("should stream OGG by default", function () {
-        musicProvider.streamRandomTrack({}, this.responseForOGG);
+    it("should stream MP3 by default", function () {
+        musicProvider.streamRandomTrack({}, this.responseForMP3);
 
-        sinon.assert.calledWith(this.responseForOGG.writeHead, 200, { "Content-Type": "audio/ogg" });
-        sinon.assert.called(this.responseForOGG.on);
+        sinon.assert.calledWith(this.responseForMP3.writeHead, 200, { "Content-Type": "audio/mpeg" });
+        sinon.assert.called(this.responseForMP3.on);
     });
 
     it("should stream OGG track when requested with proper 'Accept' header", function () {

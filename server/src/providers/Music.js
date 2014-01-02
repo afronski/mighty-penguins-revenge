@@ -17,17 +17,17 @@ function tracks() {
 }
 
 function streamRandomTrack(request, response) {
-    var supportsMP3 = request.headers && request.headers.accept.indexOf("audio/mpeg") !== -1,
+    var supportsOGG = request.headers && request.headers.accept.indexOf("audio/ogg") !== -1,
         file = "Music";
 
-    if (supportsMP3) {
-        response.writeHead(200, { "Content-Type": "audio/mpeg" });
-    } else {
+    if (supportsOGG) {
         response.writeHead(200, { "Content-Type": "audio/ogg" });
+    } else {
+        response.writeHead(200, { "Content-Type": "audio/mpeg" });
     }
 
     file += randomFromRange(1, tracks().length / 2).toString();
-    file += supportsMP3 ? ".mp3" : ".ogg";
+    file += supportsOGG ? ".ogg" : ".mp3";
 
     cache.exposeStream(file).pipe(response);
 }
