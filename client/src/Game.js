@@ -27,7 +27,7 @@
         image.src = url;
     }
 
-    /* istanbul ignore next: Untestable - Audio */
+    /* istanbul ignore next */
     function loadAudio(url, loaded) {
         BackgroundAudio = new Audio();
 
@@ -41,7 +41,7 @@
         BackgroundAudio.src = url;
     }
 
-    /* istanbul ignore next: Untestable */
+    /* istanbul ignore next */
     function replayAgain() {
         this.currentTime = 0;
         this.play();
@@ -55,7 +55,7 @@
     function setUp(assetsPath) {
         var audioSupported = window.navigator.userAgent.search(/phantomjs/i) === -1;
 
-        /* istanbul ignore if: Guard */
+        /* istanbul ignore if */
         if (audioSupported) {
             Assets = Assets.concat(Sounds);
         }
@@ -68,28 +68,28 @@
         jaws.preventDefaultKeys(UsedKeys);
     }
 
-    /* istanbul ignore next: Untestable - Audio */
+    /* istanbul ignore next */
     function loadMusic(path) {
         loadAudio(path, function () {
             BackgroundAudio.addEventListener("ended", replayAgain, false);
             BackgroundAudio.play();
         });
 
-        /* istanbul ignore next: Untestable - Blur event */
+        /* istanbul ignore next */
         window.addEventListener("blur", function () {
             if (BackgroundAudio) {
                 BackgroundAudio.pause();
             }
         }, false);
 
-        /* istanbul ignore next: Untestable - Fous event */
+        /* istanbul ignore next */
         window.addEventListener("focus", function () {
             if (BackgroundAudio) {
                 BackgroundAudio.play();
             }
         }, false);
 
-        /* istanbul ignore next: Untestable - Keyboard events */
+        /* istanbul ignore next */
         window.addEventListener("keydown", function (event) {
             var key = event.keyCode || event.which;
 
