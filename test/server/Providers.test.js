@@ -2,7 +2,8 @@
 
 require("should");
 
-var path = require("path"),
+var domain = require("domain"),
+    path = require("path"),
 
     Room = require("../../server/src/models/Room"),
     ScoresList = require("../../server/src/models/ScoresList"),
@@ -33,6 +34,13 @@ describe("Rooms provider", function () {
 
     it("should have ability to add new room to the storage", function (finish) {
         var owner = this;
+
+        // TODO: Replace repeated error handlers for each callback with Domain.
+        //       In order to do that you have to "capture" error for each callback
+        //       and provide error handling in one place.
+        //       Hint:
+        //         - http://nodejs.org/api/domain.html#domain_domain_intercept_callback
+        //         - Replace it just for this test.
 
         Rooms.get(function (error, results) {
             if (error) {
