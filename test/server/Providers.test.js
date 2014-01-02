@@ -33,137 +33,74 @@ describe("Rooms provider", function () {
     after(Rooms.close);
 
     it("should have ability to add new room to the storage", function (finish) {
-        var owner = this;
+        var owner = this,
+            handler = domain.create();
 
-        // TODO: Replace repeated error handlers for each callback with Domain.
-        //       In order to do that you have to "capture" error for each callback
-        //       and provide error handling in one place.
-        //       Hint:
-        //         - http://nodejs.org/api/domain.html#domain_domain_intercept_callback
-        //         - Replace it just for this test.
+        handler.on("error", finish);
 
-        Rooms.get(function (error, results) {
-            if (error) {
-                finish(error);
-                return;
-            }
-
+        Rooms.get(handler.intercept(function (results) {
             results.length.should.be.equal(0);
 
-            Rooms.add(owner.room, function (error) {
-                if (error) {
-                    finish(error);
-                    return;
-                }
-
-                Rooms.get(function (error, results) {
-                    if (error) {
-                        finish(error);
-                        return;
-                    }
-
+            Rooms.add(owner.room, handler.intercept(function () {
+                Rooms.get(handler.intercept(function (results) {
                     results.length.should.be.equal(1);
 
                     finish();
-                });
-            });
-        });
+                }));
+            }));
+        }));
     });
 
     it("should have ability to clear storage", function (finish) {
-        Rooms.add(this.room, function (error) {
-            if (error) {
-                finish(error);
-                return;
-            }
+        var handler = domain.create();
 
-            Rooms.get(function (error, results) {
-                if (error) {
-                    finish(error);
-                    return;
-                }
+        handler.on("error", finish);
 
+        Rooms.add(this.room, handler.intercept(function () {
+            Rooms.get(handler.intercept(function (results) {
                 results.length.should.not.be.equal(0);
 
-                Rooms.clear(function (error) {
-                    if (error) {
-                        finish(error);
-                        return;
-                    }
-
-                    Rooms.get(function (error, results) {
-                        if (error) {
-                            finish(error);
-                            return;
-                        }
-
+                Rooms.clear(handler.intercept(function () {
+                    Rooms.get(handler.intercept(function (results) {
                         results.length.should.be.equal(0);
 
                         finish();
-                    });
-                });
-            });
-        });
+                    }));
+                }));
+            }));
+        }));
     });
 
     it("should have ability to remove room from the storage", function (finish) {
-        var owner = this;
+        var owner = this,
+            handler = domain.create();
 
-        Rooms.remove("Room 1", function (error) {
-            if (error) {
-                finish(error);
-                return;
-            }
+        handler.on("error", finish);
 
-            Rooms.get(function (error, results) {
-                if (error) {
-                    finish(error);
-                    return;
-                }
-
+        Rooms.remove("Room 1", handler.intercept(function () {
+            Rooms.get(handler.intercept(function (results) {
                 results.length.should.be.equal(0);
 
-                Rooms.add(owner.room, function (error) {
-                    if (error) {
-                        finish(error);
-                        return;
-                    }
-
-                    Rooms.remove("Room 1", function (error) {
-                        if (error) {
-                            finish(error);
-                            return;
-                        }
-
-                        Rooms.get(function (error, results) {
-                            if (error) {
-                                finish(error);
-                                return;
-                            }
-
+                Rooms.add(owner.room, handler.intercept(function () {
+                    Rooms.remove("Room 1", handler.intercept(function () {
+                        Rooms.get(handler.intercept(function (results) {
                             results.length.should.be.equal(0);
 
                             finish();
-                        });
-                    });
-                });
-            });
-        });
+                        }));
+                    }));
+                }));
+            }));
+        }));
     });
 
     it("should have ability to get all rooms from the storage", function (finish) {
-        Rooms.add(this.room, function (error) {
-            if (error) {
-                finish(error);
-                return;
-            }
+        var handler = domain.create();
 
-            Rooms.get(function (error, results) {
-                if (error) {
-                    finish(error);
-                    return;
-                }
+        handler.on("error", finish);
 
+        Rooms.add(this.room, handler.intercept(function () {
+            Rooms.get(handler.intercept(function (results) {
                 results.length.should.be.equal(1);
 
                 results[0].should.be.an.instanceof(Room);
@@ -171,8 +108,8 @@ describe("Rooms provider", function () {
                 results[0].players.length.should.be.equal(0);
 
                 finish();
-            });
-        });
+            }));
+        }));
     });
 
 });
@@ -199,130 +136,74 @@ describe("Scores provider", function () {
     after(Scores.close);
 
     it("should have ability to add new score to the storage", function (finish) {
-        var owner = this;
+        var owner = this,
+            handler = domain.create();
 
-        Scores.get(function (error, results) {
-            if (error) {
-                finish(error);
-                return;
-            }
+        handler.on("error", finish);
 
+        Scores.get(handler.intercept(function (results) {
             results.length.should.be.equal(0);
 
-            Scores.add(owner.score, function (error) {
-                if (error) {
-                    finish(error);
-                    return;
-                }
-
-                Scores.get(function (error, results) {
-                    if (error) {
-                        finish(error);
-                        return;
-                    }
-
+            Scores.add(owner.score, handler.intercept(function () {
+                Scores.get(handler.intercept(function (results) {
                     results.length.should.be.equal(1);
 
                     finish();
-                });
-            });
-        });
+                }));
+            }));
+        }));
     });
 
     it("should have ability to clear storage", function (finish) {
-        Scores.add(this.score, function (error) {
-            if (error) {
-                finish(error);
-                return;
-            }
+        var handler = domain.create();
 
-            Scores.get(function (error, results) {
-                if (error) {
-                    finish(error);
-                    return;
-                }
+        handler.on("error", finish);
 
+        Scores.add(this.score, handler.intercept(function () {
+            Scores.get(handler.intercept(function (results) {
                 results.length.should.not.be.equal(0);
 
-                Scores.clear(function (error) {
-                    if (error) {
-                        finish(error);
-                        return;
-                    }
-
-                    Scores.get(function (error, results) {
-                        if (error) {
-                            finish(error);
-                            return;
-                        }
-
+                Scores.clear(handler.intercept(function () {
+                    Scores.get(handler.intercept(function (results) {
                         results.length.should.be.equal(0);
 
                         finish();
-                    });
-                });
-            });
-        });
+                    }));
+                }));
+            }));
+        }));
     });
 
     it("should have ability to remove score from the storage", function (finish) {
-        var owner = this;
+        var owner = this,
+            handler = domain.create();
 
-        Scores.remove("Room 1", function (error) {
-            if (error) {
-                finish(error);
-                return;
-            }
+        handler.on("error", finish);
 
-            Scores.get(function (error, results) {
-                if (error) {
-                    finish(error);
-                    return;
-                }
-
+        Scores.remove("Room 1", handler.intercept(function () {
+            Scores.get(handler.intercept(function (results) {
                 results.length.should.be.equal(0);
 
-                Scores.add(owner.score, function (error) {
-                    if (error) {
-                        finish(error);
-                        return;
-                    }
-
-                    Scores.remove("Room 1", function (error) {
-                        if (error) {
-                            finish(error);
-                            return;
-                        }
-
-                        Scores.get(function (error, results) {
-                            if (error) {
-                                finish(error);
-                                return;
-                            }
-
+                Scores.add(owner.score, handler.intercept(function () {
+                    Scores.remove("Room 1", handler.intercept(function () {
+                        Scores.get(handler.intercept(function (results) {
                             results.length.should.be.equal(0);
 
                             finish();
-                        });
-                    });
-                });
-            });
-        });
+                        }));
+                    }));
+                }));
+            }));
+        }));
     });
 
     it("should have ability to get all score lists from the storage", function (finish) {
-        Scores.add(this.score, function (error) {
-            if (error) {
-                finish(error);
-                return;
-            }
+        var handler = domain.create();
 
-            Scores.get(function (error, results) {
-                if (error) {
-                    finish(error);
-                    return;
-                }
+        handler.on("error", finish);
 
+        Scores.add(this.score, handler.intercept(function () {
+            Scores.get(handler.intercept(function (results) {
                 results.length.should.be.equal(1);
 
                 results[0].should.be.an.instanceof(ScoresList);
@@ -330,8 +211,8 @@ describe("Scores provider", function () {
                 results[0].players.length.should.be.equal(0);
 
                 finish();
-            });
-        });
+            }));
+        }));
     });
 
 });
