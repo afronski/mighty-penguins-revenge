@@ -28,3 +28,7 @@ Music is created by [Eric Skiff](http://ericskiff.com/music/) and provided also 
 ## Font
 
 Font used in game is called [VT323](https://www.google.com/fonts/specimen/VT323) and it is provided on [SIL Open Font License](http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL).
+
+# License
+
+Source code and assets not mentioned above are licensed on [CC BY-NC-ND 3.0](http://creativecommons.org/licenses/by-nc-nd/3.0/).
