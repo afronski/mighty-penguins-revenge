@@ -36,11 +36,11 @@
         window.jaws.onload = function () {
             Game.setUp("/client/assets/");
 
-            Game.load("/client/assets/TestMap1.png", function() {
+            Game.loadMap("/client/assets/TestMap1.png", function() {
                 jaws.start(function() {
-                  QUnit.start();
+                    QUnit.start();
 
-                  return new World("TestMap1.png");
+                    return new World("TestMap1.png");
                 });
             });
         };

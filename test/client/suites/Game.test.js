@@ -13,7 +13,7 @@
         QUnit.stop();
         QUnit.expect(0);
 
-        Game.load("/client/assets/TestMap1.png");
+        Game.loadMap("/client/assets/TestMap1.png");
 
         setTimeout(QUnit.start, 1000);
     });

@@ -51,7 +51,7 @@
             constructor = World.bind(World, GeneratedMapName);
 
             if (this.createdByMe) {
-                Game.load(FullGeneratedMapUrl, jaws.switchGameState.bind(jaws, constructor));
+                Game.loadMap(FullGeneratedMapUrl, jaws.switchGameState.bind(jaws, constructor));
             }
 
             // TODO: Waiting for signal from server.
