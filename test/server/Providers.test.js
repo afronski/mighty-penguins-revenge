@@ -24,7 +24,12 @@ describe("Empty rooms provider", function () {
 describe("Rooms provider", function () {
 
     before(function () {
-        this.room = { name: "Room 1", players: [] };
+        this.room = {
+            name: "Room 1",
+            session: "aaaa1111-2222-3333-4444-bbbb5555",
+            players: [],
+            available: true
+        };
 
         Rooms.setPath(path.join(__dirname, "databases"));
     });
@@ -105,6 +110,8 @@ describe("Rooms provider", function () {
 
                 results[0].should.be.an.instanceof(Room);
                 results[0].name.should.be.equal("Room 1");
+                results[0].session.should.match(/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{8}/i);
+                results[0].available.should.be.equal(true);
                 results[0].players.length.should.be.equal(0);
 
                 finish();

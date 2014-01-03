@@ -2,7 +2,9 @@
 
 var CharactersForRemoval = "+=-!@#$%^&*()[]{}|\\/?.,<>;:'\"`~ \t\n\r",
     Replacement = "_",
-    PostfixExtension = ".png";
+    PostfixExtension = ".png",
+
+    uuid = require("node-uuid");
 
 function replaceIfInvalid(character) {
     if (CharactersForRemoval.indexOf(character) !== -1) {
@@ -24,6 +26,9 @@ function Room(name) {
     this.name = name;
     this.mapName = Room.slugify(this.name) + PostfixExtension;
 
+    this.session = uuid.v1();
+    this.available = true;
+
     this.players = [];
 }
 
@@ -37,6 +42,10 @@ Room.prototype.addPlayer = function (player) {
 
 Room.prototype.removePlayer = function (name) {
     this.players = this.players.filter(filterName.bind(null, name));
+};
+
+Room.prototype.lock = function () {
+    this.available = false;
 };
 
 Room.slugify = function (name) {

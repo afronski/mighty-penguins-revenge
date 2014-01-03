@@ -75,6 +75,25 @@ describe("Room", function () {
         room.mapName.should.be.equal("Room__1.png");
     });
 
+    it("should be available by default", function () {
+        var room = new Room("Room 1");
+
+        room.available.should.be.equal(true);
+    });
+
+    it("should have session identifier created", function () {
+        var room = new Room("Room 1");
+
+        room.session.should.match(/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{8}/i);
+    });
+
+    it("should not be available after locking", function () {
+        var room = new Room("Room 1");
+
+        room.lock();
+        room.available.should.be.equal(false);
+    });
+
     it("should have players list", function () {
         var room = new Room("Room 1");
 

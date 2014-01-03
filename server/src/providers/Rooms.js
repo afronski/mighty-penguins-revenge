@@ -24,6 +24,8 @@ JsonValueEncoding = {
                 decoded = new Room(object.name);
 
             decoded.players = JSON.parse(JSON.stringify(object.players));
+            decoded.session = object.session;
+            decoded.available = object.available;
 
             return decoded;
         },
