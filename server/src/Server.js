@@ -2,10 +2,12 @@
 
 require("colors");
 
-var path = require("path"),
+var http = require("http"),
+    path = require("path"),
     util = require("util"),
 
     express = require("express"),
+    socketIO = require("socket.io"),
 
     ConfigurationReader = require("./configuration/ConfigurationReader"),
     Logger = require("./loggers/ConsoleLogger"),
@@ -13,7 +15,8 @@ var path = require("path"),
     musicProvider = require("./providers/Music"),
 
     application = express(),
-    configurationReader;
+    configurationReader,
+    webSockets;
 
 function initialize(directory) {
     configurationReader = new ConfigurationReader(path.join(directory, "server"));
@@ -30,9 +33,11 @@ function initialize(directory) {
 }
 
 function listen() {
-    var port = configurationReader.get("port");
+    var port = configurationReader.get("port"),
+        server = http.createServer(application);
 
-    application.listen(port);
+    webSockets = socketIO.listen(server, { log: false, resource: "/ws" });
+    server.listen(port);
 
     Logger.info(util.format("Application listening on port: %d", port).yellow);
 }

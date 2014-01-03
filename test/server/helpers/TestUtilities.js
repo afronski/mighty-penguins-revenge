@@ -31,6 +31,29 @@ function ExpressMock() {
     return result;
 }
 
+// Mock for HTTP server.
+
+function HttpMock() {
+    var implementation,
+        result = {};
+
+    implementation = {
+        removeAllListeners: sinon.spy(),
+        listeners: sinon.stub().returns([]),
+        listen: sinon.spy(),
+        once: sinon.spy(),
+        on: sinon.spy()
+    };
+
+    result.createServer = function () {
+        return implementation;
+    };
+
+    result.implementation = implementation;
+
+    return result;
+}
+
 // Mock for custom console logger.
 
 function ConsoleLoggerMock() {
@@ -44,6 +67,8 @@ function ConsoleLoggerMock() {
 MockFactory.create = function (name) {
     if (name === "express") {
         return new ExpressMock();
+    } else if (name === "http") {
+        return new HttpMock();
     } else if (name.indexOf("ConsoleLogger") !== -1) {
         return new ConsoleLoggerMock();
     } else {

@@ -11,7 +11,7 @@ var path = require("path"),
 describe("Main server based on 'express' framework", function () {
 
     before(function () {
-        helpers.mock({ express: true });
+        helpers.mock({ express: true, http: true });
 
         this.server = require("../../server/src/Server");
     });
@@ -34,8 +34,8 @@ describe("Main server based on 'express' framework", function () {
         this.server.initialize(__dirname);
         this.server.listen();
 
-        sinon.assert.calledOnce(helpers.getMock("express").implementation.listen);
-        sinon.assert.calledWith(helpers.getMock("express").implementation.listen, 8999);
+        sinon.assert.calledOnce(helpers.getMock("http").implementation.listen);
+        sinon.assert.calledWith(helpers.getMock("http").implementation.listen, 8999);
     });
 
 });

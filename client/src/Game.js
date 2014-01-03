@@ -17,9 +17,20 @@
             "SoundWeapon1.mp3"
         ],
 
+        BackgroundAudioLocalStorageKey = "MutedBackgroundAudio",
         BackgroundAudio;
 
     // Private methods.
+    /* istanbul ignore next */
+    function getBackgroundAudioState() {
+        return JSON.parse(window.localStorage.getItem(BackgroundAudioLocalStorageKey));
+    }
+
+    /* istanbul ignore next */
+    function saveBackgroundAudioState(state) {
+        window.localStorage.setItem(BackgroundAudioLocalStorageKey, state);
+    }
+
     function loadImage(url, loaded) {
         var image = new Image();
 
@@ -35,7 +46,7 @@
         BackgroundAudio.loop = false;
 
         BackgroundAudio.volume = 1.0;
-        BackgroundAudio.muted = false;
+        BackgroundAudio.muted = getBackgroundAudioState() || false;
 
         BackgroundAudio.addEventListener("canplay", loaded);
         BackgroundAudio.src = url;
@@ -96,6 +107,7 @@
             // Mute background audio via "m" key.
             if (key === 77) {
                 BackgroundAudio.muted = !BackgroundAudio.muted;
+                saveBackgroundAudioState(BackgroundAudio.muted);
             }
         }, false);
     }
