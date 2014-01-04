@@ -23,12 +23,34 @@ function Glue(rooms, scores) {
 // Public methods.
 
 Glue.prototype.handleGameStart = function (socket, session) {
-    // TODO: It should broadcast two events:
-    //         - 'game-started' if we will find game with corresponding session.
-    //         - 'game-failed' if we can't find game with corresponding session.
-    //
-    //       Also it should 'lock' corresponding room in successful case when
-    //       player is an author of the room.
+    var owner = this,
+        handler = domain.create();
+
+    /* istanbul ignore next: Untestable */
+    handler.on("error", function (error) {
+        ConsoleLogger.error("Error occurred:", error);
+    });
+
+    socket.get("room-author", handler.intercept(function (isAuthor) {
+        owner.queries.getAccessibleRooms(handler.intercept(function (rooms) {
+            rooms = rooms.filter(bySession.bind(null, session))[0];
+
+            if (rooms) {
+                /* istanbul ignore else: Guard */
+                if (isAuthor) {
+                    owner.commands.lockRoom(session, handler.intercept(function () {
+                        ConsoleLogger.info("Game associated with session '%s' started!", session);
+                        socket.broadcast.to(session).emit("game-started");
+                    }));
+                } else {
+                    ConsoleLogger.error("Not an author requested the game start of '%s'.", session);
+                }
+            } else {
+                ConsoleLogger.error("Unknown room '%s' requested on game start.", session);
+                socket.emit("game-failed");
+            }
+        }));
+    }));
 };
 
 Glue.prototype.wire = function (webSockets) {
