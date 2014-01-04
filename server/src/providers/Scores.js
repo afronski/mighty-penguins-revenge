@@ -21,7 +21,7 @@ JsonValueEncoding = {
 
         decode: function (string) {
             var object = JSON.parse(string),
-                room = { name: object.roomName, players: object.players },
+                room = { name: object.roomName, session: object.session, players: object.players },
                 decoded = new ScoresList(room);
 
             return decoded;
@@ -98,13 +98,13 @@ function get(continuation) {
 function add(score, continuation) {
     var database = getDatabaseInstance();
 
-    database.put(score.roomName, score, JsonValueEncoding, continuation);
+    database.put(score.session, score, JsonValueEncoding, continuation);
 }
 
-function remove(roomName, continuation) {
+function remove(session, continuation) {
     var database = getDatabaseInstance();
 
-    database.del(roomName, JsonValueEncoding, continuation);
+    database.del(session, JsonValueEncoding, continuation);
 }
 
 module.exports = exports = {

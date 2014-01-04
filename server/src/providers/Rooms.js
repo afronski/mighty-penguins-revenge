@@ -101,13 +101,23 @@ function get(continuation) {
 function add(room, continuation) {
     var database = getDatabaseInstance();
 
-    database.put(room.name, room, JsonValueEncoding, continuation);
+    database.put(room.session, room, JsonValueEncoding, continuation);
 }
 
-function remove(roomName, continuation) {
+function remove(session, continuation) {
     var database = getDatabaseInstance();
 
-    database.del(roomName, JsonValueEncoding, continuation);
+    database.del(session, JsonValueEncoding, continuation);
+}
+
+function atomicUpdate(oldSession, newRoom, continuation) {
+    var database = getDatabaseInstance(),
+        operations = [
+            { type: "del", key: oldSession },
+            { type: "put", key: newRoom.session, value: newRoom }
+        ];
+
+    database.batch(operations, JsonValueEncoding, continuation);
 }
 
 module.exports = exports = {
@@ -119,5 +129,6 @@ module.exports = exports = {
     get: get,
 
     add: add,
-    remove: remove
+    remove: remove,
+    atomicUpdate: atomicUpdate
 };

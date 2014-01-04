@@ -2,7 +2,9 @@
 
 require("should");
 
-var domain = require("domain"),
+var GuidRegularExpression = /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{8}/i,
+
+    domain = require("domain"),
     path = require("path"),
 
     Room = require("../../server/src/models/Room"),
@@ -82,12 +84,12 @@ describe("Rooms provider", function () {
 
         handler.on("error", finish);
 
-        Rooms.remove("Room 1", handler.intercept(function () {
+        Rooms.remove("UNKN0WN0-SESS-I0N0-NUMB-ER000000", handler.intercept(function () {
             Rooms.get(handler.intercept(function (results) {
                 results.length.should.be.equal(0);
 
                 Rooms.add(owner.room, handler.intercept(function () {
-                    Rooms.remove("Room 1", handler.intercept(function () {
+                    Rooms.remove(owner.room.session, handler.intercept(function () {
                         Rooms.get(handler.intercept(function (results) {
                             results.length.should.be.equal(0);
 
@@ -110,11 +112,42 @@ describe("Rooms provider", function () {
 
                 results[0].should.be.an.instanceof(Room);
                 results[0].name.should.be.equal("Room 1");
-                results[0].session.should.match(/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{8}/i);
+                results[0].session.should.match(GuidRegularExpression);
                 results[0].available.should.be.equal(true);
                 results[0].players.length.should.be.equal(0);
 
                 finish();
+            }));
+        }));
+    });
+
+    it("should have ability update room in storage", function (finish) {
+        var owner = this,
+            handler = domain.create();
+
+        handler.on("error", finish);
+
+        Rooms.add(owner.room, handler.intercept(function () {
+            var updatedRoom = JSON.parse(JSON.stringify(owner.room)),
+                oldSession = owner.room.session;
+
+            updatedRoom.name = "Room 123";
+            updatedRoom.available = false;
+            updatedRoom.players = [ {} ];
+
+            Rooms.atomicUpdate(oldSession, updatedRoom, handler.intercept(function () {
+                Rooms.get(handler.intercept(function (results) {
+                    results.length.should.be.equal(1);
+
+                    results[0].should.be.an.instanceof(Room);
+                    results[0].session.should.be.equal(oldSession);
+
+                    results[0].name.should.be.equal("Room 123");
+                    results[0].available.should.be.equal(false);
+                    results[0].players.length.should.be.equal(1);
+
+                    finish();
+                }));
             }));
         }));
     });
@@ -134,7 +167,11 @@ describe("Empty scores provider", function () {
 describe("Scores provider", function () {
 
     before(function () {
-        this.score = { roomName: "Room 1", players: [] };
+        this.score = {
+            roomName: "Room 1",
+            session: "aaaa1111-2222-3333-4444-bbbb5555",
+            players: []
+        };
 
         Scores.setPath(path.join(__dirname, "databases"));
     });
@@ -187,12 +224,12 @@ describe("Scores provider", function () {
 
         handler.on("error", finish);
 
-        Scores.remove("Room 1", handler.intercept(function () {
+        Scores.remove("UNKN0WN0-SESS-I0N0-NUMB-ER000000", handler.intercept(function () {
             Scores.get(handler.intercept(function (results) {
                 results.length.should.be.equal(0);
 
                 Scores.add(owner.score, handler.intercept(function () {
-                    Scores.remove("Room 1", handler.intercept(function () {
+                    Scores.remove(owner.score.session, handler.intercept(function () {
                         Scores.get(handler.intercept(function (results) {
                             results.length.should.be.equal(0);
 
@@ -215,6 +252,7 @@ describe("Scores provider", function () {
 
                 results[0].should.be.an.instanceof(ScoresList);
                 results[0].roomName.should.be.equal("Room 1");
+                results[0].session.should.match(GuidRegularExpression);
                 results[0].players.length.should.be.equal(0);
 
                 finish();

@@ -37,12 +37,12 @@
     }
 
     function createScoreItems(scores) {
-        return scores.slice(0, 3).map(function (score, index) {
+        return scores.slice(0, 3).map(function (item, index) {
             var itemPosition = index + 1,
                 itemOptions = jaws.clone(ScoreListItemOptions);
 
             itemOptions.y += itemPosition * ScoreListItemHeight;
-            itemOptions.text = itemPosition + ". " + score.name + " - " + score.value;
+            itemOptions.text = itemPosition + ". " + item.nick + " - " + item.score;
 
             return new jaws.Text(itemOptions);
         });
