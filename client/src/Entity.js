@@ -164,6 +164,25 @@
                 score: this.score
             };
         };
+
+        this.restore = function (dump) {
+            this.x = dump.x;
+            this.y = dump.y;
+
+            this.vx = dump.vx;
+            this.vy = dump.vy;
+
+            this.jumping = dump.jumping;
+            this.can_jump = dump.can_jump;
+
+            this.flipped = dump.flipped;
+
+            this.dead = dump.dead;
+            this.health = dump.health;
+
+            this.nick = dump.nick;
+            this.score = dump.score;
+        };
     }
 
     Entity.prototype = jaws.Sprite.prototype;

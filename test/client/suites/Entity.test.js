@@ -52,8 +52,52 @@
 
         QUnit.equal(false, dump.jumping);
         QUnit.equal(true, dump.can_jump);
-
     });
+
+    QUnit.test("Restore should restore all properties", function () {
+        var entity = new Entity({ x: 100, y: -100, nick: "Nick" }),
+            dump;
+
+        entity.initialize("Player.png");
+        dump = entity.dump();
+
+        entity.x = 0;
+        entity.y = 0;
+
+        entity.vx = -10;
+        entity.vy = -10;
+
+        entity.nick = "Test";
+
+        entity.health = 0;
+        entity.dead = true;
+
+        entity.flipped = true;
+        entity.score = 10;
+
+        entity.jumping = true;
+        entity.can_jump = false;
+
+        entity.restore(dump);
+
+        QUnit.equal(100, entity.x);
+        QUnit.equal(-100, entity.y);
+
+        QUnit.equal(0, entity.vx);
+        QUnit.equal(0, entity.vy);
+
+        QUnit.equal("Nick", entity.nick);
+
+        QUnit.equal(100, entity.health);
+        QUnit.equal(false, entity.dead);
+
+        QUnit.equal(false, entity.flipped);
+        QUnit.equal(0, entity.score);
+
+        QUnit.equal(false, entity.jumping);
+        QUnit.equal(true, entity.can_jump);
+    });
+
 
     QUnit.test("At the beginning score and health should be setup", function () {
         QUnit.equal(0, this.entity.getScore());

@@ -31,12 +31,13 @@
 
         /* istanbul ignore if */
         if (typeof(io) !== "undefined") {
-
             this.socket = io.connect("/rooms", Constants.SocketResource);
 
             this.gameState = JSON.parse(window.localStorage.getItem(Constants.GameStateKey));
 
             this.socket.on("list-of-players", createEnemies.bind(this));
+            this.socket.on("enemy-update", updateEnemy.bind(this));
+
             this.socket.emit("players-list", this.gameState.session);
         }
     }
@@ -52,14 +53,21 @@
     }
 
     /* istanbul ignore next */
+    function updateEnemy(state) {
+        this.enemies.every(function (enemy) {
+            if (enemy.nick === state.nick) {
+                enemy.restore(state);
+                return false;
+            }
+
+            return true;
+        });
+    }
+
+    /* istanbul ignore next */
     function createEnemies(players) {
         this.enemies = players.map(function (player) {
-            return new Enemy({
-                nick: player.nick,
-
-                x: 50,
-                y: 3350
-            });
+            return new Enemy({ nick: player.nick });
         });
     }
 
