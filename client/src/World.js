@@ -1,4 +1,4 @@
-(function (jaws, Player, Enemy, ScoresScreen, Constants, utils) {
+(function (jaws, io, Player, Enemy, ScoresScreen, Constants, utils) {
     "use strict";
 
     // Constructor.
@@ -28,11 +28,33 @@
 
         this.enemies = [];
         this.bullets = [];
+
+        /* istanbul ignore if */
+        if (typeof(io) !== "undefined") {
+            this.socket = io.connect("/rooms", Constants.SocketResource);
+
+            this.session = JSON.parse(window.localStorage.getItem(Constants.GameStateKey)).session;
+
+            this.socket.on("list-of-players", createEnemies.bind(this));
+            this.socket.emit("players-list", this.session);
+        }
     }
 
     // Private methods.
     function createHUD(health, score) {
         return "HEALTH: " + parseInt(health, 10) + " SCORE: " + parseInt(score, 10);
+    }
+
+    /* istanbul ignore next */
+    function createEnemies(players) {
+        this.enemies = players.map(function (player) {
+            return new Enemy({
+                nick: player.nick,
+
+                x: 50,
+                y: 3350
+            });
+        });
     }
 
     /* istanbul ignore next */
@@ -258,4 +280,4 @@
     // Exporting API to the public access.
     window.World = World;
 
-} (window.jaws, window.Player, window.Enemy, window.ScoresScreen, window.Constants, window.utils));
+} (window.jaws, window.io, window.Player, window.Enemy, window.ScoresScreen, window.Constants, window.utils));

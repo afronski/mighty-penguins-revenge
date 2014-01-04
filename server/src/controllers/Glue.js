@@ -13,6 +13,10 @@ function bySession(session, room) {
     return room.session === session;
 }
 
+function withoutPlayer(nick, player) {
+    return player.nick !== nick;
+}
+
 // Constructor.
 
 function Glue(rooms, scores) {
@@ -52,6 +56,28 @@ Glue.prototype.handleGameStart = function (socket, session) {
             } else {
                 ConsoleLogger.error("Unknown room '%s' requested on game start.", session);
                 socket.emit("game-failed");
+            }
+        }));
+    }));
+};
+
+Glue.prototype.getPlayersList = function (socket, session) {
+    var owner = this,
+        handler = domain.create();
+
+    /* istanbul ignore next: Untestable */
+    handler.on("error", function (error) {
+        ConsoleLogger.error("Error occurred:", error);
+    });
+
+    socket.get("nick", handler.intercept(function (nick) {
+        owner.queries.roomsProvider.get(handler.intercept(function (rooms) {
+            rooms = rooms.filter(bySession.bind(null, session))[0];
+
+            /* istanbul ignore else: Guard */
+            if (rooms) {
+                socket.emit("list-of-players", rooms.players.filter(withoutPlayer.bind(null, nick)));
+                ConsoleLogger.info("Retreiving players for '%s' room, requested by '%s'.", session, nick);
             }
         }));
     }));
@@ -109,6 +135,7 @@ Glue.prototype.wire = function (webSockets) {
         });
 
         socket.on("start-game", owner.handleGameStart.bind(owner, socket));
+        socket.on("players-list", owner.getPlayersList.bind(owner, socket));
 
         socket.on("disconnect", function () {
             socket.get("room-author", handler.intercept(function (isAuthor) {

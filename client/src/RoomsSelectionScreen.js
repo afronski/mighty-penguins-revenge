@@ -3,6 +3,7 @@
 
     var NickPromptPrefix = "NICK: ",
         DefaultNick = "[Unknown Penguin]",
+        DefaultNickError = "You cannot use default nick!",
 
         RoomListItemHeight = 30,
         RoomListItemOptions = {
@@ -156,15 +157,23 @@
 
         if (jaws.pressedWithoutRepeat("space")) {
             if (this.isSelected("SelectNick")) {
-                this.nick = utils.getValue("Enter your name:");
+                this.nick = utils.getValue("Enter your name:", DefaultNick);
 
                 this.nickPromptOptions.text = NickPromptPrefix + this.nick;
                 this.nickPrompt.set(this.nickPromptOptions);
             } else if (this.isSelected("NewRoom")) {
-                this.newRoomName = utils.getValue("Enter room name:");
-                this.socket.emit("create-room", this.newRoomName, getPlayer.call(this));
+                if (this.nick === DefaultNick) {
+                    window.alert(DefaultNickError);
+                } else {
+                    this.newRoomName = utils.getValue("Enter room name:");
+                    this.socket.emit("create-room", this.newRoomName, getPlayer.call(this));
+                }
             } else {
-                this.socket.emit("join-room", this.getSelected().session, getPlayer.call(this));
+                if (this.nick === DefaultNick) {
+                    window.alert(DefaultNickError);
+                } else {
+                    this.socket.emit("join-room", this.getSelected().session, getPlayer.call(this));
+                }
             }
         }
     }

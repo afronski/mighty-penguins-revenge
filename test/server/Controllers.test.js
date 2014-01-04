@@ -251,4 +251,34 @@ describe("Glue", function () {
         glue.handleGameStart(mockedSocket, "UNKN0WN0-SESS-I0N0-NUMB-ER000000");
     });
 
+    it("should handle message which requests players list", function (finish) {
+        var glue = new Glue(this.rooms, this.scores),
+            owner = this,
+            mockedSocket = {
+                get: function (what, continuation) {
+                    continuation(null, "Player 0");
+                },
+
+                emit: function (eventName, players) {
+                    eventName.should.be.equal("list-of-players");
+
+                    players.length.should.be.equal(1);
+                    players[0].nick.should.not.be.equal("Player 0");
+
+                    finish();
+                }
+            };
+
+        glue.commands.joinRoom(this.firstRoom.session, this.player, function (error, room) {
+            if (error) {
+                finish(error);
+                return;
+            }
+
+            room.players.length.should.be.equal(2);
+
+            glue.getPlayersList(mockedSocket, owner.firstRoom.session);
+        });
+    });
+
 });

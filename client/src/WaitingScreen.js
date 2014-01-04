@@ -66,16 +66,14 @@
                 nick: owner.nick
             };
 
-            jaws.switchGameState(constructor);
-
             window.localStorage.setItem(Constants.GameStateKey, JSON.stringify(gameState));
+            jaws.switchGameState(constructor);
         });
     }
 
     /* istanbul ignore next */
     function restartGame() {
         window.localStorage.removeItem(Constants.GameStateKey);
-
         jaws.switchGameState(window.IntroScreen);
     }
 

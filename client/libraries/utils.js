@@ -28,12 +28,12 @@
         };
     }
 
-    function getValue(text) {
+    function getValue(text, defaultValue) {
         var value = window.prompt(text);
 
         value = value.trim();
 
-        if (!value || value.length > 15) {
+        if (!value || value.length > 15 || value === defaultValue) {
             return getValue(text);
         } else {
             return value;
