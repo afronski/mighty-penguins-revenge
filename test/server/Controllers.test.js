@@ -281,4 +281,33 @@ describe("Glue", function () {
         });
     });
 
+    it("should handle message which requests all players list", function (finish) {
+        var glue = new Glue(this.rooms, this.scores),
+            owner = this,
+            mockedSocket = {
+                get: function (what, continuation) {
+                    continuation(null, "Player 0");
+                },
+
+                emit: function (eventName, players) {
+                    eventName.should.be.equal("list-of-all-players");
+
+                    players.length.should.be.equal(2);
+
+                    finish();
+                }
+            };
+
+        glue.commands.joinRoom(this.firstRoom.session, this.player, function (error, room) {
+            if (error) {
+                finish(error);
+                return;
+            }
+
+            room.players.length.should.be.equal(2);
+
+            glue.getAllPlayersList(mockedSocket, owner.firstRoom.session);
+        });
+    });
+
 });

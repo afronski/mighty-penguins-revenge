@@ -83,6 +83,25 @@ Glue.prototype.getPlayersList = function (socket, session) {
     }));
 };
 
+Glue.prototype.getAllPlayersList = function (socket, session) {
+    this.queries.roomsProvider.get(function (error, rooms) {
+        /* istanbul ignore if: Untestable */
+        if (error) {
+            ConsoleLogger.error("Error occurred:", error);
+            return;
+        }
+
+        rooms = rooms.filter(bySession.bind(null, session))[0];
+
+        /* istanbul ignore else: Guard */
+        if (rooms) {
+            socket.emit("list-of-all-players", rooms.players);
+            ConsoleLogger.info("Retreiving all players for '%s' room.", session);
+        }
+    });
+};
+
+
 Glue.prototype.wire = function (webSockets) {
     var owner = this,
         handler = domain.create();
@@ -136,6 +155,7 @@ Glue.prototype.wire = function (webSockets) {
 
         socket.on("start-game", owner.handleGameStart.bind(owner, socket));
         socket.on("players-list", owner.getPlayersList.bind(owner, socket));
+        socket.on("all-players-list", owner.getAllPlayersList.bind(owner, socket));
 
         socket.on("disconnect", function () {
             socket.get("room-author", handler.intercept(function (isAuthor) {

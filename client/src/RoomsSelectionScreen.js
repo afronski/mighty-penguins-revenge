@@ -3,7 +3,9 @@
 
     var NickPromptPrefix = "NICK: ",
         DefaultNick = "[Unknown Penguin]",
+
         DefaultNickError = "You cannot use default nick!",
+        NotUniqueNickInRoom = "Your nick is not unique in selected room!",
 
         RoomListItemHeight = 30,
         RoomListItemOptions = {
@@ -96,6 +98,27 @@
     }
 
     /* istanbul ignore next */
+    function byName(nick, player) {
+        return player.nick === nick;
+    }
+
+    /* istanbul ignore next */
+    function verifyUniqueNick(players) {
+        var sameNames = players.filter(byName.bind(null, this.nick));
+
+        if (sameNames.length === 0) {
+            this.socket.emit("join-room", this.getSelected().session, getPlayer.call(this));
+        } else {
+            window.alert(NotUniqueNickInRoom);
+
+            this.nick = DefaultNick;
+
+            this.nickPromptOptions.text = NickPromptPrefix + this.nick;
+            this.nickPrompt.set(this.nickPromptOptions);
+        }
+    }
+
+    /* istanbul ignore next */
     function handleRoomJoining(session, name) {
         var room = {
             name: name,
@@ -172,7 +195,8 @@
                 if (this.nick === DefaultNick) {
                     window.alert(DefaultNickError);
                 } else {
-                    this.socket.emit("join-room", this.getSelected().session, getPlayer.call(this));
+                    this.socket.on("list-of-all-players", verifyUniqueNick.bind(this));
+                    this.socket.emit("all-players-list", this.getSelected().session);
                 }
             }
         }
