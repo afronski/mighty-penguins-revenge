@@ -12,6 +12,9 @@ function Glue(rooms, scores) {
     this.commands = new Commands(rooms, scores);
 }
 
+Glue.prototype.handleGameStart = function (socket, session) {
+};
+
 Glue.prototype.wire = function (webSockets) {
     var owner = this,
         handler = domain.create();
@@ -62,14 +65,15 @@ Glue.prototype.wire = function (webSockets) {
             }));
         });
 
+        socket.on("start-game", owner.handleGameStart.bind(owner, socket));
+
         socket.on("disconnect", function () {
             socket.get("room-author", handler.intercept(function (isAuthor) {
                 socket.get("session", handler.intercept(function (session) {
                     socket.get("nick", handler.intercept(function (nick) {
                         owner.commands.leaveRoom(session, { nick: nick }, handler.intercept(function () {
-                            socket.leave(session);
-
                             ConsoleLogger.info("Player '%s' disconnected from room '%s'.", nick, session);
+                            socket.leave(session);
 
                             if (isAuthor) {
                                 owner.commands.deleteRoom(session, handler.intercept(function () {

@@ -60,7 +60,7 @@
             fontFace: Constants.FontFace
         });
 
-        // TODO: Create when AJAX return.
+        // TODO: Update items only when received scores from server.
         this.scoreItems = createScoreItems(this.scores);
 
         this.prompt = new jaws.Text(this.promptOptions);

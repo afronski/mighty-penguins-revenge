@@ -37,6 +37,15 @@
         };
 
         this.informationOptions.x = utils.calculateCenteringOffset(this.informationOptions.text, 900);
+
+        if (typeof(io) !== "undefined") {
+            this.socket = io.connect("/rooms", Constants.SocketResource);
+
+            if (!createdByMe) {
+                this.socket.on("game-started", startGame.bind(this));
+                this.socket.on("game-failed", restartGame.bind(this));
+            }
+        }
     }
 
     // Private methods.
@@ -44,18 +53,25 @@
         return nick + " in room " + room;
     }
 
+    /* istanbul ignore next */
+    function startGame() {
+        var constructor = World.bind(World, GeneratedMapName);
+
+        Game.loadMap(FullGeneratedMapUrl, jaws.switchGameState.bind(jaws, constructor));
+    }
+
+    /* istanbul ignore next */
+    function restartGame() {
+        jaws.switchGameState(window.IntroScreen);
+    }
+
     function handleKeyboard() {
-        var constructor;
-
-        /* istanbul ignore next */
+        /* istanbul ignore if */
         if (jaws.pressedWithoutRepeat("space")) {
-            constructor = World.bind(World, GeneratedMapName);
-
             if (this.createdByMe) {
-                Game.loadMap(FullGeneratedMapUrl, jaws.switchGameState.bind(jaws, constructor));
+                this.socket.emit("start-game", this.session);
+                startGame.call(this);
             }
-
-            // TODO: Waiting for signal from server.
         }
     }
 
