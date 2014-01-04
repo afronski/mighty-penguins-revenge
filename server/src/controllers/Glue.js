@@ -102,13 +102,11 @@ Glue.prototype.getAllPlayersList = function (socket, session) {
 };
 
 Glue.prototype.broadcastPlayerState = function (socket, session, state) {
-    // TODO: Broadcast sent state to the others
-    //       by sending passed state via 'enemy-update' event.
+    socket.broadcast.to(session).emit("enemy-update", state);
 };
 
 Glue.prototype.broadcastPlayerBullet = function (socket, session, nick) {
-    // TODO: Broadcast bullet creation to the others
-    //       by sending player's nick via 'new-bullet' event.
+    socket.broadcast.to(session).emit("new-bullet", nick);
 };
 
 Glue.prototype.wire = function (webSockets) {
