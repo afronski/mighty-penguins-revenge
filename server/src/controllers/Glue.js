@@ -12,7 +12,7 @@ function Glue(rooms, scores) {
     this.commands = new Commands(rooms, scores);
 }
 
-Glue.prototype.handleGameStart = function (socket, session) {
+Glue.prototype.handleGameStart = function () {
 };
 
 Glue.prototype.wire = function (webSockets) {

@@ -1,4 +1,4 @@
-(function (jaws, Game, World, Constants, utils) {
+(function (jaws, io, Game, World, Constants, utils) {
     "use strict";
 
     var GeneratedMapName = "TestMap1.png",
@@ -38,6 +38,7 @@
 
         this.informationOptions.x = utils.calculateCenteringOffset(this.informationOptions.text, 900);
 
+        /* istanbul ignore if */
         if (typeof(io) !== "undefined") {
             this.socket = io.connect("/rooms", Constants.SocketResource);
 
@@ -119,4 +120,4 @@
 
     window.WaitingScreen = WaitingScreen;
 
-} (window.jaws, window.Game, window.World, window.Constants, window.utils));
+} (window.jaws, window.io, window.Game, window.World, window.Constants, window.utils));
