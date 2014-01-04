@@ -6,26 +6,10 @@
         MinimumHealth = 0,
         MaximumHealth = 100,
 
-        WeaponSoundName = null,
-
         DefaultPosition = {
             x: 100,
             y: 100
         };
-
-    function playWeaponSound() {
-        var audioSupported = window.navigator.userAgent.search(/phantomjs/i) === -1;
-
-        /* istanbul ignore next */
-        if (audioSupported) {
-            if (!WeaponSoundName) {
-                WeaponSoundName = "SoundWeapon1" + (jaws.assets.can_play["ogg"] ? ".ogg" : ".mp3");
-            }
-
-            jaws.assets.data[WeaponSoundName].currentTime = 0;
-            jaws.assets.data[WeaponSoundName].play();
-        }
-    }
 
     function Entity(options) {
         if (!options) {
@@ -70,8 +54,6 @@
         };
 
         this.fire = function () {
-            playWeaponSound();
-
             return new Bullet(this, this.flipped ? -1 : 1);
         };
 

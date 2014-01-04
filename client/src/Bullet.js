@@ -2,7 +2,23 @@
     "use strict";
 
     var DefaultKillingPower = 10,
-        DefaultBulletVelocity = 8;
+        DefaultBulletVelocity = 8,
+
+        WeaponSoundName = null;
+
+    function playWeaponSound() {
+        var audioSupported = window.navigator.userAgent.search(/phantomjs/i) === -1;
+
+        /* istanbul ignore next */
+        if (audioSupported) {
+            if (!WeaponSoundName) {
+                WeaponSoundName = this.weaponSoundPrefix + (jaws.assets.can_play["ogg"] ? ".ogg" : ".mp3");
+            }
+
+            jaws.assets.data[WeaponSoundName].currentTime = 0;
+            jaws.assets.data[WeaponSoundName].play();
+        }
+    }
 
     function Bullet(owner, direction, options) {
         if (!options) {
@@ -23,6 +39,8 @@
         this.vy = 0;
 
         this.asset = "Bullet.png";
+        this.weaponSoundPrefix = "SoundWeapon1";
+
         this.flipped = (direction === 1) ? false : true;
 
         this.dead = false;
@@ -51,7 +69,8 @@
             this.dead = true;
         };
 
-        // Initial position.
+        // Initial position and play sound.
+        playWeaponSound.call(this);
         this.rest();
     }
 
