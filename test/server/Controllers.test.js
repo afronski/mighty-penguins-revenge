@@ -2,10 +2,7 @@
 
 require("should");
 
-var events = require("events"),
-    domain = require("domain"),
-
-    sinon = require("sinon"),
+var domain = require("domain"),
 
     Commands = require("../../server/src/controllers/Commands"),
     Queries = require("../../server/src/controllers/Queries"),
@@ -205,14 +202,4 @@ describe("Glue", function () {
         glue.commands.roomsProvider.should.be.equal(this.rooms);
         glue.commands.scoresProvider.should.be.equal(this.scores);
     });
-
-    describe("should wire up events", function () {
-
-        beforeEach(function () {
-            this.webSockets = new events.EventEmitter();
-            this.webSockets.of = sinon.stub().returns(this.webSockets);
-        });
-
-    });
-
 });
