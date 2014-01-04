@@ -202,4 +202,48 @@ describe("Glue", function () {
         glue.commands.roomsProvider.should.be.equal(this.rooms);
         glue.commands.scoresProvider.should.be.equal(this.scores);
     });
+
+    it("should handle properly starting game requested by room author with broadcast to room", function (finish) {
+        var glue = new Glue(this.rooms, this.scores),
+            owner = this,
+            mockedSocket = {
+                get: function (what, continuation) {
+                    continuation(null, true);
+                },
+
+                broadcast: {
+                    to: function (session) {
+                        session.should.be.equal(owner.firstRoom.session);
+
+                        return mockedSocket;
+                    }
+                },
+
+                emit: function (eventName) {
+                    eventName.should.be.equal("game-started");
+
+                    finish();
+                }
+            };
+
+        glue.handleGameStart(mockedSocket, this.firstRoom.session);
+    });
+
+    it("should handle properly starting game for unknown session", function (finish) {
+        var glue = new Glue(this.rooms, this.scores),
+            mockedSocket = {
+                get: function (what, continuation) {
+                    continuation(null, false);
+                },
+
+                emit: function (eventName) {
+                    eventName.should.be.equal("game-failed");
+
+                    finish();
+                }
+            };
+
+        glue.handleGameStart(mockedSocket, "UNKN0WN0-SESS-I0N0-NUMB-ER000000");
+    });
+
 });

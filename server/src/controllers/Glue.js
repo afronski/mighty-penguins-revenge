@@ -7,12 +7,28 @@ var domain = require("domain"),
     Queries = require("./Queries"),
     Commands = require("./Commands");
 
+// Private helpers.
+
+function bySession(session, room) {
+    return room.session === session;
+}
+
+// Constructor.
+
 function Glue(rooms, scores) {
     this.queries = new Queries(rooms, scores);
     this.commands = new Commands(rooms, scores);
 }
 
-Glue.prototype.handleGameStart = function () {
+// Public methods.
+
+Glue.prototype.handleGameStart = function (socket, session) {
+    // TODO: It should broadcast two events:
+    //         - 'game-started' if we will find game with corresponding session.
+    //         - 'game-failed' if we can't find game with corresponding session.
+    //
+    //       Also it should 'lock' corresponding room in successful case when
+    //       player is an author of the room.
 };
 
 Glue.prototype.wire = function (webSockets) {
@@ -29,15 +45,14 @@ Glue.prototype.wire = function (webSockets) {
 
         socket.on("create-room", function (room, player) {
             owner.commands.createRoom(room, player, handler.intercept(function (session) {
-                socket.join(session);
-
-                ConsoleLogger.info("Room '%s' created ('%s').", room, session);
+                ConsoleLogger.info("Room '%s' with session: '%s' created by '%s'.", room, player.nick, session);
 
                 socket.set("nick", player.nick, function () {
                     socket.set("room-author", true);
                     socket.set("session", session);
 
                     socket.emit("room-created", session);
+                    socket.join(session);
 
                     owner.queries.getAccessibleRooms(handler.intercept(function (rooms) {
                         socket.broadcast.emit("list-of-rooms", rooms);
@@ -50,6 +65,8 @@ Glue.prototype.wire = function (webSockets) {
             socket.set("nick", player.nick, function () {
                 socket.set("room-author", false);
                 socket.set("session", session);
+
+                socket.join(session);
 
                 ConsoleLogger.info("Room '%s' joined by player '%s'.", session, player.nick);
 
@@ -78,6 +95,7 @@ Glue.prototype.wire = function (webSockets) {
                             if (isAuthor) {
                                 owner.commands.deleteRoom(session, handler.intercept(function () {
                                     ConsoleLogger.info("Room '%s' deleted.", session);
+                                    socket.broadcast.to(session).emit("game-failed");
 
                                     owner.queries.getAccessibleRooms(handler.intercept(function (rooms) {
                                         socket.broadcast.emit("list-of-rooms", rooms);
