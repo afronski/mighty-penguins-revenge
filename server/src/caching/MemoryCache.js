@@ -1,6 +1,7 @@
 "use strict";
 
 var fs = require("fs"),
+    domain = require("domain"),
 
     path = require("path"),
     glob = require("glob"),
@@ -30,15 +31,28 @@ MemoryCache.prototype.prefetch = function (continuation) {
         }
 
         files.forEach(function (file, index) {
-            var key = path.basename(file);
+            var key = path.basename(file),
+                handler = domain.create();
 
-            fs.readFile(file, function (error, buffer) {
+            handler.on("error", finish.bind(null, index, files.length));
+
+            fs.exists(file, function (exists) {
                 /* istanbul ignore else: Guard */
-                if (!error) {
-                    owner.storage[key] = buffer;
-                }
+                if (exists) {
+                    fs.stat(file, handler.intercept(function (stats) {
+                        fs.open(file, "r", handler.intercept(function (fd) {
+                            var buffer = new Buffer(stats.size);
 
-                finish(index, files.length);
+                            fs.read(fd, buffer, 0, buffer.length, null, handler.intercept(function () {
+                                owner.storage[key] = buffer;
+
+                                fs.close(fd, handler.intercept(finish.bind(null, index, files.length)));
+                            }));
+                        }));
+                    }));
+                } else {
+                    finish(index, files.length);
+                }
             });
         });
     });
