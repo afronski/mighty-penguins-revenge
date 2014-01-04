@@ -36,6 +36,10 @@ Commands.prototype.createRoom = function (roomName, player, continuation) {
     });
 };
 
+Commands.prototype.deleteRoom = function (roomName, continuation) {
+    this.roomsProvider.remove(roomName, continuation);
+};
+
 Commands.prototype.joinRoom = function (session, player, continuation) {
     var owner = this,
         handler = domain.create();
@@ -47,6 +51,26 @@ Commands.prototype.joinRoom = function (session, player, continuation) {
 
         if (results) {
             results.addPlayer(player);
+            owner.roomsProvider.atomicUpdate(results.name, results, handler.intercept(function () {
+                continuation(null, results);
+            }));
+        } else {
+            continuation(new Error(util.format("There is no session '%s'!", session)));
+        }
+    }));
+};
+
+Commands.prototype.leaveRoom = function (session, player, continuation) {
+    var owner = this,
+        handler = domain.create();
+
+    handler.on("error", continuation);
+
+    this.roomsProvider.get(handler.intercept(function (results) {
+        results = results.filter(bySession.bind(null, session))[0];
+
+        if (results) {
+            results.removePlayer(player.nick);
             owner.roomsProvider.atomicUpdate(results.name, results, handler.intercept(function () {
                 continuation(null, results);
             }));

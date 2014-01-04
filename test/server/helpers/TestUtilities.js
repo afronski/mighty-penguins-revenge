@@ -62,7 +62,8 @@ function HttpMock() {
 
 function ConsoleLoggerMock() {
     return {
-        info: function () {}
+        info: function () {},
+        error: function () {}
     };
 }
 
@@ -83,7 +84,15 @@ MockFactory.create = function (name) {
 // Public API.
 
 module.exports.mock = exports.mock = function (mocks) {
+    var continuation;
+
+    if (typeof(mocks) === "function" || typeof(mocks) === "undefined") {
+        continuation = mocks;
+        mocks = {};
+    }
+
     mocks["./loggers/ConsoleLogger"] = true;
+    mocks["../loggers/ConsoleLogger"] = true;
 
     MockedModules = mocks;
 
@@ -98,6 +107,10 @@ module.exports.mock = exports.mock = function (mocks) {
         warnOnReplace: false,
         warnOnUnregistered: false
     });
+
+    if (typeof(continuation) === "function") {
+        continuation();
+    }
 };
 
 module.exports.disable = exports.disable = function () {
@@ -126,6 +139,10 @@ module.exports.expectError = exports.expectError = function (continuation, error
 
     continuation();
 };
+
+function withoutSession(session, room) {
+    return room.session !== session;
+}
 
 module.exports.mockProviders = exports.mockProviders = function () {
     var mockedRooms = [],
@@ -166,7 +183,12 @@ module.exports.mockProviders = exports.mockProviders = function () {
             continuation(null);
         },
 
-        atomicUpdate: function (roomName, newRoom, continuation) {
+        remove: function (session, continuation) {
+            mockedRooms = mockedRooms.filter(withoutSession.bind(null, session));
+            continuation(null);
+        },
+
+        atomicUpdate: function (session, newRoom, continuation) {
             continuation(null);
         },
 

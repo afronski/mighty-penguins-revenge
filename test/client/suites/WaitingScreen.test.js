@@ -3,8 +3,10 @@
 
     QUnit.module("WaitingScreen", {
         setup: function () {
-            this.waitingScreen = new WaitingScreen("Nick", "Room");
-            this.authorWaitingScreen = new WaitingScreen("Author Nick", "Author Room", true);
+            this.room = { name: "Room", session: "Session" };
+
+            this.waitingScreen = new WaitingScreen("Nick", this.room);
+            this.authorWaitingScreen = new WaitingScreen("Author Nick", this.room, true);
         }
     });
 

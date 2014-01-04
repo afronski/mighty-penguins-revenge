@@ -11,22 +11,30 @@ var http = require("http"),
 
     ConfigurationReader = require("./configuration/ConfigurationReader"),
     Logger = require("./loggers/ConsoleLogger"),
+    Glue = require("./controllers/Glue"),
 
-    musicProvider = require("./providers/Music"),
+    Rooms = require("./providers/Rooms"),
+    Scores = require("./providers/Scores"),
+    Music = require("./providers/Music"),
 
     application = express(),
     configurationReader,
     webSockets;
 
 function initialize(directory) {
+    var databasesPath = path.join(directory, "server/databases");
+
     configurationReader = new ConfigurationReader(path.join(directory, "server"));
 
     /* istanbul ignore next: Untestable (Asynchronous call) */
     // Initialization.
-    musicProvider.initialize(path.join(directory, "client/assets"), "Music*.*", function () {
+    Music.initialize(path.join(directory, "client/assets"), "Music*.*", function () {
         // Wire-up routing after initialization.
-        application.get("/music", musicProvider.streamRandomTrack);
+        application.get("/music", Music.streamRandomTrack);
     });
+
+    Rooms.setPath(databasesPath);
+    Scores.setPath(databasesPath);
 
     // Middleware registration.
     application.use(express.static(path.join(directory, "client")));
@@ -34,9 +42,11 @@ function initialize(directory) {
 
 function listen() {
     var port = configurationReader.get("port"),
-        server = http.createServer(application);
+        server = http.createServer(application),
+        glue = new Glue(Rooms, Scores);
 
     webSockets = socketIO.listen(server, { log: false, resource: "/ws" });
+    glue.wire(webSockets);
     server.listen(port);
 
     Logger.info(util.format("Application listening on port: %d", port).yellow);

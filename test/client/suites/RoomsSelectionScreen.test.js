@@ -25,14 +25,15 @@
     });
 
     QUnit.test("When there are rooms available it should create items on room list", function () {
-        this.roomsScreen.rooms = [
-            "Room 1",
-            "Room 2",
-            "Room 3"
+        var rooms = [
+            { name: "Room 1", session: "Session" },
+            { name: "Room 2", session: "Session" },
+            { name: "Room 3", session: "Session" },
         ];
 
-        this.roomsScreen.setup();
+        this.roomsScreen.updateRooms(rooms);
 
+        QUnit.equal(3, this.roomsScreen.rooms.length, "Items list should be equal to received rooms length.");
         QUnit.equal(3, this.roomsScreen.roomItems.length, "Items list should be equal to received rooms length.");
     });
 

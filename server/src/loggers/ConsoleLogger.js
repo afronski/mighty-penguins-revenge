@@ -5,3 +5,9 @@ module.exports.info = exports.info = function () {
 
     console.info.apply(console, args);
 };
+
+module.exports.error = exports.error = function () {
+    var args = Array.prototype.slice.call(arguments);
+
+    console.error.apply(console, args);
+};

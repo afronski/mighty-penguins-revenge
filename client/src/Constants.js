@@ -27,7 +27,11 @@
         FontFace: "VT323",
 
         ForegroundColor: "black",
-        BackgroundColor: "white"
+        BackgroundColor: "white",
+
+        SocketResource: {
+            resource: "ws"
+        }
     };
 
 } ());

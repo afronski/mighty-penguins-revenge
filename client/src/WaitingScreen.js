@@ -5,10 +5,11 @@
         FullGeneratedMapUrl = "/assets/" + GeneratedMapName;
 
     // Constructor.
-    function WaitingScreen(nick, roomName, createdByMe) {
+    function WaitingScreen(nick, room, createdByMe) {
         this.createdByMe = !!createdByMe;
 
-        this.room = roomName;
+        this.room = room.name;
+        this.session = room.session;
         this.nick = nick;
 
         this.promptOptions = {

@@ -12,3 +12,7 @@ reports/
 # Test generated assets.
 test/server/databases/rooms.db/
 test/server/databases/scores.db/
+
+# Databases.
+server/databases/rooms.db/
+server/databases/scores.db/

@@ -1,4 +1,4 @@
-(function (jaws, WaitingScreen, Constants, utils) {
+(function (jaws, io, WaitingScreen, Constants, utils) {
     "use strict";
 
     var NickPromptPrefix = "NICK: ",
@@ -72,9 +72,56 @@
             fontSize: Constants.SmallFontSize,
             fontFace: Constants.FontFace
         };
+
+        /* istanbul ignore if */
+        if (typeof(io) !== "undefined") {
+            // Connecting to the '/rooms' channel and attaching handlers.
+            this.socket = io.connect("/rooms", Constants.SocketResource);
+
+            this.socket.on("connect", getRooms.bind(this));
+
+            this.socket.on("room-created", handleNewRoomCreation.bind(this));
+            this.socket.on("room-joined", handleRoomJoining.bind(this));
+
+            this.socket.on("list-of-rooms", this.updateRooms.bind(this));
+        }
     }
 
     // Private methods.
+
+    /* istanbul ignore next */
+    function getRooms() {
+        this.socket.emit("get-list-of-rooms");
+    }
+
+    /* istanbul ignore next */
+    function handleRoomJoining(session, name) {
+        var room = {
+            name: name,
+            session: session
+        };
+
+        jaws.switchGameState(WaitingScreen.bind(WaitingScreen, this.nick, room));
+    }
+
+    /* istanbul ignore next */
+    function handleNewRoomCreation(session) {
+        var room = {
+            name: this.newRoomName,
+            session: session
+        };
+
+        jaws.switchGameState(WaitingScreen.bind(WaitingScreen, this.nick, room, true));
+    }
+
+    /* istanbul ignore next */
+    function getPlayer() {
+        return {
+            nick: this.nick,
+            score: 0
+        };
+    }
+
     function createRoomItems(names) {
         var owner = this;
 
@@ -82,9 +129,9 @@
             var itemOptions = jaws.clone(RoomListItemOptions);
 
             itemOptions.y += (index + 1) * RoomListItemHeight;
-            itemOptions.text = room;
+            itemOptions.text = room.name;
 
-            owner.selectable.push({ name: room, y: itemOptions.y });
+            owner.selectable.push({ name: room.name, session: room.session, y: itemOptions.y });
 
             return new jaws.Text(itemOptions);
         });
@@ -115,11 +162,9 @@
                 this.nickPrompt.set(this.nickPromptOptions);
             } else if (this.isSelected("NewRoom")) {
                 this.newRoomName = utils.getValue("Enter room name:");
-
-                // TODO: Create room and then move to the new state.
-                jaws.switchGameState(WaitingScreen.bind(WaitingScreen, this.nick, this.newRoomName, true));
+                this.socket.emit("create-room", this.newRoomName, getPlayer.call(this));
             } else {
-                jaws.switchGameState(WaitingScreen.bind(WaitingScreen, this.nick, this.getSelected().name));
+                this.socket.emit("join-room", this.getSelected().session, getPlayer.call(this));
             }
         }
     }
@@ -158,8 +203,12 @@
         this.nickPrompt = new jaws.Text(this.nickPromptOptions);
         this.newRoomPrompt = new jaws.Text(this.newRoomPromptOptions);
         this.roomSelectionPrompt = new jaws.Text(this.roomSelectionPromptOptions);
+    };
 
-        // TODO: Move it when AJAX returned.
+    RoomsSelectionScreen.prototype.updateRooms = function (rooms) {
+        this.rooms = rooms;
+        this.selectable = jaws.clone(DefaultSelectable);
+
         this.roomItems = createRoomItems.call(this, this.rooms);
     };
 
@@ -182,4 +231,4 @@
 
     window.RoomsSelectionScreen = RoomsSelectionScreen;
 
-} (window.jaws, window.WaitingScreen, window.Constants, window.utils));
+} (window.jaws, window.io, window.WaitingScreen, window.Constants, window.utils));
