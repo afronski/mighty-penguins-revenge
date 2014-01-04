@@ -101,6 +101,15 @@ Glue.prototype.getAllPlayersList = function (socket, session) {
     });
 };
 
+Glue.prototype.broadcastPlayerState = function (socket, session, state) {
+    // TODO: Broadcast sent state to the others
+    //       by sending passed state via 'enemy-update' event.
+};
+
+Glue.prototype.broadcastPlayerBullet = function (socket, session, nick) {
+    // TODO: Broadcast bullet creation to the others
+    //       by sending player's nick via 'new-bullet' event.
+};
 
 Glue.prototype.wire = function (webSockets) {
     var owner = this,
@@ -154,8 +163,12 @@ Glue.prototype.wire = function (webSockets) {
         });
 
         socket.on("start-game", owner.handleGameStart.bind(owner, socket));
+
         socket.on("players-list", owner.getPlayersList.bind(owner, socket));
         socket.on("all-players-list", owner.getAllPlayersList.bind(owner, socket));
+
+        socket.on("update-player-state", owner.broadcastPlayerState.bind(owner, socket));
+        socket.on("player-fired", owner.broadcastPlayerBullet.bind(owner, socket));
 
         socket.on("disconnect", function () {
             socket.get("room-author", handler.intercept(function (isAuthor) {

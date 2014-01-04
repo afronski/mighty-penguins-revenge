@@ -310,4 +310,53 @@ describe("Glue", function () {
         });
     });
 
+    it("should handle properly state broadcasting", function (finish) {
+        var glue = new Glue(this.rooms, this.scores),
+            sentSession = "aaaa1111-2222-3333-4444-bbbb5555",
+            state = {
+                nick: "Player 0"
+            },
+            mockedSocket = {
+                broadcast: {
+                    to: function (session) {
+                        session.should.be.equal(sentSession);
+
+                        return this;
+                    },
+
+                    emit: function (eventName, state) {
+                        eventName.should.be.equal("enemy-update");
+                        state.should.be.equal(state);
+
+                        finish();
+                    }
+                }
+            };
+
+        glue.broadcastPlayerState(mockedSocket, sentSession, state);
+    });
+
+    it("should handle properly player bullets broadcasting", function (finish) {
+        var glue = new Glue(this.rooms, this.scores),
+            sentSession = "aaaa1111-2222-3333-4444-bbbb5555",
+            mockedSocket = {
+                broadcast: {
+                    to: function (session) {
+                        session.should.be.equal(sentSession);
+
+                        return this;
+                    },
+
+                    emit: function (eventName, nick) {
+                        eventName.should.be.equal("new-bullet");
+                        nick.should.be.equal("Player 0");
+
+                        finish();
+                    }
+                }
+            };
+
+        glue.broadcastPlayerBullet(mockedSocket, sentSession, "Player 0");
+    });
+
 });

@@ -37,6 +37,7 @@
 
             this.socket.on("list-of-players", createEnemies.bind(this));
             this.socket.on("enemy-update", updateEnemy.bind(this));
+            this.socket.on("new-bullet", createNewBullet.bind(this));
 
             this.socket.emit("players-list", this.gameState.session);
         }
@@ -49,14 +50,36 @@
 
     /* istanbul ignore next */
     function sendPlayerState() {
-        this.socket.emit("update-player-state", this.player.dump());
+        this.socket.emit("update-player-state", this.gameState.session, this.player.dump());
     }
 
     /* istanbul ignore next */
     function updateEnemy(state) {
+        var enemy,
+            notUpdated = this.enemies.every(function (enemy) {
+                if (enemy.nick === state.nick) {
+                    enemy.restore(state);
+                    return false;
+                }
+
+                return true;
+            });
+
+        if (notUpdated) {
+            enemy = new Enemy();
+            enemy.restore(state);
+
+            this.enemies.push(enemy);
+        }
+    }
+
+    /* istanbul ignore next */
+    function createNewBullet(nick) {
+        var owner = this;
+
         this.enemies.every(function (enemy) {
-            if (enemy.nick === state.nick) {
-                enemy.restore(state);
+            if (enemy.nick === nick) {
+                owner.bullets.push(enemy.fire());
                 return false;
             }
 
@@ -87,11 +110,14 @@
 
         if (jaws.pressedWithoutRepeat("space")) {
             this.bullets.push(this.player.fire());
+
+            if (this.gameState) {
+                this.socket.emit("player-fired", this.gameState.session, this.player.nick);
+            }
         }
 
         if (jaws.pressedWithoutRepeat("esc")) {
             // TODO: Signal from server when the game ends.
-            // TODO: Signal from servers about movement, shooting and respawning enemies.
             clearInterval(this.playerUpdateInterval);
             jaws.switchGameState(ScoresScreen);
         }
@@ -106,8 +132,9 @@
         this.player.draw();
     }
 
-    function newPlayer(respawnPoint) {
-        var options = {};
+    function newPlayer(respawnPoint, oldPlayer) {
+        var options = {},
+            result;
 
         if (!respawnPoint) {
             respawnPoint = respawnPlayer.call(this);
@@ -121,7 +148,13 @@
             options.nick = this.gameState.nick;
         }
 
-        return new Player(options);
+        result = new Player(options);
+
+        if (oldPlayer) {
+            result.score = oldPlayer.score;
+        }
+
+        return result;
     }
 
     function applyGravity(object) {
@@ -270,7 +303,6 @@
 
     World.prototype.update = function () {
         this.player.prepare();
-        this.enemies.forEach(utils.each("prepare"));
         this.bullets.forEach(utils.each("prepare"));
 
         // Handle input.
@@ -289,7 +321,7 @@
         this.bullets = this.bullets.reduce(deleteDead, []);
 
         if (!this.player.isAlive()) {
-            this.player = newPlayer.call(this);
+            this.player = newPlayer.call(this, {}, this.player);
         }
 
         // Applying physics and collisions.
