@@ -32,6 +32,7 @@
         GameStateKey: "LastGameState",
         BackgroundAudioMutedStateKey: "MutedBackgroundAudio",
 
+        SendPlayerStateInterval: 200,
         SocketResource: {
             resource: "ws"
         }

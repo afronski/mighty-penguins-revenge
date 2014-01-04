@@ -21,6 +21,40 @@
         QUnit.equal(-15, entity.y);
     });
 
+    QUnit.test("After passing nick as a parameter it should be set up", function () {
+        var entity = new Entity({ nick: "Nick" });
+
+        entity.initialize("Player.png");
+
+        QUnit.equal("Nick", entity.nick);
+    });
+
+    QUnit.test("Dump should return all properties", function () {
+        var entity = new Entity({ x: 100, y: -100, nick: "Nick" }),
+            dump;
+
+        entity.initialize("Player.png");
+        dump = entity.dump();
+
+        QUnit.equal(100, dump.x);
+        QUnit.equal(-100, dump.y);
+
+        QUnit.equal(0, dump.vx);
+        QUnit.equal(0, dump.vy);
+
+        QUnit.equal("Nick", dump.nick);
+
+        QUnit.equal(100, dump.health);
+        QUnit.equal(false, dump.dead);
+
+        QUnit.equal(false, dump.flipped);
+        QUnit.equal(0, dump.score);
+
+        QUnit.equal(false, dump.jumping);
+        QUnit.equal(true, dump.can_jump);
+
+    });
+
     QUnit.test("At the beginning score and health should be setup", function () {
         QUnit.equal(0, this.entity.getScore());
         QUnit.equal(100, this.entity.getHealth());

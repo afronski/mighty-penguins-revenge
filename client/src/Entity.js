@@ -13,7 +13,15 @@
 
     function Entity(options) {
         if (!options) {
-            options = DefaultPosition;
+            options = {};
+        }
+
+        if (!options.x) {
+            options.x = DefaultPosition.x;
+        }
+
+        if (!options.y) {
+            options.y = DefaultPosition.y;
         }
 
         options.scale_image = Constants.Scale;
@@ -24,11 +32,16 @@
         this.vx = 0;
         this.vy = 0;
 
+        this.nick = options.nick || "";
+
         this.health = MaximumHealth;
         this.score = MinimumScore;
 
         this.flipped = false;
         this.dead = false;
+
+        this.jumping = false;
+        this.can_jump = true;
 
         this.col_rect = function () {
             return this.rect().clone();
@@ -129,6 +142,27 @@
 
             // Initial position.
             this.rest();
+        };
+
+        this.dump = function () {
+            return {
+                x: this.x,
+                y: this.y,
+
+                vx: this.vx,
+                vy: this.vy,
+
+                jumping: this.jumping,
+                can_jump: this.can_jump,
+
+                flipped: this.flipped,
+
+                dead: this.dead,
+                health: this.health,
+
+                nick: this.nick,
+                score: this.score
+            };
         };
     }
 

@@ -31,18 +31,24 @@
 
         /* istanbul ignore if */
         if (typeof(io) !== "undefined") {
+
             this.socket = io.connect("/rooms", Constants.SocketResource);
 
-            this.session = JSON.parse(window.localStorage.getItem(Constants.GameStateKey)).session;
+            this.gameState = JSON.parse(window.localStorage.getItem(Constants.GameStateKey));
 
             this.socket.on("list-of-players", createEnemies.bind(this));
-            this.socket.emit("players-list", this.session);
+            this.socket.emit("players-list", this.gameState.session);
         }
     }
 
     // Private methods.
     function createHUD(health, score) {
         return "HEALTH: " + parseInt(health, 10) + " SCORE: " + parseInt(score, 10);
+    }
+
+    /* istanbul ignore next */
+    function sendPlayerState() {
+        this.socket.emit("update-player-state", this.player.dump());
     }
 
     /* istanbul ignore next */
@@ -78,6 +84,7 @@
         if (jaws.pressedWithoutRepeat("esc")) {
             // TODO: Signal from server when the game ends.
             // TODO: Signal from servers about movement, shooting and respawning enemies.
+            clearInterval(this.playerUpdateInterval);
             jaws.switchGameState(ScoresScreen);
         }
     }
@@ -89,6 +96,24 @@
         this.enemies.forEach(utils.each("draw"));
 
         this.player.draw();
+    }
+
+    function newPlayer(respawnPoint) {
+        var options = {};
+
+        if (!respawnPoint) {
+            respawnPoint = respawnPlayer.call(this);
+        }
+
+        options.x = respawnPoint.x;
+        options.y = respawnPoint.y;
+
+        /* istanbul ignore if */
+        if (this.gameState) {
+            options.nick = this.gameState.nick;
+        }
+
+        return new Player(options);
     }
 
     function applyGravity(object) {
@@ -224,10 +249,15 @@
     };
 
     World.prototype.setup = function (respawnPoint) {
-        this.player = new Player(respawnPoint || respawnPlayer.call(this));
+        this.player = newPlayer.call(this, respawnPoint);
         this.viewport = new jaws.Viewport({ max_x: this.terrain.width, max_y: this.terrain.height });
 
         jaws.context.mozImageSmoothingEnabled = false;
+
+        /* istanbul ignore if */
+        if (this.socket) {
+            this.playerUpdateInterval = setInterval(sendPlayerState.bind(this), Constants.SendPlayerStateInterval);
+        }
     };
 
     World.prototype.update = function () {
@@ -251,7 +281,7 @@
         this.bullets = this.bullets.reduce(deleteDead, []);
 
         if (!this.player.isAlive()) {
-            this.player = new Player(respawnPlayer.call(this));
+            this.player = newPlayer.call(this);
         }
 
         // Applying physics and collisions.
