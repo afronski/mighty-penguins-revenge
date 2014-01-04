@@ -1,4 +1,4 @@
-(function (jaws) {
+(function (jaws, Constants) {
     "use strict";
 
     var DefaultAssetsPrefix = "/assets/",
@@ -17,18 +17,17 @@
             "SoundWeapon1.mp3"
         ],
 
-        BackgroundAudioLocalStorageKey = "MutedBackgroundAudio",
         BackgroundAudio;
 
     // Private methods.
     /* istanbul ignore next */
     function getBackgroundAudioState() {
-        return JSON.parse(window.localStorage.getItem(BackgroundAudioLocalStorageKey));
+        return JSON.parse(window.localStorage.getItem(Constants.BackgroundAudioMutedStateKey));
     }
 
     /* istanbul ignore next */
     function saveBackgroundAudioState(state) {
-        window.localStorage.setItem(BackgroundAudioLocalStorageKey, state);
+        window.localStorage.setItem(Constants.BackgroundAudioMutedStateKey, state);
     }
 
     function loadImage(url, loaded) {
@@ -134,4 +133,4 @@
         loadMusic: loadMusic
     };
 
-} (window.jaws));
+} (window.jaws, window.Constants));

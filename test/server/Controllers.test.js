@@ -216,13 +216,18 @@ describe("Glue", function () {
                         session.should.be.equal(owner.firstRoom.session);
 
                         return mockedSocket;
+                    },
+
+                    emit: function (eventName, rooms) {
+                        eventName.should.be.equal("list-of-rooms");
+                        rooms.length.should.be.equal(0);
+
+                        finish();
                     }
                 },
 
                 emit: function (eventName) {
                     eventName.should.be.equal("game-started");
-
-                    finish();
                 }
             };
 

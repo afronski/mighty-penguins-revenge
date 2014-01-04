@@ -62,6 +62,7 @@
 
         // TODO: Update items only when received scores from server.
         this.scoreItems = createScoreItems(this.scores);
+        window.localStorage.removeItem(Constants.GameStateKey);
 
         this.prompt = new jaws.Text(this.promptOptions);
 

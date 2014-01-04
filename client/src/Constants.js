@@ -29,6 +29,9 @@
         ForegroundColor: "black",
         BackgroundColor: "white",
 
+        GameStateKey: "LastGameState",
+        BackgroundAudioMutedStateKey: "MutedBackgroundAudio",
+
         SocketResource: {
             resource: "ws"
         }

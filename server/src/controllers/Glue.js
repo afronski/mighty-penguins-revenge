@@ -41,6 +41,10 @@ Glue.prototype.handleGameStart = function (socket, session) {
                     owner.commands.lockRoom(session, handler.intercept(function () {
                         ConsoleLogger.info("Game associated with session '%s' started!", session);
                         socket.broadcast.to(session).emit("game-started");
+
+                        owner.queries.getAccessibleRooms(handler.intercept(function (rooms) {
+                            socket.broadcast.emit("list-of-rooms", rooms);
+                        }));
                     }));
                 } else {
                     ConsoleLogger.error("Not an author requested the game start of '%s'.", session);

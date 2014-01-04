@@ -56,13 +56,26 @@
 
     /* istanbul ignore next */
     function startGame() {
-        var constructor = World.bind(World, GeneratedMapName);
+        var owner = this,
+            constructor = World.bind(World, GeneratedMapName);
 
-        Game.loadMap(FullGeneratedMapUrl, jaws.switchGameState.bind(jaws, constructor));
+        Game.loadMap(FullGeneratedMapUrl, function () {
+            var gameState = {
+                session: owner.session,
+                room: owner.room,
+                nick: owner.nick
+            };
+
+            jaws.switchGameState(constructor);
+
+            window.localStorage.setItem(Constants.GameStateKey, JSON.stringify(gameState));
+        });
     }
 
     /* istanbul ignore next */
     function restartGame() {
+        window.localStorage.removeItem(Constants.GameStateKey);
+
         jaws.switchGameState(window.IntroScreen);
     }
 
