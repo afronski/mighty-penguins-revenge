@@ -29,6 +29,9 @@
         this.enemies = [];
         this.bullets = [];
 
+        // Empty implementation for sending player state.
+        this.sendPlayerState = function () {};
+
         /* istanbul ignore if */
         if (typeof(io) !== "undefined") {
             this.socket = io.connect("/rooms", Constants.SocketResource);
@@ -43,17 +46,17 @@
             this.socket.on("new-bullet", createNewBullet.bind(this));
 
             this.socket.emit("players-list", this.gameState.session);
+
+            /* istanbul ignore next */
+            this.sendPlayerState = function () {
+                this.socket.emit("update-player-state", this.gameState.session, this.player.dump());
+            };
         }
     }
 
     // Private methods.
     function createHUD(health, score) {
         return "HEALTH: " + parseInt(health, 10) + " SCORE: " + parseInt(score, 10);
-    }
-
-    /* istanbul ignore next */
-    function sendPlayerState() {
-        this.socket.emit("update-player-state", this.gameState.session, this.player.dump());
     }
 
     /* istanbul ignore next */
@@ -132,7 +135,6 @@
 
         if (jaws.pressedWithoutRepeat("esc")) {
             // TODO: Signal from server when the game ends.
-            clearInterval(this.playerUpdateInterval);
             jaws.switchGameState(ScoresScreen);
         }
     }
@@ -308,11 +310,6 @@
         this.viewport = new jaws.Viewport({ max_x: this.terrain.width, max_y: this.terrain.height });
 
         jaws.context.mozImageSmoothingEnabled = false;
-
-        /* istanbul ignore if */
-        if (this.socket) {
-            this.playerUpdateInterval = setInterval(sendPlayerState.bind(this), Constants.SendPlayerStateInterval);
-        }
     };
 
     World.prototype.update = function () {
@@ -352,6 +349,9 @@
 
         // Recenter view around player.
         this.viewport.centerAround(this.player);
+
+        // Send information about updated player state.
+        this.sendPlayerState();
     };
 
     World.prototype.draw = function () {
