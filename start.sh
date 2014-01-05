@@ -1,6 +1,3 @@
 #!/bin/sh
 
-# TODO: Use forever to forward normal and error log files separately
-#       to the ./server/logs directory.
-
-node index.js
+forever --minUptime 1000 --spinSleepTime 1000 -e server/logs/error.log -o server/logs/normal.log index.js --no-colors
