@@ -174,7 +174,9 @@ Glue.prototype.wire = function (webSockets) {
                     socket.get("nick", handler.intercept(function (nick) {
                         owner.commands.leaveRoom(session, { nick: nick }, handler.intercept(function () {
                             ConsoleLogger.info("Player '%s' disconnected from room '%s'.", nick, session);
+
                             socket.leave(session);
+                            socket.broadcast.to(session).emit("enemy-disconnected", nick);
 
                             if (isAuthor) {
                                 owner.commands.deleteRoom(session, handler.intercept(function () {

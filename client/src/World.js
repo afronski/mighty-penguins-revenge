@@ -36,7 +36,10 @@
             this.gameState = JSON.parse(window.localStorage.getItem(Constants.GameStateKey));
 
             this.socket.on("list-of-players", createEnemies.bind(this));
+
+            this.socket.on("enemy-disconnected", enemyDisconnected.bind(this));
             this.socket.on("enemy-update", updateEnemy.bind(this));
+
             this.socket.on("new-bullet", createNewBullet.bind(this));
 
             this.socket.emit("players-list", this.gameState.session);
@@ -51,6 +54,17 @@
     /* istanbul ignore next */
     function sendPlayerState() {
         this.socket.emit("update-player-state", this.gameState.session, this.player.dump());
+    }
+
+    /* istanbul ignore next */
+    function enemyDisconnected(nick) {
+        this.enemies = this.enemies.reduce(function (accumulator, enemy) {
+            if (enemy.nick !== nick) {
+                accumulator.push(enemy);
+            }
+
+            return accumulator;
+        }, []);
     }
 
     /* istanbul ignore next */
