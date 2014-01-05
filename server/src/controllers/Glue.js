@@ -19,9 +19,11 @@ function withoutPlayer(nick, player) {
 
 // Constructor.
 
-function Glue(rooms, scores) {
+function Glue(rooms, scores, settings) {
     this.queries = new Queries(rooms, scores);
     this.commands = new Commands(rooms, scores);
+
+    this.settings = settings;
 }
 
 // Public methods.
@@ -205,6 +207,26 @@ Glue.prototype.disconnectionHandler = function (socket) {
     }));
 };
 
+Glue.prototype.updateScore = function (socket, session, nick, score) {
+    // TODO: Should update score for sent session, player nickname.
+    //
+    //       Also it should sent event 'game-finished' when score of one
+    //       player hit maximum value, provided by 'this.settings.MaximumScore'.
+};
+
+Glue.prototype.returnScore = function (socket, session) {
+    var handler = domain.create();
+
+    /* istanbul ignore next: Untestable */
+    handler.on("error", function (error) {
+        ConsoleLogger.error("[Glue.returnScore] Error occurred:", error);
+    });
+
+    this.queries.getScoresForSession(session, handler.intercept(function (scores) {
+        socket.broadcast.to(session).emit("game-score", scores);
+    }));
+};
+
 Glue.prototype.wire = function (webSockets) {
     var owner = this;
 
@@ -223,6 +245,9 @@ Glue.prototype.wire = function (webSockets) {
         socket.on("player-fired", owner.broadcastPlayerBullet.bind(owner, socket));
 
         socket.on("disconnect", owner.disconnectionHandler.bind(owner, socket));
+
+        socket.on("score-updated", owner.updateScore.bind(owner, socket));
+        socket.on("get-score", owner.returnScore.bind(owner, socket));
     });
 };
 

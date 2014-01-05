@@ -81,7 +81,11 @@
             // Connecting to the '/rooms' channel and attaching handlers.
             this.socket = io.connect("/rooms", Constants.SocketResource);
 
-            this.socket.on("connect", getRooms.bind(this));
+            if (this.socket.socket.connected) {
+                getRooms.call(this);
+            } else {
+                this.socket.on("connect", getRooms.bind(this));
+            }
 
             this.socket.on("room-created", handleNewRoomCreation.bind(this));
             this.socket.on("room-joined", handleRoomJoining.bind(this));
@@ -125,6 +129,8 @@
             session: session
         };
 
+        this.socket.removeAllListeners();
+
         jaws.switchGameState(WaitingScreen.bind(WaitingScreen, this.nick, room));
     }
 
@@ -134,6 +140,8 @@
             name: this.newRoomName,
             session: session
         };
+
+        this.socket.removeAllListeners();
 
         jaws.switchGameState(WaitingScreen.bind(WaitingScreen, this.nick, room, true));
     }

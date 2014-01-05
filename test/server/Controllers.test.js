@@ -102,6 +102,63 @@ describe("Commands", function () {
         }));
     });
 
+    it("should have method for updating score", function (finish) {
+        var handler = domain.create(),
+            commands = new Commands(this.rooms, this.scores);
+
+        handler.on("error", finish);
+
+        commands.updateScore(this.secondRoom.session, "Player 2", 2, handler.intercept(function (score) {
+            score.should.be.equal(2);
+
+            finish();
+        }));
+    });
+
+    it("should have method for closing contest", function (finish) {
+        var handler = domain.create(),
+            owner = this,
+            commands = new Commands(this.rooms, this.scores);
+
+        handler.on("error", finish);
+
+        commands.closeContest(this.secondRoom.session, handler.intercept(function () {
+            commands.scoresProvider.get(handler.intercept(function (results) {
+                results.length.should.be.equal(2);
+
+                results[1].roomName.should.be.equal("Room 2");
+                results[1].session.should.be.equal(owner.secondRoom.session);
+                results[1].players.length.should.be.equal(1);
+
+                finish();
+            }));
+        }));
+    });
+
+    it("should have method for closing contest which explodes if there is no such session", function (finish) {
+        var commands = new Commands(this.rooms, this.scores);
+
+        commands.closeContest(helpers.UNKNOWN_GUID, helpers.expectError.bind(null, finish));
+    });
+
+    it("should have method for closing contest which explodes if session was not opened", function (finish) {
+        var commands = new Commands(this.rooms, this.scores);
+
+        commands.closeContest(this.firstRoom.session, helpers.expectError.bind(null, finish));
+    });
+
+    it("should have method for updating score which explodes if there is no such session", function (finish) {
+        var commands = new Commands(this.rooms, this.scores);
+
+        commands.updateScore(helpers.UNKNOWN_GUID, "Player 2", 2, helpers.expectError.bind(null, finish));
+    });
+
+    it("should have method for updating score which explodes if session was not opened", function (finish) {
+        var commands = new Commands(this.rooms, this.scores);
+
+        commands.updateScore(this.firstRoom.session, "Player 1", 1, helpers.expectError.bind(null, finish));
+    });
+
     it("should have method for joining to the room which explodes if there is no such session", function (finish) {
         var commands = new Commands(this.rooms, this.scores);
 
@@ -194,7 +251,7 @@ describe("Glue", function () {
     beforeEach(helpers.mockProviders);
 
     it("should create commands and queries objects with passed providers", function () {
-        var glue = new Glue(this.rooms, this.scores);
+        var glue = new Glue(this.rooms, this.scores, this.settings);
 
         glue.queries.roomsProvider.should.be.equal(this.rooms);
         glue.queries.scoresProvider.should.be.equal(this.scores);
@@ -204,7 +261,7 @@ describe("Glue", function () {
     });
 
     it("should provide method for creating room", function (finish) {
-        var glue = new Glue(this.rooms, this.scores),
+        var glue = new Glue(this.rooms, this.scores, this.settings),
             roomName = "Room 3",
             mockedSocket = {
                 set: function (key, value, continuation) {
@@ -243,7 +300,7 @@ describe("Glue", function () {
     });
 
     it("should provide method for connecting to the room", function (finish) {
-        var glue = new Glue(this.rooms, this.scores),
+        var glue = new Glue(this.rooms, this.scores, this.settings),
             sentSession = this.firstRoom.session,
             mockedSocket = {
                 set: function (key, value, continuation) {
@@ -277,7 +334,7 @@ describe("Glue", function () {
     });
 
     it("should return list of rooms when requested", function (finish) {
-        var glue = new Glue(this.rooms, this.scores),
+        var glue = new Glue(this.rooms, this.scores, this.settings),
             mockedSocket = {
                 emit: function (eventName, rooms) {
                     eventName.should.be.equal("list-of-rooms");
@@ -291,7 +348,7 @@ describe("Glue", function () {
     });
 
     it("should handle properly starting game requested by room author with broadcast to room", function (finish) {
-        var glue = new Glue(this.rooms, this.scores),
+        var glue = new Glue(this.rooms, this.scores, this.settings),
             owner = this,
             mockedSocket = {
                 get: function (what, continuation) {
@@ -322,7 +379,7 @@ describe("Glue", function () {
     });
 
     it("should handle properly starting game for unknown session", function (finish) {
-        var glue = new Glue(this.rooms, this.scores),
+        var glue = new Glue(this.rooms, this.scores, this.settings),
             mockedSocket = {
                 get: function (what, continuation) {
                     continuation(null, false);
@@ -339,7 +396,7 @@ describe("Glue", function () {
     });
 
     it("should handle message which requests players list", function (finish) {
-        var glue = new Glue(this.rooms, this.scores),
+        var glue = new Glue(this.rooms, this.scores, this.settings),
             owner = this,
             mockedSocket = {
                 get: function (what, continuation) {
@@ -369,7 +426,7 @@ describe("Glue", function () {
     });
 
     it("should handle message which requests all players list", function (finish) {
-        var glue = new Glue(this.rooms, this.scores),
+        var glue = new Glue(this.rooms, this.scores, this.settings),
             owner = this,
             mockedSocket = {
                 get: function (what, continuation) {
@@ -398,7 +455,7 @@ describe("Glue", function () {
     });
 
     it("should handle properly state broadcasting", function (finish) {
-        var glue = new Glue(this.rooms, this.scores),
+        var glue = new Glue(this.rooms, this.scores, this.settings),
             sentSession = helpers.TEMPORARY_GUID,
             state = {
                 nick: "Player 0"
@@ -424,7 +481,7 @@ describe("Glue", function () {
     });
 
     it("should handle properly player bullets broadcasting", function (finish) {
-        var glue = new Glue(this.rooms, this.scores),
+        var glue = new Glue(this.rooms, this.scores, this.settings),
             sentSession = helpers.TEMPORARY_GUID,
             mockedSocket = {
                 broadcast: {
@@ -447,7 +504,7 @@ describe("Glue", function () {
     });
 
     it("should handle disconnection for normal user properly", function (finish) {
-        var glue = new Glue(this.rooms, this.scores),
+        var glue = new Glue(this.rooms, this.scores, this.settings),
             sentSession = this.firstRoom.session,
             mockedSocket = {
                 get: function (what, continuation) {
@@ -491,7 +548,7 @@ describe("Glue", function () {
     });
 
     it("should handle disconnection for room author properly", function (finish) {
-        var glue = new Glue(this.rooms, this.scores),
+        var glue = new Glue(this.rooms, this.scores, this.settings),
             sentSession = this.firstRoom.session,
             mockedSocket = {
                 get: function (what, continuation) {
@@ -537,6 +594,68 @@ describe("Glue", function () {
 
             glue.disconnectionHandler(mockedSocket);
         });
+    });
+
+    it("should provide method for updating score for specified session and player", function (finish) {
+        var glue = new Glue(this.rooms, this.scores, this.settings),
+            sentSession = this.secondRoom.session,
+            mockedSocket = {
+                get: function (what, continuation) {
+                    continuation(null, sentSession);
+                },
+
+                broadcast: {
+                    to: function (session) {
+                        session.should.be.equal(sentSession);
+
+                        return this;
+                    },
+
+                    emit: function (eventName) {
+                        eventName.should.be.equal("game-finished");
+
+                        finish();
+                    }
+                },
+
+                emit: function (eventName) {
+                    eventName.should.be.equal("game-finished");
+                }
+            };
+
+        this.player.score = 19;
+
+        glue.commands.joinRoom(this.secondRoom.session, this.player, function (error) {
+            if (error) {
+                finish(error);
+                return;
+            }
+
+            glue.updateScore(mockedSocket, sentSession, "Player 0", 20);
+        });
+    });
+
+    it("should provide method for returning scores for specified session", function (finish) {
+        var glue = new Glue(this.rooms, this.scores, this.settings),
+            sentSession = helpers.TEMPORARY_GUID,
+            mockedSocket = {
+                broadcast: {
+                    to: function (session) {
+                        session.should.be.equal(sentSession);
+
+                        return this;
+                    },
+
+                    emit: function (eventName, scores) {
+                        eventName.should.be.equal("game-score");
+                        scores.length.should.be.equal(4);
+
+                        finish();
+                    }
+                }
+            };
+
+        glue.returnScore(mockedSocket, sentSession);
     });
 
 });

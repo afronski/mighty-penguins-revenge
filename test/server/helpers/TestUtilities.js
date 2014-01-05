@@ -202,6 +202,7 @@ module.exports.mockProviders = exports.mockProviders = function () {
 
     this.scores = {
         add: function (score, continuation) {
+            mockedScores.push(score);
             continuation(null);
         },
 
@@ -215,6 +216,11 @@ module.exports.mockProviders = exports.mockProviders = function () {
     this.player = {
         nick: "Player 0",
         score: 0
+    };
+
+    // Settings.
+    this.settings = {
+        MaximumScore: 20
     };
 };
 

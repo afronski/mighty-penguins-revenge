@@ -42,8 +42,11 @@ function initialize(directory) {
 
 function listen() {
     var port = configurationReader.get("port"),
+        gameSettings = {
+            MaximumScore: configurationReader.get("score")
+        },
         server = http.createServer(application),
-        glue = new Glue(Rooms, Scores);
+        glue = new Glue(Rooms, Scores, gameSettings);
 
     webSockets = socketIO.listen(server, { log: false, resource: "/ws" });
     glue.wire(webSockets);

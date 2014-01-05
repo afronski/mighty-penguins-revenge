@@ -12,7 +12,7 @@
     });
 
     QUnit.test("When there are rooms available it should create items on room list", function () {
-        this.scoresScreen.scores = [
+        var scores = [
             { name: "Player 1", value: "12" },
             { name: "Player 2", value: "11" },
             { name: "Player 3", value: "10" },
@@ -20,7 +20,7 @@
             { name: "Player 5", value: "8" }
         ];
 
-        this.scoresScreen.setup();
+        this.scoresScreen.handleReceivedScore(scores);
 
         QUnit.equal(5, this.scoresScreen.scores.length, "Scores list length is equal to the original length.");
         QUnit.equal(3, this.scoresScreen.scoreItems.length, "Score items should have only three top items.");

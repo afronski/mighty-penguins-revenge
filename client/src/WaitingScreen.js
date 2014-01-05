@@ -67,6 +67,8 @@
             };
 
             window.localStorage.setItem(Constants.GameStateKey, JSON.stringify(gameState));
+            owner.socket.removeAllListeners();
+
             jaws.switchGameState(constructor);
         });
     }
@@ -74,6 +76,8 @@
     /* istanbul ignore next */
     function restartGame() {
         window.localStorage.removeItem(Constants.GameStateKey);
+        this.socket.removeAllListeners();
+
         jaws.switchGameState(window.IntroScreen);
     }
 

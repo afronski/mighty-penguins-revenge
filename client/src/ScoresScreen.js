@@ -1,4 +1,4 @@
-(function (jaws, Constants, utils) {
+(function (jaws, io, Constants, utils) {
     "use strict";
 
     var ScoreListItemHeight = 40,
@@ -26,12 +26,26 @@
 
             color: Constants.ForegroundColor
         };
+
+        /* istanbul ignore if */
+        if (typeof(io) !== "undefined") {
+            this.socket = io.connect("/rooms", Constants.SocketResource);
+
+            this.gameState = JSON.parse(window.localStorage.getItem(Constants.GameStateKey));
+
+            this.socket.on("game-score", this.handleReceivedScore.bind(this));
+
+            this.socket.emit("get-score", this.gameState.session);
+        }
     }
 
     // Private methods.
+
     function handleKeyboard() {
         /* istanbul ignore next */
         if (jaws.pressedWithoutRepeat("space")) {
+            this.socket.removeAllListeners();
+
             jaws.switchGameState(window.IntroScreen);
         }
     }
@@ -49,6 +63,13 @@
     }
 
     // Public API.
+    ScoresScreen.prototype.handleReceivedScore = function (scores) {
+        this.scores = scores;
+        this.scoreItems = createScoreItems(this.scores);
+
+        window.localStorage.removeItem(Constants.GameStateKey);
+    };
+
     ScoresScreen.prototype.setup = function () {
         this.text = new jaws.Text({
             x: 100,
@@ -59,10 +80,6 @@
             fontSize: Constants.FontSize,
             fontFace: Constants.FontFace
         });
-
-        // TODO: Update items only when received scores from server.
-        this.scoreItems = createScoreItems(this.scores);
-        window.localStorage.removeItem(Constants.GameStateKey);
 
         this.prompt = new jaws.Text(this.promptOptions);
 
@@ -89,4 +106,4 @@
 
     window.ScoresScreen = ScoresScreen;
 
-} (window.jaws, window.Constants, window.utils));
+} (window.jaws, window.io, window.Constants, window.utils));

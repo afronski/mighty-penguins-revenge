@@ -45,6 +45,10 @@
 
             this.socket.on("new-bullet", createNewBullet.bind(this));
 
+            this.socket.on("game-finished", handleGameEnd.bind(this));
+            this.socket.on("game-failed", restartGame.bind(this));
+
+            // Emitting events.
             this.socket.emit("players-list", this.gameState.session);
 
             /* istanbul ignore next */
@@ -57,6 +61,28 @@
     // Private methods.
     function createHUD(health, score) {
         return "HEALTH: " + parseInt(health, 10) + " SCORE: " + parseInt(score, 10);
+    }
+
+    /* istanbul ignore next */
+    function restartGame() {
+        window.localStorage.removeItem(Constants.GameStateKey);
+        this.socket.removeAllListeners();
+
+        jaws.switchGameState(window.IntroScreen);
+    }
+
+    /* istanbul ignore next */
+    function notifyAboutUpdatedPlayerScore() {
+        if (this.socket) {
+            this.socket.emit("score-updated", this.gameState.session, this.player.nick, this.player.score);
+        }
+    }
+
+    /* istanbul ignore next */
+    function handleGameEnd() {
+        this.socket.removeAllListeners();
+
+        jaws.switchGameState(ScoresScreen);
     }
 
     /* istanbul ignore next */
@@ -131,11 +157,6 @@
             if (this.gameState) {
                 this.socket.emit("player-fired", this.gameState.session, this.player.nick);
             }
-        }
-
-        if (jaws.pressedWithoutRepeat("esc")) {
-            // TODO: Signal from server when the game ends.
-            jaws.switchGameState(ScoresScreen);
         }
     }
 
@@ -239,6 +260,13 @@
     World.prototype.decreaseHealth = function (entity, bullet) {
         if (bullet.owner !== entity) {
             entity.decreaseHealth(bullet);
+
+            // Update only if player's score was updated
+            /* istanbul ignore next */
+            if (bullet.owner === this.player && !entity.isAlive()) {
+                notifyAboutUpdatedPlayerScore.call(this);
+            }
+
             bullet.kill();
         }
     };
