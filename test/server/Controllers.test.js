@@ -203,6 +203,93 @@ describe("Glue", function () {
         glue.commands.scoresProvider.should.be.equal(this.scores);
     });
 
+    it("should provide method for creating room", function (finish) {
+        var glue = new Glue(this.rooms, this.scores),
+            roomName = "Room 3",
+            mockedSocket = {
+                set: function (key, value, continuation) {
+                    if (key === "nick") {
+                        value.should.be.equal("Player 0");
+                    } else if (key === "room-author") {
+                        value.should.be.equal(true);
+                    } else if (key === "session") {
+                        value.should.be.match(helpers.GUID_REGULAR_EXPRESSION);
+                    }
+
+                    if (typeof(continuation) === "function") {
+                        continuation();
+                    }
+                },
+
+                join: function (session) {
+                    session.should.be.match(helpers.GUID_REGULAR_EXPRESSION);
+                },
+
+                broadcast: {
+                    emit: function (eventName) {
+                        eventName.should.be.equal("list-of-rooms");
+
+                        finish();
+                    }
+                },
+
+                emit: function (eventName, session) {
+                    eventName.should.be.equal("room-created");
+                    session.should.be.match(helpers.GUID_REGULAR_EXPRESSION);
+                }
+            };
+
+        glue.createRoom(mockedSocket, roomName, this.player);
+    });
+
+    it("should provide method for connecting to the room", function (finish) {
+        var glue = new Glue(this.rooms, this.scores),
+            sentSession = this.firstRoom.session,
+            mockedSocket = {
+                set: function (key, value, continuation) {
+                    if (key === "nick") {
+                        value.should.be.equal("Player 0");
+                    } else if (key === "room-author") {
+                        value.should.be.equal(false);
+                    } else if (key === "session") {
+                        value.should.be.equal(sentSession);
+                    }
+
+                    if (typeof(continuation) === "function") {
+                        continuation();
+                    }
+                },
+
+                join: function (session) {
+                    session.should.be.equal(sentSession);
+                },
+
+                emit: function (eventName, session, name) {
+                    eventName.should.be.equal("room-joined");
+                    session.should.be.equal(sentSession);
+                    name.should.be.equal("Room 1");
+
+                    finish();
+                }
+            };
+
+        glue.joinRoom(mockedSocket, sentSession, this.player);
+    });
+
+    it("should return list of rooms when requested", function (finish) {
+        var glue = new Glue(this.rooms, this.scores),
+            mockedSocket = {
+                emit: function (eventName, rooms) {
+                    eventName.should.be.equal("list-of-rooms");
+                    rooms.length.should.be.equal(1);
+
+                    finish();
+                }
+            };
+
+        glue.getListOfRooms(mockedSocket);
+    });
+
     it("should handle properly starting game requested by room author with broadcast to room", function (finish) {
         var glue = new Glue(this.rooms, this.scores),
             owner = this,
@@ -357,6 +444,99 @@ describe("Glue", function () {
             };
 
         glue.broadcastPlayerBullet(mockedSocket, sentSession, "Player 0");
+    });
+
+    it("should handle disconnection for normal user properly", function (finish) {
+        var glue = new Glue(this.rooms, this.scores),
+            sentSession = this.firstRoom.session,
+            mockedSocket = {
+                get: function (what, continuation) {
+                    if (what === "room-author") {
+                        continuation(null, false);
+                    } else if (what === "session") {
+                        continuation(null, sentSession);
+                    } else if (what === "nick") {
+                        continuation(null, "Player 0");
+                    }
+                },
+
+                leave: function (session) {
+                    session.should.be.equal(sentSession);
+                },
+
+                broadcast: {
+                    to: function (session) {
+                        session.should.be.equal(sentSession);
+
+                        return this;
+                    },
+
+                    emit: function (eventName, value) {
+                        eventName.should.be.equal("enemy-disconnected");
+                        value.should.be.equal("Player 0");
+
+                        finish();
+                    }
+                }
+            };
+
+        glue.commands.joinRoom(this.firstRoom.session, this.player, function (error) {
+            if (error) {
+                finish(error);
+                return;
+            }
+
+            glue.disconnectionHandler(mockedSocket);
+        });
+    });
+
+    it("should handle disconnection for room author properly", function (finish) {
+        var glue = new Glue(this.rooms, this.scores),
+            sentSession = this.firstRoom.session,
+            mockedSocket = {
+                get: function (what, continuation) {
+                    if (what === "room-author") {
+                        continuation(null, true);
+                    } else if (what === "session") {
+                        continuation(null, sentSession);
+                    } else if (what === "nick") {
+                        continuation(null, "Player 0");
+                    }
+                },
+
+                leave: function (session) {
+                    session.should.be.equal(sentSession);
+                },
+
+                broadcast: {
+                    to: function (session) {
+                        session.should.be.equal(sentSession);
+
+                        return this;
+                    },
+
+                    emit: function (eventName, value) {
+                        if (eventName === "enemy-disconnected") {
+                            value.should.be.equal("Player 0");
+                        } else if (eventName === "list-of-rooms") {
+                            value.length.should.be.equal(0);
+
+                            finish();
+                        } else if (eventName !== "game-failed") {
+                            finish(new Error("Unknown event sent!"));
+                        }
+                    }
+                }
+            };
+
+        glue.commands.joinRoom(this.firstRoom.session, this.player, function (error) {
+            if (error) {
+                finish(error);
+                return;
+            }
+
+            glue.disconnectionHandler(mockedSocket);
+        });
     });
 
 });

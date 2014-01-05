@@ -26,13 +26,75 @@ function Glue(rooms, scores) {
 
 // Public methods.
 
+Glue.prototype.createRoom = function (socket, room, player) {
+    var owner = this,
+        handler = domain.create();
+
+    /* istanbul ignore next: Untestable */
+    handler.on("error", function (error) {
+        ConsoleLogger.error("[Glue.createRoom] Error occurred:", error);
+    });
+
+    this.commands.createRoom(room, player, handler.intercept(function (session) {
+        ConsoleLogger.info("Room '%s' with session '%s' created by '%s'.", room, session, player.nick);
+
+        socket.set("nick", player.nick, function () {
+            socket.set("room-author", true);
+            socket.set("session", session);
+
+            socket.emit("room-created", session);
+            socket.join(session);
+
+            owner.queries.getAccessibleRooms(handler.intercept(function (rooms) {
+                socket.broadcast.emit("list-of-rooms", rooms);
+            }));
+        });
+    }));
+};
+
+Glue.prototype.joinRoom = function (socket, session, player) {
+    var owner = this,
+        handler = domain.create();
+
+    /* istanbul ignore next: Untestable */
+    handler.on("error", function (error) {
+        ConsoleLogger.error("[Glue.joinRoom] Error occurred:", error);
+    });
+
+    socket.set("nick", player.nick, function () {
+        socket.set("room-author", false);
+        socket.set("session", session);
+
+        socket.join(session);
+
+        ConsoleLogger.info("Room '%s' joined by player '%s'.", session, player.nick);
+
+        owner.commands.joinRoom(session, player, handler.intercept(function (room) {
+            socket.emit("room-joined", room.session, room.name);
+        }));
+    });
+};
+
+Glue.prototype.getListOfRooms = function (socket) {
+    var handler = domain.create();
+
+    /* istanbul ignore next: Untestable */
+    handler.on("error", function (error) {
+        ConsoleLogger.error("[Glue.getListOfRooms] Error occurred:", error);
+    });
+
+    this.queries.getAccessibleRooms(handler.intercept(function (rooms) {
+        socket.emit("list-of-rooms", rooms);
+    }));
+};
+
 Glue.prototype.handleGameStart = function (socket, session) {
     var owner = this,
         handler = domain.create();
 
     /* istanbul ignore next: Untestable */
     handler.on("error", function (error) {
-        ConsoleLogger.error("Error occurred:", error);
+        ConsoleLogger.error("[Glue.handleGameStart] Error occurred:", error);
     });
 
     socket.get("room-author", handler.intercept(function (isAuthor) {
@@ -67,7 +129,7 @@ Glue.prototype.getPlayersList = function (socket, session) {
 
     /* istanbul ignore next: Untestable */
     handler.on("error", function (error) {
-        ConsoleLogger.error("Error occurred:", error);
+        ConsoleLogger.error("[Glue.getPlayersList] Error occurred:", error);
     });
 
     socket.get("nick", handler.intercept(function (nick) {
@@ -87,7 +149,7 @@ Glue.prototype.getAllPlayersList = function (socket, session) {
     this.queries.roomsProvider.get(function (error, rooms) {
         /* istanbul ignore if: Untestable */
         if (error) {
-            ConsoleLogger.error("Error occurred:", error);
+            ConsoleLogger.error("[Glue.getAllPlayersList] Error occurred:", error);
             return;
         }
 
@@ -109,56 +171,48 @@ Glue.prototype.broadcastPlayerBullet = function (socket, session, nick) {
     socket.broadcast.to(session).emit("new-bullet", nick);
 };
 
-Glue.prototype.wire = function (webSockets) {
+Glue.prototype.disconnectionHandler = function (socket) {
     var owner = this,
         handler = domain.create();
 
     /* istanbul ignore next: Untestable */
     handler.on("error", function (error) {
-        ConsoleLogger.error("Error occurred:", error);
+        ConsoleLogger.error("[Glue.disconnectionHandler] Error occurred:", error);
     });
+
+    socket.get("room-author", handler.intercept(function (isAuthor) {
+        socket.get("session", handler.intercept(function (session) {
+            socket.get("nick", handler.intercept(function (nick) {
+                owner.commands.leaveRoom(session, { nick: nick }, handler.intercept(function () {
+                    ConsoleLogger.info("Player '%s' disconnected from room '%s'.", nick, session);
+
+                    socket.leave(session);
+                    socket.broadcast.to(session).emit("enemy-disconnected", nick);
+
+                    if (isAuthor) {
+                        owner.commands.deleteRoom(session, handler.intercept(function () {
+                            ConsoleLogger.info("Room '%s' deleted.", session);
+                            socket.broadcast.to(session).emit("game-failed");
+
+                            owner.queries.getAccessibleRooms(handler.intercept(function (rooms) {
+                                socket.broadcast.emit("list-of-rooms", rooms);
+                            }));
+                        }));
+                    }
+                }));
+            }));
+        }));
+    }));
+};
+
+Glue.prototype.wire = function (webSockets) {
+    var owner = this;
 
     /* istanbul ignore next: Untestable */
     webSockets.of("/rooms").on("connection", function (socket) {
-
-        socket.on("create-room", function (room, player) {
-            owner.commands.createRoom(room, player, handler.intercept(function (session) {
-                ConsoleLogger.info("Room '%s' with session: '%s' created by '%s'.", room, player.nick, session);
-
-                socket.set("nick", player.nick, function () {
-                    socket.set("room-author", true);
-                    socket.set("session", session);
-
-                    socket.emit("room-created", session);
-                    socket.join(session);
-
-                    owner.queries.getAccessibleRooms(handler.intercept(function (rooms) {
-                        socket.broadcast.emit("list-of-rooms", rooms);
-                    }));
-                });
-            }));
-        });
-
-        socket.on("join-room", function (session, player) {
-            socket.set("nick", player.nick, function () {
-                socket.set("room-author", false);
-                socket.set("session", session);
-
-                socket.join(session);
-
-                ConsoleLogger.info("Room '%s' joined by player '%s'.", session, player.nick);
-
-                owner.commands.joinRoom(session, player, handler.intercept(function (room) {
-                    socket.emit("room-joined", room.session, room.name);
-                }));
-            });
-        });
-
-        socket.on("get-list-of-rooms", function () {
-            owner.queries.getAccessibleRooms(handler.intercept(function (rooms) {
-                socket.emit("list-of-rooms", rooms);
-            }));
-        });
+        socket.on("create-room", owner.createRoom.bind(owner, socket));
+        socket.on("join-room", owner.joinRoom.bind(owner, socket));
+        socket.on("get-list-of-rooms", owner.getListOfRooms.bind(owner, socket));
 
         socket.on("start-game", owner.handleGameStart.bind(owner, socket));
 
@@ -168,31 +222,7 @@ Glue.prototype.wire = function (webSockets) {
         socket.on("update-player-state", owner.broadcastPlayerState.bind(owner, socket));
         socket.on("player-fired", owner.broadcastPlayerBullet.bind(owner, socket));
 
-        socket.on("disconnect", function () {
-            socket.get("room-author", handler.intercept(function (isAuthor) {
-                socket.get("session", handler.intercept(function (session) {
-                    socket.get("nick", handler.intercept(function (nick) {
-                        owner.commands.leaveRoom(session, { nick: nick }, handler.intercept(function () {
-                            ConsoleLogger.info("Player '%s' disconnected from room '%s'.", nick, session);
-
-                            socket.leave(session);
-                            socket.broadcast.to(session).emit("enemy-disconnected", nick);
-
-                            if (isAuthor) {
-                                owner.commands.deleteRoom(session, handler.intercept(function () {
-                                    ConsoleLogger.info("Room '%s' deleted.", session);
-                                    socket.broadcast.to(session).emit("game-failed");
-
-                                    owner.queries.getAccessibleRooms(handler.intercept(function (rooms) {
-                                        socket.broadcast.emit("list-of-rooms", rooms);
-                                    }));
-                                }));
-                            }
-                        }));
-                    }));
-                }));
-            }));
-        });
+        socket.on("disconnect", owner.disconnectionHandler.bind(owner, socket));
     });
 };
 
