@@ -208,10 +208,29 @@ Glue.prototype.disconnectionHandler = function (socket) {
 };
 
 Glue.prototype.updateScore = function (socket, session, nick, score) {
-    // TODO: Should update score for sent session, player nickname.
-    //
-    //       Also it should sent event 'game-finished' when score of one
-    //       player hit maximum value, provided by 'this.settings.MaximumScore'.
+    var owner = this,
+        handler = domain.create();
+
+    /* istanbul ignore next: Untestable */
+    handler.on("error", function (error) {
+        ConsoleLogger.error("[Glue.updateScore] Error occurred:", error);
+    });
+
+    socket.get("session", handler.intercept(function (session) {
+        owner.commands.updateScore(session, nick, score, handler.intercept(function (acceptedScore) {
+            /* istanbul ignore else: Guard */
+            if (acceptedScore >= owner.settings.MaximumScore) {
+                owner.commands.closeContest(session, handler.intercept(function () {
+                    owner.commands.deleteRoom(session, handler.intercept(function () {
+                        ConsoleLogger.info("Session '%s' closed successfully, proceeding to scores.", session);
+
+                        socket.emit("game-finished");
+                        socket.broadcast.to(session).emit("game-finished");
+                    }));
+                }));
+            }
+        }));
+    }));
 };
 
 Glue.prototype.returnScore = function (socket, session) {

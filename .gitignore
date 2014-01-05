@@ -7,6 +7,7 @@ coverage/
 
 # Rubbish and reports.
 *.log
+server/logs/*.log
 reports/
 
 # Test generated assets.
