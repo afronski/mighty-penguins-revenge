@@ -30,7 +30,7 @@ describe("Commands", function () {
                 return;
             }
 
-            session.should.match(/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{8}/i);
+            session.should.match(helpers.GUID_REGULAR_EXPRESSION);
 
             finish();
         });
@@ -105,20 +105,20 @@ describe("Commands", function () {
     it("should have method for joining to the room which explodes if there is no such session", function (finish) {
         var commands = new Commands(this.rooms, this.scores);
 
-        commands.joinRoom("UNKN0WN0-SESS-I0N0-NUMB-ER000000", this.player, helpers.expectError.bind(null, finish));
+        commands.joinRoom(helpers.UNKNOWN_GUID, this.player, helpers.expectError.bind(null, finish));
     });
 
     it("should have method for leaving the room which explodes if there is no such session", function (finish) {
         var player = this.player,
             commands = new Commands(this.rooms, this.scores);
 
-        commands.leaveRoom("UNKN0WN0-SESS-I0N0-NUMB-ER000000", player, helpers.expectError.bind(null, finish));
+        commands.leaveRoom(helpers.UNKNOWN_GUID, player, helpers.expectError.bind(null, finish));
     });
 
     it("should have method for locking room which explodes when there is no such session", function (finish) {
         var commands = new Commands(this.rooms, this.scores);
 
-        commands.lockRoom("UNKN0WN0-SESS-I0N0-NUMB-ER000000", helpers.expectError.bind(null, finish));
+        commands.lockRoom(helpers.UNKNOWN_GUID, helpers.expectError.bind(null, finish));
     });
 
     it("should have method for locking room which explodes when room is not available already", function (finish) {
@@ -176,7 +176,7 @@ describe("Queries", function () {
     it("should should have method for getting scores which explodes for unknown room", function (finish) {
         var queries = new Queries(this.rooms, this.scores);
 
-        queries.getScoresForSession("UNKN0WN0-SESS-I0N0-NUMB-ER000000", helpers.expectError.bind(null, finish));
+        queries.getScoresForSession(helpers.UNKNOWN_GUID, helpers.expectError.bind(null, finish));
     });
 
 });
@@ -248,7 +248,7 @@ describe("Glue", function () {
                 }
             };
 
-        glue.handleGameStart(mockedSocket, "UNKN0WN0-SESS-I0N0-NUMB-ER000000");
+        glue.handleGameStart(mockedSocket, helpers.UNKNOWN_GUID);
     });
 
     it("should handle message which requests players list", function (finish) {
@@ -312,7 +312,7 @@ describe("Glue", function () {
 
     it("should handle properly state broadcasting", function (finish) {
         var glue = new Glue(this.rooms, this.scores),
-            sentSession = "aaaa1111-2222-3333-4444-bbbb5555",
+            sentSession = helpers.TEMPORARY_GUID,
             state = {
                 nick: "Player 0"
             },
@@ -338,7 +338,7 @@ describe("Glue", function () {
 
     it("should handle properly player bullets broadcasting", function (finish) {
         var glue = new Glue(this.rooms, this.scores),
-            sentSession = "aaaa1111-2222-3333-4444-bbbb5555",
+            sentSession = helpers.TEMPORARY_GUID,
             mockedSocket = {
                 broadcast: {
                     to: function (session) {

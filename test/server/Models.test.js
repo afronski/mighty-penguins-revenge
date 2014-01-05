@@ -4,7 +4,9 @@ require("should");
 
 var Player = require("../../server/src/models/Player"),
     Room = require("../../server/src/models/Room"),
-    ScoresList = require("../../server/src/models/ScoresList");
+    ScoresList = require("../../server/src/models/ScoresList"),
+
+    helpers = require("./helpers/TestUtilities");
 
 describe("Player", function () {
 
@@ -84,7 +86,7 @@ describe("Room", function () {
     it("should have session identifier created", function () {
         var room = new Room("Room 1");
 
-        room.session.should.match(/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{8}/i);
+        room.session.should.match(helpers.GUID_REGULAR_EXPRESSION);
     });
 
     it("should not be available after locking", function () {

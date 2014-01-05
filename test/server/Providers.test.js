@@ -2,16 +2,16 @@
 
 require("should");
 
-var GuidRegularExpression = /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{8}/i,
-
-    domain = require("domain"),
+var domain = require("domain"),
     path = require("path"),
 
     Room = require("../../server/src/models/Room"),
     ScoresList = require("../../server/src/models/ScoresList"),
 
     Rooms = require("../../server/src/providers/Rooms"),
-    Scores = require("../../server/src/providers/Scores");
+    Scores = require("../../server/src/providers/Scores"),
+
+    helpers = require("./helpers/TestUtilities");
 
 describe("Empty rooms provider", function () {
 
@@ -28,7 +28,7 @@ describe("Rooms provider", function () {
     before(function () {
         this.room = {
             name: "Room 1",
-            session: "aaaa1111-2222-3333-4444-bbbb5555",
+            session: helpers.TEMPORARY_GUID,
             players: [],
             available: true
         };
@@ -84,7 +84,7 @@ describe("Rooms provider", function () {
 
         handler.on("error", finish);
 
-        Rooms.remove("UNKN0WN0-SESS-I0N0-NUMB-ER000000", handler.intercept(function () {
+        Rooms.remove(helpers.UNKNOWN_GUID, handler.intercept(function () {
             Rooms.get(handler.intercept(function (results) {
                 results.length.should.be.equal(0);
 
@@ -112,7 +112,7 @@ describe("Rooms provider", function () {
 
                 results[0].should.be.an.instanceof(Room);
                 results[0].name.should.be.equal("Room 1");
-                results[0].session.should.match(GuidRegularExpression);
+                results[0].session.should.match(helpers.GUID_REGULAR_EXPRESSION);
                 results[0].available.should.be.equal(true);
                 results[0].players.length.should.be.equal(0);
 
@@ -169,7 +169,7 @@ describe("Scores provider", function () {
     before(function () {
         this.score = {
             roomName: "Room 1",
-            session: "aaaa1111-2222-3333-4444-bbbb5555",
+            session: helpers.TEMPORARY_GUID,
             players: []
         };
 
@@ -224,7 +224,7 @@ describe("Scores provider", function () {
 
         handler.on("error", finish);
 
-        Scores.remove("UNKN0WN0-SESS-I0N0-NUMB-ER000000", handler.intercept(function () {
+        Scores.remove(helpers.UNKNOWN_GUID, handler.intercept(function () {
             Scores.get(handler.intercept(function (results) {
                 results.length.should.be.equal(0);
 
@@ -252,7 +252,7 @@ describe("Scores provider", function () {
 
                 results[0].should.be.an.instanceof(ScoresList);
                 results[0].roomName.should.be.equal("Room 1");
-                results[0].session.should.match(GuidRegularExpression);
+                results[0].session.should.match(helpers.GUID_REGULAR_EXPRESSION);
                 results[0].players.length.should.be.equal(0);
 
                 finish();

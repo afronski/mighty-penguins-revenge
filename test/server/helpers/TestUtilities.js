@@ -1,6 +1,9 @@
 "use strict";
 
 var TEMPORARY_GUID = "aaaa1111-2222-3333-4444-bbbb5555",
+    UNKNOWN_GUID = "UNKN0WN0-SESS-I0N0-NUMB-ER000000",
+
+    GUID_REGULAR_EXPRESSION = /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{8}/i,
 
     util = require("util"),
 
@@ -214,3 +217,10 @@ module.exports.mockProviders = exports.mockProviders = function () {
         score: 0
     };
 };
+
+// Constants related with GUID.
+
+module.exports.GUID_REGULAR_EXPRESSION = exports.GUID_REGULAR_EXPRESSION = GUID_REGULAR_EXPRESSION;
+
+module.exports.TEMPORARY_GUID = exports.TEMPORARY_GUID = TEMPORARY_GUID;
+module.exports.UNKNOWN_GUID = exports.UNKNOWN_GUID = UNKNOWN_GUID;
