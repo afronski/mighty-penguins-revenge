@@ -1,7 +1,5 @@
 "use strict";
 
-require("colors");
-
 var http = require("http"),
     path = require("path"),
     util = require("util"),
@@ -52,7 +50,7 @@ function listen() {
     glue.wire(webSockets);
     server.listen(port);
 
-    Logger.info(util.format("Application listening on port: %d", port).yellow);
+    Logger.info(util.format("Application listening on port: %d", port));
 }
 
 module.exports = exports = {
