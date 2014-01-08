@@ -15,10 +15,21 @@ function MemoryCache(pattern, directory) {
 }
 
 MemoryCache.prototype.prefetch = function (continuation) {
-    var owner = this;
+    var owner = this,
+        loaded;
 
-    function finish(index, length) {
-        if (index === (length - 1)) {
+    function falsify() {
+        return false;
+    }
+
+    function isTrue(value) {
+        return value === true;
+    }
+
+    function finish(index) {
+        loaded[index] = true;
+
+        if (loaded.every(isTrue)) {
             continuation();
         }
     }
@@ -30,11 +41,13 @@ MemoryCache.prototype.prefetch = function (continuation) {
             return;
         }
 
+        loaded = files.map(falsify);
+
         files.forEach(function (file, index) {
             var key = path.basename(file),
                 handler = domain.create();
 
-            handler.on("error", finish.bind(null, index, files.length));
+            handler.on("error", finish.bind(null, index));
 
             fs.exists(file, function (exists) {
                 /* istanbul ignore else: Guard */
@@ -46,12 +59,12 @@ MemoryCache.prototype.prefetch = function (continuation) {
                             fs.read(fd, buffer, 0, buffer.length, null, handler.intercept(function () {
                                 owner.storage[key] = buffer;
 
-                                fs.close(fd, handler.intercept(finish.bind(null, index, files.length)));
+                                fs.close(fd, handler.intercept(finish.bind(null, index)));
                             }));
                         }));
                     }));
                 } else {
-                    finish(index, files.length);
+                    finish(index);
                 }
             });
         });
