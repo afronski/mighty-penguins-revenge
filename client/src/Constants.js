@@ -23,11 +23,13 @@
 
         FontSize: 70,
         SmallFontSize: 35,
+        SmallestFontSize: 20,
 
         FontFace: "VT323",
 
         ForegroundColor: "black",
         BackgroundColor: "white",
+        HudColor: "white",
 
         GameStateKey: "LastGameState",
         BackgroundAudioMutedStateKey: "MutedBackgroundAudio",

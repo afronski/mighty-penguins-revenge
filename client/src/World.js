@@ -21,7 +21,7 @@
             fontSize: Constants.SmallFontSize,
             fontFace: Constants.FontFace,
 
-            color: Constants.BackgroundColor
+            color: Constants.HudColor
         };
 
         this.hud = new jaws.Text(this.hudOptions);
@@ -191,6 +191,10 @@
             result.score = oldPlayer.score;
         }
 
+        // BLAH
+        result.x = 50;
+        result.y = 3350;
+
         return result;
     }
 
@@ -342,6 +346,7 @@
 
     World.prototype.update = function () {
         this.player.prepare();
+        this.enemies.forEach(utils.each("prepare"));
         this.bullets.forEach(utils.each("prepare"));
 
         // Handle input.
