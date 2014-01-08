@@ -191,10 +191,6 @@
             result.score = oldPlayer.score;
         }
 
-        // BLAH
-        result.x = 50;
-        result.y = 3350;
-
         return result;
     }
 
