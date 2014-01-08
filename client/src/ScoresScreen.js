@@ -19,7 +19,7 @@
             x: 260,
             y: 380,
 
-            text: "PRESS [SPACE] TO CONTINUE",
+            text: "PRESS [ENTER] TO CONTINUE",
 
             fontSize: Constants.SmallFontSize,
             fontFace: Constants.FontFace,
@@ -43,7 +43,7 @@
 
     function handleKeyboard() {
         /* istanbul ignore next */
-        if (jaws.pressedWithoutRepeat("space")) {
+        if (jaws.pressedWithoutRepeat("enter")) {
             this.socket.removeAllListeners();
 
             jaws.switchGameState(window.IntroScreen);

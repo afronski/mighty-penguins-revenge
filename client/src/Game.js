@@ -4,7 +4,7 @@
     var DefaultAssetsPrefix = "/assets/",
         RootPath,
 
-        UsedKeys = [ "up", "down", "left", "right", "space", "m" ],
+        UsedKeys = [ "up", "down", "left", "right", "space", "m", "enter" ],
 
         Assets = [
             "Bullet.png",
